@@ -3,57 +3,97 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alexa Thinks Ahead - Interactive Smart Home Demo</title>
+  <title>Ghar Sense — Sharma Niwas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/src/styles/main.css" />
-  <link rel="stylesheet" href="/src/styles/glassmorphism.css" />
-  <link rel="stylesheet" href="/src/styles/panels.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/styles/sense.css" />
 </head>
-<body>
-  <div id="app">
-    <!-- 3D Scene Container -->
-    <div id="3d-container"></div>
+<body class="sense-page">
+  <div id="sense-app">
 
-    <!-- Flicker Overlay for Power Cut Effect -->
-    <div id="flicker-overlay"></div>
+    <!-- ─── Header ──────────────────────────────────────────────── -->
+    <header class="sense-header card">
+      <div class="brand">
+        <a class="back-link" href="/classic.html" title="Open the classic 2D demo">2D</a>
+        <span class="brand-mark">🏡</span>
+        <div>
+          <div class="brand-name">Ghar Sense</div>
+          <div class="brand-sub">Sharma Niwas · a home that thinks ahead</div>
+        </div>
+      </div>
 
-    <!-- Learning Phase Panel -->
-    <div id="learning-phase" class="phase-panel">
-      <div class="panel-content glass-panel">
-        <div class="brand-header">
-          <span class="brand-badge">●</span>
-          <div>
-            <div class="brand-title">Alexa Thinks Ahead</div>
-            <div class="brand-subtitle">Learning Phase</div>
+      <div class="clock-block">
+        <span id="clock-sky" class="clock-sky">🌅</span>
+        <div id="sim-clock" class="sim-clock">5:45 AM</div>
+        <button id="play-btn" class="play-btn">▶ Play the Day</button>
+        <div class="speed-group">
+          <button class="speed-btn" data-speed="2">1×</button>
+          <button class="speed-btn active" data-speed="4">2×</button>
+          <button class="speed-btn" data-speed="12">6×</button>
+        </div>
+      </div>
+
+      <div class="stats-block">
+        <div class="stat">
+          <div id="stat-savings" class="stat-value">₹12</div>
+          <div class="stat-label">saved today</div>
+        </div>
+        <div class="stat">
+          <div id="stat-actions" class="stat-value">3</div>
+          <div class="stat-label">things handled</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ─── Scenario chips ──────────────────────────────────────── -->
+    <nav class="scenario-bar">
+      <span class="scenario-label">Make something happen →</span>
+      <button class="scenario-btn" data-scenario="cooker">🍲 Cooker Whistles</button>
+      <button class="scenario-btn" data-scenario="motor">🚱 Motor Dry-Run</button>
+      <button class="scenario-btn" data-scenario="powercut">⚡ Power Cut</button>
+      <button class="scenario-btn" data-scenario="pooja">🛕 Pooja Bell</button>
+      <button class="scenario-btn" data-scenario="guest">🔔 Guests Arrive</button>
+      <button class="scenario-btn" data-scenario="aqi">💨 AQI Spike</button>
+      <button class="scenario-btn" data-scenario="iron">🔥 Iron Left On</button>
+      <button class="scenario-btn" data-scenario="cough">🤒 Night Cough</button>
+      <button class="scenario-btn" data-scenario="voice">🗣️ Voice Moments</button>
+    </nav>
+
+    <!-- ─── Main grid ───────────────────────────────────────────── -->
+    <main class="sense-grid">
+
+      <!-- Left: Alexa's diary -->
+      <div class="col col-left">
+        <section id="feed-panel" class="card sense-panel"></section>
+      </div>
+
+      <!-- Center: the 3D house + vitals -->
+      <div class="col col-mid">
+        <div class="house-wrap card">
+          <div id="house-canvas"></div>
+          <span class="house-hint">🖱️ drag to look around</span>
+          <div id="wave-strip" class="wave-strip"></div>
+          <!-- Alexa announcement bubble -->
+          <div id="alexa-toast" class="alexa-toast">
+            <div class="alexa-ring"><span></span></div>
+            <div class="alexa-toast-body">
+              <div id="alexa-toast-text" class="alexa-toast-text"></div>
+              <div id="alexa-toast-target" class="alexa-toast-target"></div>
+            </div>
           </div>
         </div>
-        <div id="event-form"></div>
-        <div id="event-list"></div>
-        <button id="deploy-btn" class="btn-deploy">Deploy →</button>
+        <section id="vitals-panel" class="vitals"></section>
       </div>
-    </div>
 
-    <!-- Deployment Phase Panel -->
-    <div id="deployment-phase" class="phase-panel hidden">
-      <!-- Timeline Scrubber (bottom) -->
-      <div id="timeline-panel" class="glass-panel"></div>
-
-      <!-- Event Log Sidebar (right) -->
-      <div id="event-log-panel" class="glass-panel"></div>
-
-      <!-- Trust Gauges Overlay -->
-      <div id="trust-gauges" class="glass-panel"></div>
-    </div>
-
-    <!-- Reasoning Panel (Power Cut Overlay) -->
-    <div id="reasoning-panel" class="glass-panel hidden"></div>
-
-    <!-- Data Mode Toggle -->
-    <div id="data-toggle" class="glass-panel"></div>
+      <!-- Right: family -->
+      <div class="col col-right">
+        <section id="voice-panel" class="card sense-panel"></section>
+        <section id="wellness-panel" class="card sense-panel"></section>
+      </div>
+    </main>
   </div>
 
-  <script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/sense/main.js"></script>
 </body>
 </html>
