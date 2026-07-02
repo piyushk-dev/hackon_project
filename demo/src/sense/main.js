@@ -24,7 +24,7 @@ import {
 import { House3D } from './house3d/House3D.js';
 import { Family3D } from './house3d/Family3D.js';
 import { WaveStrip } from './panels/WaveStrip.js';
-import { VitalsPanel } from './panels/VitalsPanel.js';
+import { StatusBar } from './panels/StatusBar.js';
 import { VoicePanel } from './panels/VoicePanel.js';
 import { WellnessPanel } from './panels/WellnessPanel.js';
 import { FeedPanel } from './panels/FeedPanel.js';
@@ -39,7 +39,7 @@ engine.visuals = house; // scenarios can trigger 3D-only effects (guests)
 
 // ─── Panels ──────────────────────────────────────────────────────────
 new WaveStrip(document.getElementById('wave-strip'), engine);
-new VitalsPanel(document.getElementById('vitals-panel'), engine);
+new StatusBar(document.getElementById('status-pills'), engine);
 new VoicePanel(document.getElementById('voice-panel'), engine);
 new WellnessPanel(document.getElementById('wellness-panel'), engine);
 new FeedPanel(document.getElementById('feed-panel'));
@@ -180,13 +180,31 @@ const SCENARIOS = {
   voice: voiceScenario,
 };
 
+const scenarioFab = document.getElementById('scenario-fab');
+const scenarioMenu = document.getElementById('scenario-menu');
+scenarioFab.addEventListener('click', () => {
+  scenarioMenu.classList.toggle('open');
+  scenarioFab.classList.toggle('open');
+});
+
 document.querySelectorAll('.scenario-btn').forEach((btn) => {
   btn.addEventListener('click', () => {
     const fn = SCENARIOS[btn.dataset.scenario];
     if (!fn) return;
     btn.classList.add('fired');
     setTimeout(() => btn.classList.remove('fired'), 1200);
+    scenarioMenu.classList.remove('open');
+    scenarioFab.classList.remove('open');
     fn(engine);
+  });
+});
+
+// ─── Dock collapse toggles ───────────────────────────────────────────
+document.querySelectorAll('.dock-toggle').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const dock = btn.closest('.dock');
+    dock.classList.toggle('collapsed');
+    btn.textContent = dock.classList.contains('collapsed') ? '+' : '–';
   });
 });
 

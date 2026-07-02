@@ -1,9 +1,9 @@
 /**
  * WellnessPanel — "Dadaji's day looks normal."
  *
- * Elder wellbeing inferred from the same device events everything else uses:
- * no camera, no wearable. Checkpoints tick green as the day's routine matches
- * his 30-day pattern; anomalies show as gentle attention states, never alarms.
+ * Collapsed by default to a single status line; click to expand the
+ * checkpoint timeline. Inferred from the same device events everything
+ * else uses — no camera, no wearable.
  */
 
 import { eventBus } from '../../utils/eventBus.js';
@@ -28,17 +28,24 @@ export class WellnessPanel {
 
   _render() {
     this.container.innerHTML = `
-      <div class="panel-head">
-        <div class="panel-title"><span class="panel-icon">👴</span> Dadaji's Day</div>
+      <div class="wellness-head" title="Click to expand Dadaji's routine timeline">
+        <span class="wellness-title">👴 Dadaji's Day</span>
         <span id="wellness-status" class="badge badge-ok">● Looks normal</span>
+        <span class="wellness-chevron">▾</span>
       </div>
-      <div class="wellness-note">Inferred from motion, kitchen & sound events — <b>no camera, no wearable</b></div>
-      <div id="checkpoints" class="checkpoints"></div>
-      <div id="wellness-foot" class="wellness-foot">Priya gets one line at 9 PM: <i>“Dadaji's day was completely normal.”</i></div>
+      <div class="wellness-body">
+        <div class="wellness-note">Inferred from motion, kitchen & sound events — <b>no camera, no wearable</b></div>
+        <div id="checkpoints" class="checkpoints"></div>
+        <div id="wellness-foot" class="wellness-foot">Priya gets one line at 9 PM: <i>“Dadaji's day was completely normal.”</i></div>
+      </div>
     `;
     this.statusEl = this.container.querySelector('#wellness-status');
     this.cpsEl = this.container.querySelector('#checkpoints');
     this.footEl = this.container.querySelector('#wellness-foot');
+
+    this.container.querySelector('.wellness-head').addEventListener('click', () => {
+      this.container.classList.toggle('collapsed');
+    });
 
     this._cpEls = {};
     for (const cp of WELLNESS_CHECKPOINTS) {
@@ -76,6 +83,8 @@ export class WellnessPanel {
       this.statusEl.textContent = '● Needs a look';
       this.statusEl.className = 'badge badge-warn';
       this.footEl.innerHTML = 'Priya\'s brief tonight: <i>“Dadaji coughed more than usual — maybe check on him.”</i>';
+      // Surface it: pop the panel open on an attention signal.
+      this.container.classList.remove('collapsed');
     } else if (vals.includes('skipped')) {
       this.statusEl.textContent = '● Normal, 1 change';
       this.statusEl.className = 'badge badge-ok';

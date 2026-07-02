@@ -12,14 +12,13 @@
 <body class="sense-page">
   <div id="sense-app">
 
-    <!-- ─── Header ──────────────────────────────────────────────── -->
-    <header class="sense-header card">
+    <!-- ─── Slim header ─────────────────────────────────────────── -->
+    <header class="sense-header">
       <div class="brand">
-        <a class="back-link" href="/classic.html" title="Open the classic 2D demo">2D</a>
         <span class="brand-mark">🏡</span>
         <div>
           <div class="brand-name">Ghar Sense</div>
-          <div class="brand-sub">Sharma Niwas · a home that thinks ahead</div>
+          <div class="brand-sub">Sharma Niwas</div>
         </div>
       </div>
 
@@ -37,59 +36,72 @@
       <div class="stats-block">
         <div class="stat">
           <div id="stat-savings" class="stat-value">₹12</div>
-          <div class="stat-label">saved today</div>
+          <div class="stat-label">saved</div>
         </div>
         <div class="stat">
           <div id="stat-actions" class="stat-value">3</div>
-          <div class="stat-label">things handled</div>
+          <div class="stat-label">handled</div>
         </div>
+        <a class="back-link" href="/classic.html" title="Open the classic 2D demo">2D</a>
       </div>
     </header>
 
-    <!-- ─── Scenario chips ──────────────────────────────────────── -->
-    <nav class="scenario-bar">
-      <span class="scenario-label">Make something happen →</span>
-      <button class="scenario-btn" data-scenario="cooker">🍲 Cooker Whistles</button>
-      <button class="scenario-btn" data-scenario="motor">🚱 Motor Dry-Run</button>
-      <button class="scenario-btn" data-scenario="powercut">⚡ Power Cut</button>
-      <button class="scenario-btn" data-scenario="pooja">🛕 Pooja Bell</button>
-      <button class="scenario-btn" data-scenario="guest">🔔 Guests Arrive</button>
-      <button class="scenario-btn" data-scenario="aqi">💨 AQI Spike</button>
-      <button class="scenario-btn" data-scenario="iron">🔥 Iron Left On</button>
-      <button class="scenario-btn" data-scenario="cough">🤒 Night Cough</button>
-      <button class="scenario-btn" data-scenario="voice">🗣️ Voice Moments</button>
-    </nav>
+    <!-- ─── The stage: 3D house + floating overlays ─────────────── -->
+    <main class="stage">
+      <div id="house-canvas"></div>
 
-    <!-- ─── Main grid ───────────────────────────────────────────── -->
-    <main class="sense-grid">
+      <!-- Alexa announcement bubble -->
+      <div id="alexa-toast" class="alexa-toast">
+        <div class="alexa-ring"><span></span></div>
+        <div class="alexa-toast-body">
+          <div id="alexa-toast-text" class="alexa-toast-text"></div>
+          <div id="alexa-toast-target" class="alexa-toast-target"></div>
+        </div>
+      </div>
 
       <!-- Left: Alexa's diary -->
-      <div class="col col-left">
-        <section id="feed-panel" class="card sense-panel"></section>
-      </div>
-
-      <!-- Center: the 3D house + vitals -->
-      <div class="col col-mid">
-        <div class="house-wrap card">
-          <div id="house-canvas"></div>
-          <span class="house-hint">🖱️ drag to look around</span>
-          <div id="wave-strip" class="wave-strip"></div>
-          <!-- Alexa announcement bubble -->
-          <div id="alexa-toast" class="alexa-toast">
-            <div class="alexa-ring"><span></span></div>
-            <div class="alexa-toast-body">
-              <div id="alexa-toast-text" class="alexa-toast-text"></div>
-              <div id="alexa-toast-target" class="alexa-toast-target"></div>
-            </div>
-          </div>
+      <aside class="dock dock-left" id="diary-dock">
+        <div class="dock-head">
+          <span class="dock-title">💭 Alexa's Diary</span>
+          <button class="dock-toggle" title="Collapse">–</button>
         </div>
-        <section id="vitals-panel" class="vitals"></section>
+        <div class="dock-body" id="feed-panel"></div>
+      </aside>
+
+      <!-- Right: family (asks, trust, wellness) -->
+      <aside class="dock dock-right" id="family-dock">
+        <div class="dock-head">
+          <span class="dock-title">🤝 Family & Trust</span>
+          <button class="dock-toggle" title="Collapse">–</button>
+        </div>
+        <div class="dock-body">
+          <div id="voice-panel"></div>
+          <div id="wellness-panel" class="wellness collapsed"></div>
+        </div>
+      </aside>
+
+      <!-- Bottom: waveform + vitals pills -->
+      <div id="status-bar">
+        <div id="wave-strip"></div>
+        <div id="status-pills"></div>
       </div>
 
-      <!-- Right: family -->
-      <div class="col col-right">
-        <section id="voice-panel" class="card sense-panel"></section>
-        <section id="wellness-panel" class="card sense-panel"></section>
+      <span class="house-hint">🖱️ drag to look around</span>
+
+      <!-- Scenario launcher -->
+      <div class="scenario-fab-wrap">
+        <div id="scenario-menu" class="scenario-menu">
+          <button class="scenario-btn" data-scenario="cooker">🍲 Cooker Whistles</button>
+          <button class="scenario-btn" data-scenario="motor">🚱 Motor Dry-Run</button>
+          <button class="scenario-btn" data-scenario="powercut">⚡ Power Cut</button>
+          <button class="scenario-btn" data-scenario="pooja">🛕 Pooja Bell</button>
+          <button class="scenario-btn" data-scenario="guest">🔔 Guests Arrive</button>
+          <button class="scenario-btn" data-scenario="aqi">💨 AQI Spike</button>
+          <button class="scenario-btn" data-scenario="iron">🔥 Iron Left On</button>
+          <button class="scenario-btn" data-scenario="cough">🤒 Night Cough</button>
+          <button class="scenario-btn" data-scenario="voice">🗣️ Voice Moments</button>
+        </div>
+        <button id="scenario-fab" class="scenario-fab">🎬 Scenarios</button>
       </div>
     </main>
   </div>
