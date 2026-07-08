@@ -1,19 +1,17 @@
 /**
- * StatusBar — the home's vitals as one slim row of pills.
- *
- * ⚡ kW (tariff dot) · 💧 tank % · 🫙 LPG days · 💨 AQI.
- * The LPG pill turns saffron when low — clicking it books the refill.
- * A blinking GRID DOWN pill appears during power cuts.
+ * StatusBar — the home's vitals as one slim row of pills, SVG-iconed.
+ * Energy (live kW + tariff dot) · water tank % · LPG days · AQI.
  */
 
 import { eventBus } from '../../utils/eventBus.js';
 import { SENSE_EVENTS } from '../SenseEngine.js';
+import { icon } from '../icons.js';
 
 function aqiColor(aqi) {
-  if (aqi <= 100) return '#6A994E';
-  if (aqi <= 200) return '#E8A013';
-  if (aqi <= 300) return '#E8890C';
-  return '#CE4A3B';
+  if (aqi <= 100) return '#557347';
+  if (aqi <= 200) return '#B0741F';
+  if (aqi <= 300) return '#C2410C';
+  return '#B03A2E';
 }
 
 export class StatusBar {
@@ -28,18 +26,18 @@ export class StatusBar {
 
   _render() {
     this.container.innerHTML = `
-      <span class="pill pill-grid hidden" id="pill-grid">⚡ GRID DOWN · INVERTER</span>
+      <span class="pill pill-grid hidden" id="pill-grid">${icon('zap')} Grid down · inverter</span>
       <span class="pill" title="Live whole-home load — one clamp on the mains (NILM)">
-        ⚡ <b id="kw-now">0.00</b> kW <i id="tariff-dot" class="dot"></i>
+        ${icon('zap')} <b id="kw-now">0.00</b><span class="pill-unit">kW</span> <i id="tariff-dot" class="dot"></i>
       </span>
-      <span class="pill" id="pill-water" title="Water tank — ultrasonic level sensor">
-        💧 <b id="water-pct">—</b>% <i id="motor-dot" class="dot dot-live hidden"></i>
+      <span class="pill" title="Water tank — ultrasonic level sensor">
+        ${icon('droplet')} <b id="water-pct">—</b><span class="pill-unit">%</span> <i id="motor-dot" class="dot dot-live hidden"></i>
       </span>
       <span class="pill" id="pill-lpg" title="LPG cylinder — weight pad under the cylinder">
-        🫙 <b id="lpg-days">—</b> days
+        ${icon('cylinder')} <b id="lpg-days">—</b><span class="pill-unit">days</span>
       </span>
       <span class="pill" title="PM2.5 — balcony air sensor">
-        💨 <b id="aqi-num">—</b>
+        ${icon('wind')} <b id="aqi-num">—</b><span class="pill-unit">AQI</span>
       </span>
     `;
     this.gridPill = this.container.querySelector('#pill-grid');
@@ -55,8 +53,8 @@ export class StatusBar {
       if (!this.lpgPill.classList.contains('pill-warn') || this._booked) return;
       this._booked = true;
       this.lpgPill.classList.remove('pill-warn');
-      this.lpgPill.innerHTML = '🫙 ✅ refill booked';
-      this.engine.feed('ACT', '📦', 'LPG refill booked via Amazon', 'Weight pad predicted empty in a week — slot: tomorrow 10 AM–1 PM');
+      this.lpgPill.innerHTML = `${icon('cylinder')} refill booked`;
+      this.engine.feed('ACT', '', 'LPG refill booked via Amazon', 'Weight pad predicted empty in a week — slot: tomorrow 10 AM–1 PM');
     });
   }
 

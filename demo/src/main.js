@@ -5,8 +5,8 @@
  * Requirements: 3.3, 7.1, 8.2
  */
 
-// ─── Scene Module (2D Floor Plan) ────────────────────────────────
-import { FloorPlan2D } from './scene/FloorPlan2D.js';
+// ─── Scene Module (Isometric Dollhouse Stage) ────────────────────
+import { IsoHouse } from './scene/IsoHouse.js';
 
 // ─── Simulation Modules ──────────────────────────────────────────
 import { SimulationEngine } from './simulation/SimulationEngine.js';
@@ -38,8 +38,8 @@ const simulationEngine = new SimulationEngine();
 const stateStore = new StateStore();
 const dataLayer = new DataLayer();
 
-// --- 2D Floor Plan setup ---
-const floorPlan = new FloorPlan2D(document.getElementById('3d-container'));
+// --- Isometric house stage (same interface as the old FloorPlan2D) ---
+const floorPlan = new IsoHouse(document.getElementById('3d-container'));
 
 // --- UI setup ---
 const uiManager = new UIManager(stateStore, simulationEngine);
@@ -256,10 +256,10 @@ if (powerCutBtn) {
         setTimeout(() => {
           // Render the explanation and reasoning chain in the ReasoningPanel
           const reasoningContent = `
-            <h3>⚡ Power Cut — Alexa's Reasoning (Live)</h3>
+            <h3>Power Cut — Alexa's Reasoning (Live)</h3>
             <div class="reasoning-steps">
-              <p>💬 <strong>Explanation:</strong> ${response.explanation || 'Analyzing situation...'}</p>
-              ${response.reasoning_chain ? `<p>🧠 <strong>Reasoning:</strong> ${response.reasoning_chain}</p>` : ''}
+              <p><strong>Explanation:</strong> ${response.explanation || 'Analyzing situation...'}</p>
+              ${response.reasoning_chain ? `<p><strong>Reasoning:</strong> ${response.reasoning_chain}</p>` : ''}
             </div>
           `;
           reasoningPanel.show(reasoningContent);

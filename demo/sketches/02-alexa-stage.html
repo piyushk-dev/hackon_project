@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sketch 02 — The Alexa Stage (3 moods)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+  section {
+    height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    position: relative; padding: 0 8vw;
+  }
+  .variant-tag {
+    position: absolute; top: 22px; right: 26px;
+    font: 600 11px 'Inter'; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 6px 12px; border-radius: 20px; border: 1px solid;
+  }
+  .kicker {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
+    margin-bottom: 26px;
+  }
+  h1 {
+    font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(40px, 5.2vw, 68px);
+    line-height: 1.08; letter-spacing: 0.002em; max-width: 17ch;
+  }
+  .sub { font-size: 17px; font-weight: 400; margin-top: 22px; max-width: 52ch; line-height: 1.65; }
+
+  /* Orb */
+  .orb-wrap { position: relative; width: 96px; height: 96px; margin-bottom: 44px; }
+  .orb {
+    position: absolute; inset: 0; border-radius: 50%;
+    animation: float 5s ease-in-out infinite;
+  }
+  .ring { position: absolute; inset: -14px; border-radius: 50%; border: 1.5px solid; opacity: 0; animation: ping 2.6s ease-out infinite; }
+  .ring:nth-child(3) { animation-delay: 1.3s; }
+  @keyframes ping { 0% { transform: scale(.72); opacity: .8; } 100% { transform: scale(1.45); opacity: 0; } }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+
+  /* ── Variant A · Paper ─────────────────────────── */
+  .paper { background: #F4F1EA; color: #23201A; }
+  .paper .variant-tag { color: #8A8272; border-color: rgba(35,32,26,.18); }
+  .paper .kicker { color: #0E7C72; }
+  .paper .sub { color: #8A8272; }
+  .paper .orb {
+    background: radial-gradient(circle at 50% 30%, #d9f4f6 0%, #64c3ce 52%, #11758a 100%);
+    box-shadow: 0 0 0 1px rgba(42,168,184,.3), 0 18px 50px rgba(17,117,138,.35);
+  }
+  .paper .ring { border-color: rgba(17,117,138,.4); }
+
+  /* ── Variant B · Cinema ────────────────────────── */
+  .cinema { background: radial-gradient(1200px 700px at 50% 115%, #14343c 0%, #0b1216 55%, #080c0f 100%); color: #F2EEE4; }
+  .cinema .variant-tag { color: #7d8a8c; border-color: rgba(242,238,228,.2); }
+  .cinema .kicker { color: #35C6D4; }
+  .cinema .sub { color: #9aa5a3; }
+  .cinema .orb {
+    background: radial-gradient(circle at 50% 30%, #d7fbff 0%, #3fc4d6 48%, #0a5e74 100%);
+    box-shadow: 0 0 60px rgba(53,198,212,.55), 0 0 140px rgba(53,198,212,.25);
+  }
+  .cinema .ring { border-color: rgba(53,198,212,.5); }
+
+  /* ── Variant C · Dawn ──────────────────────────── */
+  .dawn { background: linear-gradient(180deg, #FBEEDB 0%, #F6DDC2 55%, #EFCDA8 100%); color: #35281A; }
+  .dawn .variant-tag { color: #A08363; border-color: rgba(53,40,26,.2); }
+  .dawn .kicker { color: #B4610E; }
+  .dawn .sub { color: #97815F; }
+  .dawn .orb {
+    background: radial-gradient(circle at 50% 30%, #eafcfd 0%, #6fc6d0 50%, #15707f 100%);
+    box-shadow: 0 0 0 1px rgba(21,112,127,.25), 0 22px 60px rgba(180,97,14,.35);
+  }
+  .dawn .ring { border-color: rgba(21,112,127,.45); }
+
+  .hintline { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); font: 500 11px 'Inter'; opacity: .45; letter-spacing: .08em; }
+</style>
+</head>
+<body>
+
+  <section class="paper">
+    <span class="variant-tag">A · Paper</span>
+    <div class="orb-wrap"><span class="ring"></span><div class="orb"></div><span class="ring"></span></div>
+    <div class="kicker">Ghar Sense · Chapter One</div>
+    <h1>What if Alexa knew your home's rhythm?</h1>
+    <p class="sub">This is Sharma Niwas. Over the next minute, watch Alexa learn how one family lives — and start thinking ahead of them.</p>
+    <span class="hintline">SCROLL FOR MOODS ↓</span>
+  </section>
+
+  <section class="cinema">
+    <span class="variant-tag">B · Cinema</span>
+    <div class="orb-wrap"><span class="ring"></span><div class="orb"></div><span class="ring"></span></div>
+    <div class="kicker">Ghar Sense · Chapter One</div>
+    <h1>What if Alexa knew your home's rhythm?</h1>
+    <p class="sub">This is Sharma Niwas. Over the next minute, watch Alexa learn how one family lives — and start thinking ahead of them.</p>
+  </section>
+
+  <section class="dawn">
+    <span class="variant-tag">C · Dawn</span>
+    <div class="orb-wrap"><span class="ring"></span><div class="orb"></div><span class="ring"></span></div>
+    <div class="kicker">Ghar Sense · Chapter One</div>
+    <h1>What if Alexa knew your home's rhythm?</h1>
+    <p class="sub">This is Sharma Niwas. Over the next minute, watch Alexa learn how one family lives — and start thinking ahead of them.</p>
+  </section>
+
+</body>
+</html>

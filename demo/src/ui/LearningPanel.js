@@ -124,7 +124,7 @@ export class LearningPanel {
       </div>
 
       <div class="csv-upload-section">
-        <h4>📂 Upload last week's activity log</h4>
+        <h4>Upload last week's activity log</h4>
         <p class="csv-help">
           Alexa sends your household's previous-week routine to Amazon Bedrock to
           predict today's events and decide what to do <em>ahead of time</em>.
@@ -324,7 +324,7 @@ export class LearningPanel {
       ? 'Amazon Bedrock (Claude)'
       : (usedBackend ? 'the statistical model' : 'on-device analysis');
     this._setStatus(
-      `✅ Learned <strong>${predictions.length}</strong> routines from ` +
+      `Learned <strong>${predictions.length}</strong> routines from ` +
       `<strong>${result.days_analyzed || '?'}</strong> days of history — powered by ${engine}. ` +
       `Press <strong>Deploy</strong> to watch Alexa think ahead.`,
       'success'

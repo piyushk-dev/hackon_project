@@ -1,20 +1,20 @@
 /**
- * FeedPanel — Alexa's diary: the live SENSE → THINK → ACT → EXPLAIN story.
- *
- * Rendered as a light timeline (dot + rail), not boxed cards — the dock
- * header carries the title, entries carry only what matters.
+ * FeedPanel — Alexa's diary: the live SENSE → THINK → ACT → EXPLAIN story,
+ * rendered as a quiet timeline. Stage is a small colored label; content is
+ * typography, not decoration.
  */
 
 import { eventBus } from '../../utils/eventBus.js';
 import { SENSE_EVENTS } from '../SenseEngine.js';
+import { stripEmoji } from '../icons.js';
 
 const MAX_ENTRIES = 40;
 
-const STAGE_META = {
-  SENSE:   { color: '#0E9594' },
-  THINK:   { color: '#7B5EA7' },
-  ACT:     { color: '#6A994E' },
-  EXPLAIN: { color: '#E8890C' },
+const STAGE_COLORS = {
+  SENSE:   '#0E7C72',
+  THINK:   '#6D5A96',
+  ACT:     '#557347',
+  EXPLAIN: '#B0741F',
 };
 
 export class FeedPanel {
@@ -26,17 +26,17 @@ export class FeedPanel {
   }
 
   _add(e) {
-    const meta = STAGE_META[e.stage] || { color: '#8A7B68' };
+    const color = STAGE_COLORS[e.stage] || '#857D6F';
     const el = document.createElement('div');
     el.className = 'feed-entry';
-    el.style.setProperty('--stage-color', meta.color);
+    el.style.setProperty('--stage-color', color);
     el.innerHTML = `
       <div class="feed-top">
-        <span class="feed-stage" style="color:${meta.color}">${e.stage}</span>
+        <span class="feed-stage" style="color:${color}">${e.stage}</span>
         <span class="feed-time">${e.time}</span>
       </div>
-      <div class="feed-title">${e.icon} ${e.title}</div>
-      <div class="feed-detail">${e.detail}</div>
+      <div class="feed-title">${stripEmoji(e.title)}</div>
+      <div class="feed-detail">${stripEmoji(e.detail)}</div>
     `;
     this.feedEl.prepend(el);
     requestAnimationFrame(() => el.classList.add('in'));

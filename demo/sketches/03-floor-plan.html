@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sketch 03 — The Home (flat floor plan)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:#F4F1EA; --ink:#23201A; --muted:#8A8272; --hairline:rgba(35,32,26,.12);
+    --teal:#0E7C72; --amber:#C77414; --alexa:#1A93A6;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); height:100vh; overflow:hidden;
+         display:flex; flex-direction:column; -webkit-font-smoothing:antialiased; }
+  .head { padding:40px 64px 6px; display:flex; justify-content:space-between; align-items:flex-end; }
+  .kicker { font-size:11px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--teal); margin-bottom:10px; }
+  h1 { font-family:'Fraunces',serif; font-weight:600; font-size:40px; line-height:1.05; }
+  .clock { font-family:'Fraunces',serif; font-size:30px; font-weight:600; color:var(--amber); }
+  .clock small { display:block; font:600 10px 'Inter'; letter-spacing:.14em; color:var(--muted); text-align:right; margin-top:2px; }
+  .stage { flex:1; display:flex; align-items:center; justify-content:center; min-height:0; padding:8px 40px 30px; }
+  svg { max-height:100%; }
+
+  .room { fill-opacity:.5; stroke:rgba(35,32,26,.22); stroke-width:1.4; rx:10; }
+  .rlabel { font:700 12.5px 'Inter'; letter-spacing:.12em; fill:#6C6455; }
+  .rsub { font:500 10px 'Inter'; fill:#A29A88; letter-spacing:.04em; }
+  .wall { stroke:rgba(35,32,26,.4); stroke-width:2.6; stroke-linecap:round; }
+
+  .person { font:700 11px 'Inter'; fill:#fff; text-anchor:middle; }
+  .pname { font:600 10px 'Inter'; fill:var(--muted); text-anchor:middle; }
+
+  .pulse { animation:pulse 2s ease-out infinite; transform-origin:center; transform-box:fill-box; }
+  @keyframes pulse { 0%{opacity:.85; transform:scale(.6);} 100%{opacity:0; transform:scale(2.6);} }
+  .breathe { animation:breathe 2.6s ease-in-out infinite; transform-origin:center; transform-box:fill-box; }
+  @keyframes breathe { 0%,100%{transform:scale(1);} 50%{transform:scale(1.18);} }
+
+  .callout {
+    position:absolute; width:250px; background:#fff; border:1px solid var(--hairline); border-radius:13px;
+    box-shadow:0 3px 8px rgba(35,28,15,.06), 0 16px 40px rgba(35,28,15,.12); padding:12px 14px;
+  }
+  .co-kicker { font:700 9.5px 'Inter'; letter-spacing:.12em; text-transform:uppercase; color:var(--amber); margin-bottom:4px; }
+  .co-title { font:600 13.5px 'Inter'; line-height:1.4; }
+  .co-sub { font:400 11px 'Inter'; color:var(--muted); line-height:1.5; margin-top:3px; }
+  .wrap { position:relative; }
+  .tag { position:fixed; top:18px; right:28px; font:600 11px 'Inter'; color:var(--muted); letter-spacing:.08em; }
+</style>
+</head>
+<body>
+  <div class="head">
+    <div>
+      <div class="kicker">Chapter 05 · A morning at home</div>
+      <h1>The house wakes before they do.</h1>
+    </div>
+    <div class="clock">6:25 AM<small>DAY 30</small></div>
+  </div>
+
+  <div class="stage">
+    <div class="wrap">
+      <svg width="960" height="560" viewBox="0 0 960 560">
+        <!-- house outline -->
+        <rect x="60" y="40" width="840" height="440" rx="18" fill="#FFFDF8" stroke="rgba(35,32,26,.45)" stroke-width="3"/>
+
+        <!-- rooms: back row -->
+        <rect class="room" x="78"  y="58"  width="255" height="180" fill="#CFA0A4"/>
+        <rect class="room" x="349" y="58"  width="230" height="180" fill="#A8B98F"/>
+        <rect class="room" x="595" y="58"  width="287" height="180" fill="#94AEC9"/>
+        <!-- rooms: front row -->
+        <rect class="room" x="78"  y="292" width="360" height="170" fill="#86ACA8"/>
+        <rect class="room" x="454" y="292" width="428" height="170" fill="#D6B56A"/>
+
+        <!-- labels -->
+        <text class="rlabel" x="96" y="84">MASTER BEDROOM</text>
+        <text class="rlabel" x="367" y="84">DADAJI'S ROOM</text>
+        <text class="rlabel" x="613" y="84">STUDY</text>
+        <text class="rlabel" x="96" y="318">LIVING ROOM</text>
+        <text class="rlabel" x="472" y="318">KITCHEN</text>
+
+        <!-- corridor label -->
+        <text class="rsub" x="480" y="271" text-anchor="middle" letter-spacing=".2em">CORRIDOR</text>
+
+        <!-- entrance -->
+        <line class="wall" x1="430" y1="480" x2="530" y2="480" stroke="#F4F1EA"/>
+        <text class="rsub" x="480" y="507" text-anchor="middle">ENTRANCE</text>
+        <circle cx="448" cy="480" r="3" fill="#D9912B"/><circle cx="464" cy="484" r="3" fill="#C06A1D"/>
+        <circle cx="480" cy="486" r="3" fill="#D9912B"/><circle cx="496" cy="484" r="3" fill="#C06A1D"/>
+        <circle cx="512" cy="480" r="3" fill="#D9912B"/>
+
+        <!-- devices -->
+        <!-- geyser: THE live moment -->
+        <g>
+          <circle class="pulse" cx="118" cy="210" r="14" fill="none" stroke="#C77414" stroke-width="2.5"/>
+          <circle cx="118" cy="210" r="9" fill="#C77414"/>
+          <text class="rsub" x="138" y="214">geyser · ON</text>
+        </g>
+        <!-- echoes (Alexa presence, breathing cyan) -->
+        <g><circle class="breathe" cx="410" cy="440" r="6.5" fill="#1A93A6"/><text class="rsub" x="410" y="425" text-anchor="middle">echo</text></g>
+        <g><circle class="breathe" cx="558" cy="215" r="6.5" fill="#1A93A6"/><text class="rsub" x="558" y="200" text-anchor="middle">echo</text></g>
+        <g><circle class="breathe" cx="858" cy="215" r="6.5" fill="#1A93A6"/><text class="rsub" x="838" y="200" text-anchor="middle">echo</text></g>
+        <!-- other devices, quiet -->
+        <circle cx="868" cy="310" r="6" fill="#9C5460"/><text class="rsub" x="850" y="298">fridge</text>
+        <circle cx="700" cy="310" r="6" fill="#6C6455"/><text class="rsub" x="700" y="298" text-anchor="middle">cooker</text>
+        <circle cx="98" cy="368" r="6" fill="#4F6B84"/><text class="rsub" x="116" y="372">tv</text>
+        <circle cx="770" cy="82" r="0"/>
+
+        <!-- family -->
+        <g><circle cx="250" cy="160" r="12" fill="#3E7CB1"/><text class="person" x="250" y="164">R</text><text class="pname" x="250" y="188">Rajesh · asleep</text></g>
+        <g><circle cx="290" cy="150" r="12" fill="#D64580"/><text class="person" x="290" y="154">P</text><text class="pname" x="290" y="128">Priya · asleep</text></g>
+        <g><circle cx="470" cy="170" r="12" fill="#C75B39"/><text class="person" x="470" y="174">D</text><text class="pname" x="470" y="198">Dadaji · waking up</text></g>
+        <g><circle cx="820" cy="140" r="12" fill="#0E9594"/><text class="person" x="820" y="144">A</text><text class="pname" x="820" y="168">Arjun · asleep</text></g>
+
+        <!-- water tank chip, outside top-right -->
+        <g>
+          <rect x="770" y="8" width="128" height="24" rx="12" fill="#FFFDF8" stroke="rgba(35,32,26,.18)"/>
+          <circle cx="786" cy="20" r="5" fill="#3B98BF"/>
+          <text class="rsub" x="798" y="24" style="font-weight:600">tank 62% · filling</text>
+        </g>
+      </svg>
+
+      <!-- Alexa's action callout -->
+      <div class="callout" style="left:-272px; top:148px;">
+        <div class="co-kicker">Alexa · acting on a learned pattern</div>
+        <div class="co-title">Water warming for Dadaji's bath</div>
+        <div class="co-sub">Bath at 6:45, learned over 14 days · heating now costs ₹3 less on off-peak tariff</div>
+      </div>
+    </div>
+  </div>
+  <div class="tag">SKETCH 03</div>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sketch 04 — Day 1 vs Day 30</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:#F4F1EA; --ink:#23201A; --muted:#8A8272; --hairline:rgba(35,32,26,.12);
+    --teal:#0E7C72; --teal-deep:#0A5A53; --amber:#C77414; --bad:#B03A2E;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); height:100vh; overflow:hidden;
+         display:flex; flex-direction:column; -webkit-font-smoothing:antialiased; }
+  .head { padding:42px 64px 12px; text-align:center; }
+  .kicker { font-size:11px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--teal); margin-bottom:10px; }
+  h1 { font-family:'Fraunces',serif; font-weight:600; font-size:42px; line-height:1.05; }
+
+  .split { flex:1; display:grid; grid-template-columns:1fr 1px 1fr; gap:0 48px; padding:16px 9vw 30px; min-height:0; }
+  .divider { background:var(--hairline); }
+  .col-head { display:flex; align-items:baseline; gap:12px; margin-bottom:18px; }
+  .day-num { font-family:'Fraunces',serif; font-size:30px; font-weight:600; }
+  .day-note { font-size:12px; color:var(--muted); font-weight:500; }
+  .col-day1 .day-num { color:var(--bad); }
+  .col-day30 .day-num { color:var(--teal-deep); }
+
+  .events { display:flex; flex-direction:column; gap:11px; }
+  .ev {
+    display:flex; align-items:center; gap:12px;
+    background:#fff; border:1px solid var(--hairline); border-radius:12px; padding:11px 14px;
+    opacity:0; transform:translateY(10px); transition:opacity .45s, transform .45s;
+  }
+  .ev.show { opacity:1; transform:none; }
+  .ev-time { font:600 11px 'Inter'; color:var(--muted); font-variant-numeric:tabular-nums; width:44px; flex:0 0 44px; }
+  .ev-text { font:500 13px 'Inter'; line-height:1.45; flex:1; }
+  .ev-text b { font-weight:700; }
+  .ev-badge { font:700 9px 'Inter'; letter-spacing:.1em; text-transform:uppercase; padding:3px 8px; border-radius:10px; flex:0 0 auto; }
+
+  .col-day1 .ev { border-left:3px solid rgba(176,58,46,.5); }
+  .col-day1 .ev-badge { color:var(--bad); background:rgba(176,58,46,.08); }
+  .col-day1 .ev.shake.show { animation:shake .4s ease 1; }
+  @keyframes shake { 25%{transform:translateX(-3px);} 75%{transform:translateX(3px);} }
+
+  .col-day30 .ev { border-left:3px solid rgba(14,124,114,.55); }
+  .col-day30 .ev-badge { color:var(--teal-deep); background:rgba(14,124,114,.09); }
+
+  .tally { margin-top:20px; font-family:'Fraunces',serif; font-size:21px; font-weight:600; opacity:0; transition:opacity .6s; }
+  .tally.show { opacity:1; }
+  .col-day1 .tally { color:var(--bad); }
+  .col-day30 .tally { color:var(--teal-deep); }
+  .tally small { display:block; font:600 10.5px 'Inter'; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+
+  .replay { position:fixed; bottom:26px; right:28px; font:600 12px 'Inter'; color:var(--muted);
+    background:#fff; border:1px solid var(--hairline); border-radius:9px; padding:8px 14px; cursor:pointer; }
+  .replay:hover { color:var(--teal); border-color:var(--teal); }
+  .tag { position:fixed; top:18px; right:28px; font:600 11px 'Inter'; color:var(--muted); letter-spacing:.08em; }
+</style>
+</head>
+<body>
+  <div class="head">
+    <div class="kicker">Chapter 04 · Thirty days later</div>
+    <h1>The same morning, 30 days apart.</h1>
+  </div>
+
+  <div class="split">
+    <div class="col-day1">
+      <div class="col-head"><span class="day-num">Day 1</span><span class="day-note">Alexa is only watching</span></div>
+      <div class="events" id="ev1"></div>
+      <div class="tally" id="t1">0 things handled<small>everyone did everything themselves</small></div>
+    </div>
+    <div class="divider"></div>
+    <div class="col-day30">
+      <div class="col-head"><span class="day-num">Day 30</span><span class="day-note">the family is still asleep</span></div>
+      <div class="events" id="ev30"></div>
+      <div class="tally" id="t30">7 things handled before 7 AM<small>zero commands spoken</small></div>
+    </div>
+  </div>
+
+  <button class="replay" onclick="run()">↻ replay</button>
+  <div class="tag">SKETCH 04</div>
+
+<script>
+const DAY1 = [
+  { t:'5:55', text:'Priya\'s alarm — <b>only to switch the motor on</b>', badge:'manual', shake:false },
+  { t:'6:20', text:'Tank overflows on the terrace, again', badge:'wasted', shake:true },
+  { t:'6:40', text:'Dadaji waits — <b>geyser was never switched on</b>', badge:'cold', shake:true },
+  { t:'7:05', text:'Third whistle missed from the balcony — <b>dal overcooked</b>', badge:'missed', shake:true },
+  { t:'7:30', text:'AC ran all night in an empty living room', badge:'₹ lost', shake:false },
+];
+const DAY30 = [
+  { t:'6:15', text:'Motor on — <b>supply window</b>, learned', badge:'auto' },
+  { t:'6:24', text:'Tank at 96% — motor off. <b>Nothing overflows</b>', badge:'auto' },
+  { t:'6:25', text:'Water warming — <b>bath at 6:45</b>, learned', badge:'auto' },
+  { t:'6:45', text:'Dadaji\'s bath — warm, on time', badge:'ready' },
+  { t:'7:02', text:'“Priya, <b>teesri seeti</b> ho gayi” — announced', badge:'heard' },
+  { t:'7:10', text:'Quiet mode armed for the 8 AM pooja', badge:'auto' },
+];
+
+function fill(id, rows, isDay1) {
+  const box = document.getElementById(id);
+  box.innerHTML = '';
+  return rows.map((r) => {
+    const el = document.createElement('div');
+    el.className = 'ev' + (r.shake ? ' shake' : '');
+    el.innerHTML = `<span class="ev-time">${r.t}</span><span class="ev-text">${r.text}</span><span class="ev-badge">${r.badge}</span>`;
+    box.appendChild(el);
+    return el;
+  });
+}
+
+let timers = [];
+function run() {
+  timers.forEach(clearTimeout); timers = [];
+  document.getElementById('t1').classList.remove('show');
+  document.getElementById('t30').classList.remove('show');
+  const e1 = fill('ev1', DAY1, true);
+  const e30 = fill('ev30', DAY30, false);
+  const n = Math.max(e1.length, e30.length);
+  for (let i = 0; i < n; i++) {
+    timers.push(setTimeout(() => {
+      if (e1[i]) e1[i].classList.add('show');
+      if (e30[i]) e30[i].classList.add('show');
+    }, 600 + i * 620));
+  }
+  timers.push(setTimeout(() => {
+    document.getElementById('t1').classList.add('show');
+    document.getElementById('t30').classList.add('show');
+  }, 600 + n * 620 + 400));
+}
+run();
+</script>
+</body>
+</html>

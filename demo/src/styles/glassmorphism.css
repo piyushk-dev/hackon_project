@@ -1,97 +1,91 @@
 /* ============================================
-   Glassmorphism Styles - Alexa Thinks Ahead
+   Card Styles — Alexa Thinks Ahead
+   (formerly glassmorphism; now flat white cards)
    ============================================ */
 
-/* Glass Panel - Base glassmorphism component */
+/* Panel card — flat white, 1px border, whisper of a shadow */
 .glass-panel {
-  backdrop-filter: blur(var(--blur-amount, 12px));
-  -webkit-backdrop-filter: blur(var(--blur-amount, 12px));
-  background: var(--color-bg-panel, rgba(13, 17, 23, 0.7));
-  border: 1px solid var(--color-border, rgba(0, 202, 255, 0.15));
+  background: var(--color-bg-panel, #FFFFFF);
+  border: 1px solid var(--color-border, #E3E1DC);
   border-radius: var(--border-radius, 12px);
   padding: 1.5rem;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: 0 1px 2px rgba(31, 41, 51, 0.06);
 }
 
-/* Accent Button - Gradient Alexa blue */
+/* Accent Button — solid blue */
 .btn-accent {
-  background: linear-gradient(135deg, #00CAFF 0%, #0091B3 100%);
+  background: var(--color-accent, #2E7CF6);
   color: #ffffff;
   border: none;
   border-radius: 8px;
   padding: 0.625rem 1.25rem;
   font-family: var(--font-family, 'Inter', sans-serif);
-  font-size: 0.875rem;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: background 0.2s ease-out, box-shadow 0.2s ease-out;
   outline: none;
 }
 
 .btn-accent:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(0, 202, 255, 0.3);
+  background: #2368D9;
 }
 
 .btn-accent:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(0, 202, 255, 0.2);
+  background: #1D5CC4;
 }
 
-/* Deploy Button - Full width, larger, gradient with border */
+/* Deploy Button — full width, solid blue */
 .btn-deploy {
   width: 100%;
   font-family: var(--font-family, 'Inter', sans-serif);
-  font-size: 1.1rem;
+  font-size: 16px;
   font-weight: 600;
   padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, #00CAFF 0%, #0077A8 100%);
+  background: var(--color-accent, #2E7CF6);
   color: #ffffff;
-  border: 1px solid rgba(0, 202, 255, 0.4);
+  border: none;
   border-radius: 10px;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: background 0.2s ease-out, box-shadow 0.2s ease-out;
   outline: none;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
 
 .btn-deploy:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(0, 202, 255, 0.35);
-  border-color: rgba(0, 202, 255, 0.6);
+  background: #2368D9;
+  box-shadow: 0 1px 2px rgba(31, 41, 51, 0.12);
 }
 
 .btn-deploy:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 12px rgba(0, 202, 255, 0.2);
+  background: #1D5CC4;
+  box-shadow: none;
 }
 
-/* Icon Button - Minimal style */
+/* Icon Button — minimal outline */
 .btn-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 2rem;
   height: 2rem;
-  background: transparent;
-  border: 1px solid var(--color-border, rgba(0, 202, 255, 0.15));
+  background: #FFFFFF;
+  border: 1px solid var(--color-border, #E3E1DC);
   border-radius: 6px;
-  color: var(--color-text-muted, #8b949e);
+  color: var(--color-text-muted, #7B8794);
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-  font-size: 0.875rem;
+  transition: background 0.2s ease-out, color 0.2s ease-out, border-color 0.2s ease-out;
+  font-size: 13px;
   outline: none;
   padding: 0;
 }
 
 .btn-icon:hover {
-  background: rgba(0, 202, 255, 0.1);
-  color: var(--color-accent, #00CAFF);
-  border-color: rgba(0, 202, 255, 0.3);
+  background: #F7F6F3;
+  color: var(--color-accent, #2E7CF6);
+  border-color: var(--color-accent, #2E7CF6);
 }
 
 .btn-icon:active {
-  background: rgba(0, 202, 255, 0.15);
+  background: #EFEDE8;
 }

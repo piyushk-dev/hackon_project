@@ -1,10 +1,10 @@
 /**
- * FloorPlan2D — Pure CSS/DOM-based 2D cutaway house for the Sharma family.
- * Replaces the Three.js 3D scene (SceneManager, HouseBuilder, DeviceIndicators,
- * LightingSystem, AvatarManager, SpeechBubble, Effects).
+ * FloorPlan2D — Flat 2D dollhouse cutaway of the Sharma family home.
+ * A clean architectural side-view illustration: flat vector rooms in a grid,
+ * warm light palette, no perspective or fake depth.
  *
  * Layout (cutaway):
- * ┌─────────────── roof shell ───────────────┐
+ * ┌─────────────── roof ─────────────────────┐
  * │ Master Bedroom │ Study Room │ Kitchen    │
  * ├───────────────┬┴────────────┼────────────┤
  * │ Living Room   │ Bath        │ Kids │Bal. │
@@ -13,39 +13,61 @@
 
 import { FAMILY_SCHEDULE } from '../data/FamilySchedule.js';
 
+// ─── Palette ─────────────────────────────────────────────────────
+// bg #F7F6F3 · walls #E3E1DC · ink #1F2933 · blue #2E7CF6 · amber #F5A623
+
 // ─── Room Layout (cutaway house percentages) ─────────────────────
 const ROOM_LAYOUT = {
-  master_bedroom: { top: 0, left: 0, width: 33, height: 42, name: 'Master Bedroom', color: '#1f2636' },
-  study_room: { top: 0, left: 33, width: 27, height: 42, name: 'Study Room', color: '#182a2f' },
-  kitchen: { top: 0, left: 60, width: 40, height: 42, name: 'Kitchen', color: '#262117' },
-  living_room: { top: 42, left: 0, width: 42, height: 58, name: 'Living Room', color: '#172432' },
-  bath: { top: 42, left: 42, width: 20, height: 58, name: 'Bath', color: '#122a30' },
-  kids_room: { top: 42, left: 62, width: 23, height: 58, name: 'Kids Room', color: '#232133' },
-  balcony: { top: 42, left: 85, width: 15, height: 58, name: 'Balcony', color: '#152522' },
+  master_bedroom: { top: 0, left: 0, width: 33, height: 42, name: 'Master Bedroom', color: '#EFECF6' },
+  study_room: { top: 0, left: 33, width: 27, height: 42, name: 'Study Room', color: '#EDF2EC' },
+  kitchen: { top: 0, left: 60, width: 40, height: 42, name: 'Kitchen', color: '#F7F1E3' },
+  living_room: { top: 42, left: 0, width: 42, height: 58, name: 'Living Room', color: '#EAF0F7' },
+  bath: { top: 42, left: 42, width: 20, height: 58, name: 'Bath', color: '#E8F3F2' },
+  kids_room: { top: 42, left: 62, width: 23, height: 58, name: 'Kids Room', color: '#F8EFE9' },
+  balcony: { top: 42, left: 85, width: 15, height: 58, name: 'Balcony', color: '#EBF3ED' },
 };
 
 // ─── Device Placements (% offsets within room) ───────────────────
 const DEVICE_PLACEMENTS = {
-  living_room_ac: { room: 'living_room', x: 85, y: 15, icon: '❄️', label: 'AC' },
-  smart_tv: { room: 'living_room', x: 22, y: 38, icon: '📺', label: 'TV' },
-  echo_living: { room: 'living_room', x: 62, y: 74, icon: '🔊', label: 'Echo' },
-  kitchen_hub: { room: 'kitchen', x: 70, y: 46, icon: '🍳', label: 'Hub' },
-  water_purifier: { room: 'kitchen', x: 25, y: 82, icon: '💧', label: 'Purifier' },
-  security_camera: { room: 'balcony', x: 55, y: 22, icon: '📷', label: 'Camera' },
-  smart_lock: { room: 'balcony', x: 50, y: 64, icon: '🔒', label: 'Lock' },
-  smart_geyser: { room: 'bath', x: 48, y: 42, icon: '🚿', label: 'Geyser' },
-  inverter_ups: { room: 'kitchen', x: 86, y: 82, icon: '🔋', label: 'Inverter' },
-  echo_study: { room: 'study_room', x: 60, y: 58, icon: '🔊', label: 'Echo' },
-  echo_kids: { room: 'kids_room', x: 54, y: 66, icon: '🔊', label: 'Echo' },
+  living_room_ac: { room: 'living_room', x: 85, y: 15, icon: 'ac', label: 'AC' },
+  smart_tv: { room: 'living_room', x: 22, y: 38, icon: 'tv', label: 'TV' },
+  echo_living: { room: 'living_room', x: 62, y: 74, icon: 'speaker', label: 'Echo' },
+  kitchen_hub: { room: 'kitchen', x: 70, y: 46, icon: 'stove', label: 'Hub' },
+  water_purifier: { room: 'kitchen', x: 25, y: 82, icon: 'droplet', label: 'Purifier' },
+  security_camera: { room: 'balcony', x: 55, y: 22, icon: 'camera', label: 'Camera' },
+  smart_lock: { room: 'balcony', x: 50, y: 64, icon: 'lock', label: 'Lock' },
+  smart_geyser: { room: 'bath', x: 48, y: 42, icon: 'heater', label: 'Geyser' },
+  inverter_ups: { room: 'kitchen', x: 86, y: 82, icon: 'battery', label: 'Inverter' },
+  echo_study: { room: 'study_room', x: 60, y: 58, icon: 'speaker', label: 'Echo' },
+  echo_kids: { room: 'kids_room', x: 54, y: 66, icon: 'speaker', label: 'Echo' },
   // Smart lights — one per room
-  smart_lights_living_room: { room: 'living_room', x: 50, y: 14, icon: '💡', label: 'Light' },
-  smart_lights_master_bedroom: { room: 'master_bedroom', x: 50, y: 16, icon: '💡', label: 'Light' },
-  smart_lights_kitchen: { room: 'kitchen', x: 55, y: 16, icon: '💡', label: 'Light' },
-  smart_lights_bath: { room: 'bath', x: 26, y: 16, icon: '💡', label: 'Light' },
-  smart_lights_study_room: { room: 'study_room', x: 50, y: 16, icon: '💡', label: 'Light' },
-  smart_lights_kids_room: { room: 'kids_room', x: 50, y: 16, icon: '💡', label: 'Light' },
-  smart_lights_balcony: { room: 'balcony', x: 50, y: 40, icon: '💡', label: 'Light' },
+  smart_lights_living_room: { room: 'living_room', x: 50, y: 14, icon: 'bulb', label: 'Light' },
+  smart_lights_master_bedroom: { room: 'master_bedroom', x: 50, y: 16, icon: 'bulb', label: 'Light' },
+  smart_lights_kitchen: { room: 'kitchen', x: 55, y: 16, icon: 'bulb', label: 'Light' },
+  smart_lights_bath: { room: 'bath', x: 26, y: 16, icon: 'bulb', label: 'Light' },
+  smart_lights_study_room: { room: 'study_room', x: 50, y: 16, icon: 'bulb', label: 'Light' },
+  smart_lights_kids_room: { room: 'kids_room', x: 50, y: 16, icon: 'bulb', label: 'Light' },
+  smart_lights_balcony: { room: 'balcony', x: 50, y: 40, icon: 'bulb', label: 'Light' },
 };
+
+// ─── Flat SVG icons (16px, stroke, currentColor) ─────────────────
+const ICON_PATHS = {
+  ac: '<path d="M12 3v18M4 7l16 10M20 7L4 17"/>',
+  tv: '<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8"/>',
+  speaker: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3"/>',
+  stove: '<path d="M5 10h14v6a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3zM9 3v3M15 3v3"/>',
+  droplet: '<path d="M12 3.5s6 6.7 6 10.5a6 6 0 0 1-12 0C6 10.2 12 3.5 12 3.5z"/>',
+  camera: '<path d="M3 8h4l2-2.5h6L17 8h4v11H3z"/><circle cx="12" cy="13" r="3.2"/>',
+  lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/>',
+  heater: '<path d="M12 3c3.2 3.6 6 5.8 6 9.6A6 6 0 0 1 6 12.6c0-1.8.9-3.6 2.7-5.4.2 1.7.9 2.7 1.9 3-1-2.9-.1-5.3 1.4-7.2z"/>',
+  battery: '<rect x="3" y="8" width="16" height="8" rx="2"/><path d="M21 11v2M9 10l-2 3h4l-2 3"/>',
+  bulb: '<path d="M12 3a6 6 0 0 1 3.7 10.7c-.5.4-.7 1-.7 1.6v.7h-6v-.7c0-.6-.2-1.2-.7-1.6A6 6 0 0 1 12 3z"/><path d="M10 19.5h4"/>',
+};
+
+function iconSvg(name, size = 13) {
+  const paths = ICON_PATHS[name] || ICON_PATHS.bulb;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+}
 
 const DEVICE_DEFAULT_STATES = {
   living_room_ac: { active: false, onLabel: 'Cooling', offLabel: 'Off' },
@@ -115,14 +137,14 @@ const DEVICE_ALIASES = {
   smart_lights: 'smart_lights_living_room',
 };
 
-// ─── Family avatar colors ────────────────────────────────────────
+// ─── Family avatar colors (muted, flat) ──────────────────────────
 const AVATAR_COLORS = {
-  rajesh: '#ff6b6b',
-  priya: '#4ecdc4',
-  arjun: '#45b7d1',
-  ananya: '#f7dc6f',
-  dadaji: '#bb8fce',
-  dadiji: '#82e0aa',
+  rajesh: '#E07A5F',
+  priya: '#3D9A8B',
+  arjun: '#5B8DEF',
+  ananya: '#E9B44C',
+  dadaji: '#9B7EBD',
+  dadiji: '#7FB069',
 };
 
 /**
@@ -176,7 +198,7 @@ export class FloorPlan2D {
       if (!roomId) {
         dot.style.display = 'none';
       } else {
-        dot.style.display = 'block';
+        dot.style.display = 'flex';
         const roomEl = this.roomEls.get(roomId);
         if (roomEl) {
           // Position avatar within the room
@@ -187,14 +209,14 @@ export class FloorPlan2D {
   }
 
   /**
-   * Update lighting (day/night visual).
+   * Update lighting (day/night visual). Flat style — only a whisper of a
+   * shift at night, never dark ambient rendering.
    * @param {number} timeMinutes - Current time in minutes (0-1439)
    */
   updateLighting(timeMinutes) {
     const planEl = this.container.querySelector('.floor-plan-wrapper');
     if (!planEl) return;
 
-    // Day (6:00–18:00) is warm, night is cool
     let warmth = 0;
     if (timeMinutes < 360) {
       warmth = 0; // night
@@ -208,14 +230,16 @@ export class FloorPlan2D {
       warmth = 0; // night
     }
 
-    // Adjust overall brightness and hue
-    const brightness = 0.7 + warmth * 0.3;
-    const hueRotate = (1 - warmth) * 10; // slight blue shift at night
-    planEl.style.filter = `brightness(${brightness}) hue-rotate(${hueRotate}deg)`;
+    // Subtle: night desaturates a touch, nothing more
+    const saturation = 0.92 + warmth * 0.08;
+    const brightness = 0.975 + warmth * 0.025;
+    planEl.style.filter = `saturate(${saturation}) brightness(${brightness})`;
+    planEl.classList.toggle('is-night', warmth < 0.4);
   }
 
   /**
-   * Highlight a device with a pulse glow.
+   * Highlight a device — Alexa is making a decision here. Amber pulse
+   * (no glow) plus a small "thinking" chip that floats up and fades.
    * @param {string} deviceId - Device identifier
    * @param {number} [duration=2000] - Duration in ms
    */
@@ -225,7 +249,9 @@ export class FloorPlan2D {
     if (!el) return;
 
     el.classList.add('device-highlight');
-    // Also glow the room
+    this._spawnThinkChip(el);
+
+    // Softly outline the room too
     const placement = DEVICE_PLACEMENTS[resolvedId];
     if (placement) {
       const roomEl = this.roomEls.get(placement.room);
@@ -337,14 +363,14 @@ export class FloorPlan2D {
         return;
       }
       const flickerIndex = Math.floor(elapsed / cycleTime);
-      overlay.style.opacity = flickerIndex % 2 === 0 ? '0.8' : '0';
+      overlay.style.opacity = flickerIndex % 2 === 0 ? '0.35' : '0';
       requestAnimationFrame(animate);
     };
     requestAnimationFrame(animate);
   }
 
   /**
-   * Green glow on inverter (used by PowerCutScenario).
+   * Backup glow on inverter (used by PowerCutScenario). Flat blue state.
    * @param {string} deviceId
    */
   inverterGlow(deviceId) {
@@ -414,9 +440,6 @@ export class FloorPlan2D {
     const wrapper = document.createElement('div');
     wrapper.className = 'floor-plan-wrapper';
 
-    const skyline = document.createElement('div');
-    skyline.className = 'fp-skyline';
-
     const title = document.createElement('div');
     title.className = 'fp-house-title';
     title.innerHTML = `
@@ -426,11 +449,7 @@ export class FloorPlan2D {
 
     const roof = document.createElement('div');
     roof.className = 'fp-roof';
-    roof.innerHTML = `
-      <span class="fp-roof-ridge"></span>
-      <span class="fp-chimney"></span>
-      <span class="fp-dish"></span>
-    `;
+    roof.innerHTML = `<span class="fp-chimney"></span>`;
 
     const shell = document.createElement('div');
     shell.className = 'fp-house-shell';
@@ -449,18 +468,10 @@ export class FloorPlan2D {
       roomEl.style.height = `${layout.height}%`;
       roomEl.style.setProperty('--room-base', layout.color);
 
-      const backWall = document.createElement('div');
-      backWall.className = 'fp-room-backwall';
-      roomEl.appendChild(backWall);
-
       const decorLayer = document.createElement('div');
       decorLayer.className = 'fp-room-decor';
       this._buildRoomDecor(roomId, decorLayer);
       roomEl.appendChild(decorLayer);
-
-      const floor = document.createElement('div');
-      floor.className = 'fp-room-floor';
-      roomEl.appendChild(floor);
 
       const label = document.createElement('span');
       label.className = 'fp-room-label';
@@ -489,7 +500,6 @@ export class FloorPlan2D {
       }).join('')}
     `;
 
-    wrapper.appendChild(skyline);
     wrapper.appendChild(title);
     wrapper.appendChild(roof);
     wrapper.appendChild(shell);
@@ -530,7 +540,7 @@ export class FloorPlan2D {
       const iconSpan = document.createElement('span');
       iconSpan.className = 'fp-device-icon';
       iconSpan.setAttribute('aria-hidden', 'true');
-      iconSpan.textContent = placement.icon;
+      iconSpan.innerHTML = iconSvg(placement.icon);
       deviceEl.appendChild(iconSpan);
 
       const labelSpan = document.createElement('span');
@@ -583,6 +593,21 @@ export class FloorPlan2D {
 
     dot.style.left = `${absX}%`;
     dot.style.top = `${absY}%`;
+  }
+
+  /**
+   * Small amber chip that floats up from a device while Alexa decides.
+   * @param {HTMLElement} deviceEl
+   */
+  _spawnThinkChip(deviceEl) {
+    const existing = deviceEl.querySelector('.fp-think-chip');
+    if (existing) existing.remove();
+
+    const chip = document.createElement('span');
+    chip.className = 'fp-think-chip';
+    chip.innerHTML = `<i></i>Thinking…`;
+    deviceEl.appendChild(chip);
+    setTimeout(() => chip.remove(), 2400);
   }
 
   _onRoomClick(roomId, event) {
@@ -639,7 +664,7 @@ export class FloorPlan2D {
         <div class="fp-room-info-devices">
           ${devices.length ? devices.map(device => `
             <button type="button" class="fp-component-row" data-device-id="${device.id}">
-              <span class="fp-component-row-icon" aria-hidden="true">${device.icon}</span>
+              <span class="fp-component-row-icon" aria-hidden="true">${iconSvg(device.icon, 14)}</span>
               <span class="fp-component-row-label">${device.label}</span>
               <span class="fp-component-row-status">${device.status}</span>
             </button>
@@ -691,7 +716,7 @@ export class FloorPlan2D {
     info.innerHTML = `
       <button class="fp-room-info-close" type="button" aria-label="Close">✕</button>
       <div class="fp-component-info-heading">
-        <span class="fp-component-info-icon" aria-hidden="true">${placement.icon}</span>
+        <span class="fp-component-info-icon" aria-hidden="true">${iconSvg(placement.icon, 17)}</span>
         <div>
           <h3>${placement.label}</h3>
           <p>${room?.name || placement.room}</p>
@@ -768,233 +793,114 @@ export class FloorPlan2D {
     style.textContent = `
       .floor-plan-wrapper {
         position: relative;
-        width: min(100%, 1180px);
-        height: min(100%, 760px);
+        width: min(100%, 1120px);
+        height: min(100%, 740px);
         min-height: 420px;
-        background:
-          radial-gradient(circle at 14% 12%, rgba(255, 213, 122, 0.12), transparent 18%),
-          radial-gradient(circle at 84% 10%, rgba(0, 202, 255, 0.16), transparent 18%),
-          linear-gradient(180deg, #08121c 0%, #0b1118 56%, #070b10 100%);
-        border: 1px solid rgba(0, 202, 255, 0.12);
-        border-radius: 8px;
-        overflow: visible;
+        background: transparent;
         transition: filter 0.5s ease;
-        box-shadow:
-          inset 0 0 70px rgba(0, 202, 255, 0.05),
-          0 18px 70px rgba(0, 0, 0, 0.38);
       }
 
-      .fp-skyline {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        overflow: hidden;
-        border-radius: inherit;
-      }
-
-      .fp-skyline::before,
-      .fp-skyline::after {
-        content: '';
-        position: absolute;
-        bottom: 5%;
-        width: 34%;
-        height: 18%;
-        background: linear-gradient(180deg, rgba(29, 57, 68, 0.28), rgba(7, 12, 18, 0));
-        clip-path: polygon(0 100%, 28% 34%, 42% 62%, 60% 22%, 100% 100%);
-        opacity: 0.7;
-      }
-
-      .fp-skyline::before {
-        left: 0;
-      }
-
-      .fp-skyline::after {
-        right: 0;
-        transform: scaleX(-1);
-      }
-
+      /* ── Header ─────────────────────────────────────────────── */
       .fp-house-title {
         position: absolute;
-        top: 4%;
+        top: 1%;
         left: 50%;
         z-index: 4;
         transform: translateX(-50%);
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 2px;
-        color: #f5f7fa;
+        gap: 4px;
         text-align: center;
         pointer-events: none;
-        text-shadow: 0 3px 14px rgba(0, 0, 0, 0.7);
-      }
-
-      .fp-house-title strong {
-        font-size: clamp(1rem, 2.1vw, 1.8rem);
-        letter-spacing: 0;
-        text-transform: uppercase;
       }
 
       .fp-title-small {
-        color: #35c9ff;
-        font-size: 0.72rem;
-        font-weight: 700;
+        color: #7B8794;
+        font-size: 11px;
+        font-weight: 600;
         text-transform: uppercase;
+        letter-spacing: 0.14em;
       }
 
+      .fp-house-title strong {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1F2933;
+        letter-spacing: -0.01em;
+      }
+
+      /* ── Roof — flat triangle outline ───────────────────────── */
       .fp-roof {
         position: absolute;
-        top: 13%;
+        top: 14%;
         left: 6%;
         right: 6%;
-        height: 18%;
+        height: 11%;
         z-index: 3;
         pointer-events: none;
-        background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.11), transparent 24%),
-          linear-gradient(135deg, #38404b 0%, #1f2731 45%, #111820 100%);
-        clip-path: polygon(50% 0, 100% 82%, 96% 100%, 50% 26%, 4% 100%, 0 82%);
-        filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.45));
-      }
-
-      .fp-roof-ridge {
-        position: absolute;
-        left: 10%;
-        right: 10%;
-        top: 69%;
-        height: 4px;
-        background: rgba(175, 191, 205, 0.55);
-        transform: skewY(-7deg);
+        background: #DAD7D0;
+        clip-path: polygon(50% 0, 100% 100%, 0 100%);
       }
 
       .fp-chimney {
         position: absolute;
-        left: 17%;
-        top: 16%;
-        width: 30px;
-        height: 56px;
+        left: 20%;
+        top: 22%;
+        width: 26px;
+        height: 46px;
         border-radius: 4px 4px 0 0;
-        background: linear-gradient(90deg, #424a55, #222b34);
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+        background: #C9C4BA;
       }
 
-      .fp-dish {
-        position: absolute;
-        right: 13%;
-        top: 24%;
-        width: 34px;
-        height: 22px;
-        border: 4px solid rgba(151, 174, 191, 0.7);
-        border-top-color: transparent;
-        border-left-color: transparent;
-        border-radius: 50%;
-        transform: rotate(-18deg);
-      }
-
-      .fp-dish::after {
-        content: '';
-        position: absolute;
-        right: -12px;
-        bottom: -17px;
-        width: 3px;
-        height: 24px;
-        background: rgba(151, 174, 191, 0.6);
-        transform: rotate(20deg);
-      }
-
+      /* ── House shell — grey wall frame around room cells ────── */
       .fp-house-shell {
         position: absolute;
         left: 8%;
         right: 8%;
-        top: 24%;
+        top: 25%;
         bottom: 10%;
         z-index: 5;
-        background: linear-gradient(180deg, rgba(76, 90, 104, 0.16), rgba(15, 22, 30, 0.9));
-        border: 6px solid #3c4855;
-        border-bottom-width: 9px;
-        box-shadow:
-          inset 0 0 0 2px rgba(255, 255, 255, 0.04),
-          0 24px 34px rgba(0, 0, 0, 0.48);
+        background: #E3E1DC;
+        border-radius: 6px;
+        padding: 5px;
+        box-shadow: 0 1px 2px rgba(31, 41, 51, 0.08);
         pointer-events: none;
-      }
-
-      .fp-house-shell::before {
-        content: '';
-        position: absolute;
-        left: -12px;
-        right: -12px;
-        top: 41.8%;
-        height: 8px;
-        z-index: 7;
-        background: linear-gradient(90deg, #65717b, #2f3b47 18%, #596977 50%, #2f3b47 82%, #65717b);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.32);
       }
 
       .fp-room-layer {
         position: absolute;
-        inset: 0;
+        inset: 5px;
         pointer-events: none;
       }
 
       .fp-foundation {
         position: absolute;
-        left: 6.5%;
-        right: 6.5%;
-        bottom: 6.5%;
-        height: 4%;
+        left: 7%;
+        right: 7%;
+        bottom: 8.2%;
+        height: 1.8%;
         z-index: 4;
-        border-radius: 0 0 10px 10px;
-        background:
-          linear-gradient(180deg, #59636f, #232d36 54%, #101820);
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.45);
+        border-radius: 0 0 6px 6px;
+        background: #C9C4BA;
         pointer-events: none;
       }
 
+      /* ── Rooms — flat rounded-rect cells ────────────────────── */
       .fp-room {
         position: absolute;
-        border: 3px solid #33404c;
-        border-radius: 0;
+        border: 3px solid #E3E1DC;
+        border-radius: 12px;
         background: var(--room-base);
+        background-clip: padding-box;
         cursor: pointer;
-        transition: background-color 0.5s ease, box-shadow 0.3s ease, opacity 0.5s ease;
-        overflow: hidden;
+        transition: box-shadow 0.25s ease, opacity 0.3s ease, filter 0.3s ease;
+        overflow: visible;
         pointer-events: auto;
-        box-shadow:
-          inset 0 0 0 1px rgba(255, 255, 255, 0.04),
-          inset 0 18px 40px rgba(255, 255, 255, 0.03),
-          inset 0 -24px 35px rgba(0, 0, 0, 0.2);
       }
 
       .fp-room:hover {
-        border-color: rgba(89, 195, 255, 0.65);
-        box-shadow:
-          inset 0 0 30px rgba(0, 202, 255, 0.08),
-          0 0 0 1px rgba(0, 202, 255, 0.18);
-      }
-
-      .fp-room-backwall {
-        position: absolute;
-        inset: 0 0 33%;
-        z-index: 0;
-        background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 34%),
-          radial-gradient(circle at 18% 26%, rgba(255, 241, 178, 0.08), transparent 20%),
-          var(--room-base);
-      }
-
-      .fp-room-floor {
-        position: absolute;
-        left: -2%;
-        right: -2%;
-        bottom: -1%;
-        height: 39%;
-        z-index: 0;
-        background:
-          repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 22px),
-          linear-gradient(160deg, rgba(181, 129, 78, 0.24), rgba(68, 46, 38, 0.2));
-        clip-path: polygon(0 26%, 100% 2%, 100% 100%, 0 100%);
-        border-top: 1px solid rgba(255, 255, 255, 0.09);
-        pointer-events: none;
+        box-shadow: inset 0 0 0 1.5px rgba(46, 124, 246, 0.45);
       }
 
       .fp-room-decor {
@@ -1002,303 +908,358 @@ export class FloorPlan2D {
         inset: 0;
         z-index: 1;
         pointer-events: none;
+        overflow: hidden;
+        border-radius: 9px;
       }
 
+      /* ── Furniture — flat 2-color vector shapes ─────────────── */
       .fp-prop {
         position: absolute;
         display: block;
-        border-radius: 5px;
-        opacity: 0.92;
-        filter: drop-shadow(0 5px 7px rgba(0, 0, 0, 0.28));
+        border-radius: 4px;
+        --line: #B9B3A7;
+        --wood: #E3D2B3;
+        --fill: #FFFFFF;
       }
 
       .fp-prop-window {
         background:
-          linear-gradient(90deg, transparent calc(50% - 1px), rgba(240, 251, 255, 0.65) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
-          linear-gradient(0deg, transparent calc(50% - 1px), rgba(240, 251, 255, 0.55) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
-          linear-gradient(135deg, rgba(58, 205, 255, 0.28), rgba(255, 244, 196, 0.1));
-        border: 2px solid rgba(214, 237, 246, 0.36);
-        box-shadow: inset 0 0 14px rgba(109, 224, 255, 0.12);
+          linear-gradient(90deg, transparent calc(50% - 0.75px), var(--line) calc(50% - 0.75px) calc(50% + 0.75px), transparent calc(50% + 0.75px)),
+          linear-gradient(0deg, transparent calc(50% - 0.75px), var(--line) calc(50% - 0.75px) calc(50% + 0.75px), transparent calc(50% + 0.75px)),
+          #FDFDFB;
+        border: 1.5px solid var(--line);
+        border-radius: 4px;
       }
 
       .fp-prop-bed {
-        border-radius: 8px 8px 5px 5px;
+        border-radius: 6px 6px 3px 3px;
         background:
-          linear-gradient(90deg, rgba(255, 255, 255, 0.55) 0 28%, transparent 29%),
-          linear-gradient(180deg, #8e7968, #4a342d);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+          linear-gradient(90deg, #F4EFE6 0 28%, transparent 28%),
+          var(--fill);
+        border: 1.5px solid var(--line);
       }
 
       .fp-prop-bed::after,
       .fp-prop-bunk-bed::after {
         content: '';
         position: absolute;
-        left: 8%;
-        right: 8%;
-        bottom: -18%;
-        height: 24%;
-        border-radius: 0 0 5px 5px;
-        background: #221b1c;
+        left: 6%;
+        right: 6%;
+        bottom: -16%;
+        height: 18%;
+        border-radius: 0 0 3px 3px;
+        background: var(--wood);
       }
 
       .fp-prop-side-table,
       .fp-prop-coffee-table {
-        background: linear-gradient(180deg, #956a3f, #3f2c22);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: var(--wood);
+        border: 1.5px solid var(--line);
+        border-radius: 3px;
       }
 
       .fp-prop-lamp {
-        border-radius: 50% 50% 5px 5px;
+        border-radius: 40% 40% 3px 3px;
         background:
-          linear-gradient(180deg, rgba(255, 242, 174, 0.95) 0 40%, transparent 41%),
-          linear-gradient(90deg, transparent 42%, #8d9ba7 42% 58%, transparent 58%);
-        box-shadow: 0 0 22px rgba(255, 217, 110, 0.2);
+          linear-gradient(180deg, #F6E8C8 0 42%, transparent 42%),
+          linear-gradient(90deg, transparent calc(50% - 1px), var(--line) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px));
       }
 
       .fp-prop-picture {
-        background:
-          radial-gradient(circle at 65% 32%, #f1d37c 0 12%, transparent 13%),
-          linear-gradient(145deg, #224b62, #15202b);
-        border: 3px solid rgba(189, 144, 87, 0.74);
+        background: #FDFDFB;
+        border: 2px solid var(--wood);
+        border-radius: 2px;
+        box-shadow: inset 0 0 0 1.5px #EAF0F7;
       }
 
       .fp-prop-bookshelf,
       .fp-prop-toy-shelf,
       .fp-prop-cabinet {
         background:
-          repeating-linear-gradient(0deg, transparent 0 24%, rgba(255, 255, 255, 0.12) 25% 27%, transparent 28% 50%),
-          repeating-linear-gradient(90deg, transparent 0 30%, rgba(0, 0, 0, 0.18) 31% 33%, transparent 34% 66%),
-          linear-gradient(180deg, #8a633b, #3d2a1e);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+          repeating-linear-gradient(0deg, transparent 0 26%, var(--line) 26% calc(26% + 1.5px), transparent calc(26% + 1.5px) 52%),
+          #F1E9D9;
+        border: 1.5px solid var(--line);
+        border-radius: 3px;
       }
 
       .fp-prop-desk,
       .fp-prop-counter {
-        background: linear-gradient(180deg, #a26c37 0 32%, #473225 33% 100%);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: linear-gradient(180deg, var(--wood) 0 34%, #F4EFE6 34%);
+        border: 1.5px solid var(--line);
+        border-radius: 3px;
       }
 
       .fp-prop-chair {
-        border-radius: 7px 7px 3px 3px;
-        background:
-          linear-gradient(90deg, transparent 0 18%, #263241 19% 80%, transparent 81%),
-          linear-gradient(180deg, #6887a0, #233443);
+        border-radius: 5px 5px 2px 2px;
+        background: #DCE4EE;
+        border: 1.5px solid var(--line);
       }
 
       .fp-prop-plant {
-        border-radius: 50% 50% 6px 6px;
+        border-radius: 0;
         background:
-          radial-gradient(circle at 30% 26%, #78d68f 0 18%, transparent 19%),
-          radial-gradient(circle at 66% 28%, #5ecb7b 0 20%, transparent 21%),
-          radial-gradient(circle at 52% 13%, #8de4a1 0 17%, transparent 18%),
-          linear-gradient(180deg, transparent 0 58%, #6f4930 59% 100%);
+          radial-gradient(circle at 30% 24%, #9CC69B 0 19%, transparent 20%),
+          radial-gradient(circle at 68% 26%, #8BBB8A 0 21%, transparent 22%),
+          radial-gradient(circle at 50% 12%, #ABD1AA 0 18%, transparent 19%),
+          linear-gradient(180deg, transparent 0 56%, #D8B48F 56%);
       }
 
       .fp-prop-stove {
         background:
-          radial-gradient(circle at 30% 36%, rgba(0, 202, 255, 0.65) 0 12%, transparent 13%),
-          radial-gradient(circle at 70% 36%, rgba(0, 202, 255, 0.65) 0 12%, transparent 13%),
-          linear-gradient(180deg, #222c34, #0f151b);
-        border: 1px solid rgba(180, 199, 210, 0.24);
+          radial-gradient(circle at 30% 40%, transparent 0 8%, #7B8794 8% 12%, transparent 12%),
+          radial-gradient(circle at 70% 40%, transparent 0 8%, #7B8794 8% 12%, transparent 12%),
+          var(--fill);
+        border: 1.5px solid var(--line);
+        border-radius: 3px;
       }
 
       .fp-prop-sink,
       .fp-prop-sink-basin {
         border-radius: 999px;
-        background:
-          radial-gradient(ellipse at center, rgba(182, 234, 248, 0.75) 0 35%, rgba(41, 72, 84, 0.9) 36% 62%, transparent 63%),
-          linear-gradient(180deg, #778692, #28343d);
+        background: var(--fill);
+        border: 1.5px solid var(--line);
       }
 
       .fp-prop-tv-unit {
-        background:
-          linear-gradient(180deg, #111820 0 65%, #67452d 66% 100%);
-        border: 1px solid rgba(160, 180, 191, 0.18);
-      }
-
-      .fp-prop-tv-unit::before {
-        content: '';
-        position: absolute;
-        left: 8%;
-        right: 8%;
-        top: 8%;
-        height: 54%;
+        background: linear-gradient(180deg, #33404E 0 62%, var(--wood) 62%);
+        border: 1.5px solid var(--line);
         border-radius: 3px;
-        background: linear-gradient(145deg, #0b1117, #2c4655);
-        border: 1px solid rgba(0, 202, 255, 0.18);
       }
 
       .fp-prop-sofa {
-        border-radius: 12px 12px 5px 5px;
+        border-radius: 8px 8px 3px 3px;
         background:
-          linear-gradient(90deg, rgba(255,255,255,0.11) 0 1px, transparent 1px 33%, rgba(255,255,255,0.11) 33% calc(33% + 1px), transparent calc(33% + 1px) 66%, rgba(255,255,255,0.11) 66% calc(66% + 1px), transparent calc(66% + 1px)),
-          linear-gradient(180deg, #56677a, #263445);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+          linear-gradient(90deg, transparent calc(33% - 0.75px), var(--line) calc(33% - 0.75px) calc(33% + 0.75px), transparent calc(33% + 0.75px) calc(66% - 0.75px), var(--line) calc(66% - 0.75px) calc(66% + 0.75px), transparent calc(66% + 0.75px)),
+          #D5DEEA;
+        border: 1.5px solid var(--line);
       }
 
       .fp-prop-vent {
         background:
-          repeating-linear-gradient(90deg, rgba(210, 230, 240, 0.5) 0 2px, transparent 2px 6px),
-          rgba(50, 70, 78, 0.6);
-        border: 1px solid rgba(210, 230, 240, 0.22);
+          repeating-linear-gradient(90deg, var(--line) 0 1.5px, transparent 1.5px 6px),
+          #FDFDFB;
+        border: 1.5px solid var(--line);
+        border-radius: 3px;
       }
 
       .fp-prop-geyser-tank {
-        border-radius: 12px;
-        background:
-          radial-gradient(circle at 50% 22%, rgba(255,255,255,0.75) 0 7%, transparent 8%),
-          linear-gradient(180deg, #e2e4de, #8b958e);
-        border: 2px solid rgba(255, 255, 255, 0.28);
+        border-radius: 10px;
+        background: var(--fill);
+        border: 1.5px solid var(--line);
       }
 
       .fp-prop-shower {
         background:
-          linear-gradient(90deg, transparent 42%, #94a7af 43% 56%, transparent 57%),
-          radial-gradient(ellipse at 50% 8%, #9caeb6 0 20%, transparent 21%);
+          linear-gradient(90deg, transparent calc(50% - 1px), var(--line) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
+          radial-gradient(ellipse at 50% 6%, #C4CDD5 0 20%, transparent 21%);
       }
 
       .fp-prop-bunk-bed {
-        border-radius: 6px;
+        border-radius: 4px;
         background:
-          linear-gradient(180deg, #96734f 0 16%, transparent 17% 47%, #96734f 48% 64%, transparent 65%),
-          linear-gradient(90deg, #60412e 0 11%, transparent 12% 88%, #60412e 89% 100%);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+          linear-gradient(180deg, var(--fill) 0 16%, transparent 16% 47%, var(--fill) 47% 63%, transparent 63%),
+          linear-gradient(90deg, var(--wood) 0 9%, transparent 9% 91%, var(--wood) 91%);
+        border: 1.5px solid var(--line);
       }
 
       .fp-prop-rug {
         border-radius: 50%;
-        background:
-          radial-gradient(ellipse at center, rgba(255, 214, 114, 0.34) 0 45%, rgba(16, 122, 154, 0.36) 46% 100%);
+        background: #F0E4D2;
+        border: 1.5px solid #E2D4BE;
       }
 
       .fp-prop-railing {
         background:
-          repeating-linear-gradient(90deg, rgba(220, 235, 240, 0.55) 0 3px, transparent 3px 13px),
-          linear-gradient(180deg, transparent 0 40%, rgba(220, 235, 240, 0.5) 41% 55%, transparent 56%);
+          repeating-linear-gradient(90deg, var(--line) 0 2px, transparent 2px 12px),
+          linear-gradient(180deg, var(--line) 0 2px, transparent 2px);
+        border-radius: 0;
       }
 
       .fp-prop-water-tank {
-        border-radius: 999px 999px 8px 8px;
-        background:
-          linear-gradient(180deg, rgba(255,255,255,0.18), transparent 22%),
-          linear-gradient(90deg, #29363d, #11191e 50%, #2f3e47);
-        border: 2px solid rgba(158, 180, 190, 0.22);
+        border-radius: 999px 999px 6px 6px;
+        background: #E7EEEC;
+        border: 1.5px solid var(--line);
       }
 
+      /* ── Room label chip ────────────────────────────────────── */
       .fp-room-label {
         position: absolute;
-        bottom: 8px;
-        left: 10px;
+        bottom: 7px;
+        left: 8px;
         z-index: 6;
-        max-width: calc(100% - 18px);
-        padding: 0.24rem 0.5rem;
-        border-radius: 5px;
-        background: linear-gradient(180deg, rgba(0, 146, 255, 0.88), rgba(0, 95, 166, 0.86));
-        border: 1px solid rgba(165, 226, 255, 0.35);
-        color: #f8fbff;
-        font-size: 0.68rem;
-        text-transform: uppercase;
-        letter-spacing: 0;
+        max-width: calc(100% - 16px);
+        padding: 3px 8px;
+        border-radius: 6px;
+        background: #FFFFFF;
+        border: 1px solid #E3E1DC;
+        color: #1F2933;
+        font-size: 11px;
+        font-weight: 500;
         pointer-events: none;
-        font-weight: 800;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.32);
+        box-shadow: 0 1px 2px rgba(31, 41, 51, 0.06);
       }
 
+      /* ── Devices — flat 24px circle badges ──────────────────── */
       .fp-device {
         position: absolute;
         transform: translate(-50%, -50%);
         z-index: 9;
-        display: inline-flex;
+        display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        gap: 0.25rem;
-        min-width: 50px;
-        max-width: 78px;
-        min-height: 26px;
-        padding: 0.2rem 0.35rem;
-        border: 1px solid rgba(0, 202, 255, 0.32);
-        border-radius: 6px;
-        background: rgba(4, 10, 16, 0.9);
-        color: #e6edf3;
+        gap: 2px;
+        width: 26px;
+        height: 26px;
+        padding: 0;
+        border: 1.5px solid #C5C1B8;
+        border-radius: 50%;
+        background: #FFFFFF;
+        color: #7B8794;
         font: inherit;
         cursor: pointer;
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.32);
-        transition: transform 0.2s ease, filter 0.3s ease, border-color 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+        box-shadow: 0 1px 2px rgba(31, 41, 51, 0.08);
+        transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.2s ease;
       }
 
       .fp-device-icon {
-        font-size: 0.9rem;
-        display: block;
-        text-align: center;
-        filter: drop-shadow(0 0 2px rgba(0, 202, 255, 0.3));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
       }
 
       .fp-device-label {
-        display: block;
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        position: absolute;
+        top: calc(100% + 3px);
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 1px 6px;
+        border-radius: 4px;
+        background: #FFFFFF;
+        border: 1px solid #E3E1DC;
+        color: #1F2933;
+        font-size: 10px;
+        font-weight: 500;
+        line-height: 1.4;
         white-space: nowrap;
-        font-size: 0.58rem;
-        font-weight: 600;
-        line-height: 1;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+
+      .fp-device:hover .fp-device-label,
+      .fp-device:focus-visible .fp-device-label,
+      .fp-device.selected .fp-device-label {
+        opacity: 1;
+      }
+
+      /* Active state — blue fill */
+      .fp-device[data-state="on"] {
+        background: #2E7CF6;
+        border-color: #2E7CF6;
+        color: #FFFFFF;
       }
 
       .fp-device:hover,
       .fp-device:focus-visible,
       .fp-device.selected {
-        border-color: rgba(0, 202, 255, 0.8);
-        background: rgba(0, 202, 255, 0.14);
+        border-color: #2E7CF6;
         outline: none;
-        transform: translate(-50%, -50%) scale(1.05);
+        transform: translate(-50%, -50%) scale(1.12);
       }
 
       .fp-device.is-off {
-        opacity: 0.58;
-        filter: grayscale(0.6);
+        background: #FFFFFF;
+        border-color: #C5C1B8;
+        color: #A5AEB8;
       }
 
+      /* Decision state — subtle amber pulse, no glow */
       .fp-device.device-highlight {
-        animation: device-pulse 0.5s ease-in-out 4;
-      }
-
-      .fp-device.inverter-active .fp-device-icon {
-        filter: drop-shadow(0 0 8px #00ff88) drop-shadow(0 0 16px #00ff88);
+        background: #F5A623 !important;
+        border-color: #F5A623 !important;
+        color: #FFFFFF !important;
+        animation: device-pulse 1.5s ease-in-out infinite;
       }
 
       @keyframes device-pulse {
-        0%, 100% { transform: translate(-50%, -50%) scale(1); filter: none; }
-        50% { transform: translate(-50%, -50%) scale(1.4); filter: drop-shadow(0 0 10px rgba(0, 202, 255, 0.8)); }
+        0%, 100% { transform: translate(-50%, -50%) scale(1); }
+        50% { transform: translate(-50%, -50%) scale(1.14); }
       }
 
+      /* Inverter on backup — blue fill + gentle pulse */
+      .fp-device.inverter-active {
+        background: #2E7CF6;
+        border-color: #2E7CF6;
+        color: #FFFFFF;
+        animation: device-pulse 1.5s ease-in-out infinite;
+      }
+
+      /* Amber "thinking" chip — floats up from the device and fades */
+      .fp-think-chip {
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 50%;
+        transform: translate(-50%, 6px);
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 9px;
+        border-radius: 999px;
+        background: #FFFFFF;
+        border: 1px solid #F5A623;
+        color: #9A6A14;
+        font-size: 11px;
+        font-weight: 500;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 12;
+        animation: think-float 2.4s ease-out forwards;
+      }
+
+      .fp-think-chip i {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #F5A623;
+      }
+
+      @keyframes think-float {
+        0% { opacity: 0; transform: translate(-50%, 8px); }
+        14% { opacity: 1; transform: translate(-50%, 0); }
+        72% { opacity: 1; transform: translate(-50%, -14px); }
+        100% { opacity: 0; transform: translate(-50%, -24px); }
+      }
+
+      /* ── People — flat dots, smooth room-to-room motion ─────── */
       .fp-avatar {
         position: absolute;
-        width: 20px;
-        height: 20px;
+        width: 19px;
+        height: 19px;
         border-radius: 50%;
         transform: translate(-50%, -50%);
         z-index: 6;
-        border: 2px solid rgba(255, 255, 255, 0.85);
-        transition: left 0.8s ease, top 0.8s ease;
+        border: 2px solid #FFFFFF;
+        transition: left 0.8s ease-in-out, top 0.8s ease-in-out;
         pointer-events: auto;
         cursor: pointer;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        box-shadow: 0 1px 2px rgba(31, 41, 51, 0.18);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.6rem;
+        font-size: 9px;
         font-weight: 700;
-        color: rgba(0, 0, 0, 0.75);
+        color: #FFFFFF;
         font-family: var(--font-family, 'Inter', sans-serif);
         user-select: none;
       }
 
       .fp-avatar:hover {
         z-index: 12;
-        transform: translate(-50%, -50%) scale(1.2);
       }
 
       .fp-avatar:hover::after {
@@ -1307,52 +1268,53 @@ export class FloorPlan2D {
         bottom: 24px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(13, 17, 23, 0.95);
-        color: #e6edf3;
-        padding: 3px 9px;
+        background: #FFFFFF;
+        color: #1F2933;
+        padding: 2px 8px;
         border-radius: 5px;
-        font-size: 0.65rem;
+        font-size: 11px;
         font-weight: 500;
         white-space: nowrap;
         pointer-events: none;
-        border: 1px solid rgba(0, 202, 255, 0.25);
+        border: 1px solid #E3E1DC;
+        box-shadow: 0 1px 2px rgba(31, 41, 51, 0.08);
         z-index: 12;
       }
 
+      /* ── Legend ─────────────────────────────────────────────── */
       .fp-legend {
         position: absolute;
         left: 50%;
-        bottom: 0.4%;
+        bottom: 0.6%;
         transform: translateX(-50%);
         z-index: 9;
         display: flex;
         align-items: center;
-        gap: 0.6rem;
-        padding: 0.3rem 0.75rem;
-        background: rgba(13, 17, 23, 0.7);
-        border: 1px solid rgba(0, 202, 255, 0.15);
+        gap: 0.75rem;
+        padding: 5px 14px;
+        background: #FFFFFF;
+        border: 1px solid #E3E1DC;
         border-radius: 999px;
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 1px 2px rgba(31, 41, 51, 0.06);
         flex-wrap: wrap;
         justify-content: center;
         max-width: 90%;
       }
 
       .fp-legend-title {
-        font-size: 0.6rem;
-        font-weight: 700;
-        color: var(--color-text-muted, #8b949e);
+        font-size: 11px;
+        font-weight: 600;
+        color: #7B8794;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.08em;
       }
 
       .fp-legend-item {
         display: inline-flex;
         align-items: center;
-        gap: 0.3rem;
-        font-size: 0.62rem;
-        color: var(--color-text, #e6edf3);
+        gap: 5px;
+        font-size: 11px;
+        color: #1F2933;
       }
 
       .fp-legend-dot {
@@ -1362,31 +1324,33 @@ export class FloorPlan2D {
         width: 15px;
         height: 15px;
         border-radius: 50%;
-        font-size: 0.5rem;
+        font-size: 8px;
         font-weight: 700;
-        color: rgba(0, 0, 0, 0.75);
-        border: 1px solid rgba(255, 255, 255, 0.7);
+        color: #FFFFFF;
+        border: 1.5px solid #FFFFFF;
+        box-shadow: 0 0 0 1px #E3E1DC;
       }
 
+      /* ── Speech bubbles ─────────────────────────────────────── */
       .fp-speech-bubble {
         position: absolute;
-        bottom: 110%;
+        bottom: calc(100% + 10px);
         left: 50%;
-        transform: translateX(-50%) translateY(10px);
-        background: rgba(13, 17, 23, 0.95);
-        border: 1px solid rgba(0, 202, 255, 0.3);
-        border-radius: 8px;
-        padding: 6px 10px;
-        font-size: 0.65rem;
-        color: #e6edf3;
-        max-width: 220px;
+        transform: translateX(-50%) translateY(8px);
+        background: #FFFFFF;
+        border: 1px solid #E3E1DC;
+        border-radius: 10px;
+        padding: 7px 11px;
+        font-size: 12px;
+        color: #1F2933;
+        max-width: 230px;
         width: max-content;
         pointer-events: none;
         opacity: 0;
-        transition: opacity 0.3s ease, transform 0.3s ease;
-        z-index: 10;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        line-height: 1.4;
+        transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+        z-index: 14;
+        box-shadow: 0 1px 2px rgba(31, 41, 51, 0.1);
+        line-height: 1.45;
       }
 
       .fp-speech-bubble.visible {
@@ -1400,56 +1364,61 @@ export class FloorPlan2D {
         top: 100%;
         left: 50%;
         transform: translateX(-50%);
-        border: 5px solid transparent;
-        border-top-color: rgba(0, 202, 255, 0.3);
+        border: 6px solid transparent;
+        border-top-color: #FFFFFF;
       }
 
+      /* ── Room states ────────────────────────────────────────── */
       .room-highlight {
-        box-shadow: inset 0 0 30px rgba(0, 202, 255, 0.15), 0 0 15px rgba(0, 202, 255, 0.2) !important;
-        border-color: rgba(0, 202, 255, 0.5) !important;
+        box-shadow: inset 0 0 0 1.5px rgba(245, 166, 35, 0.7) !important;
       }
 
       .room-dimmed {
-        opacity: 0.25 !important;
-        filter: grayscale(0.6);
+        filter: grayscale(0.9);
+        opacity: 0.45;
       }
 
       .room-powered {
-        box-shadow: inset 0 0 20px rgba(0, 255, 136, 0.1), 0 0 10px rgba(0, 255, 136, 0.15);
-        border-color: rgba(0, 255, 136, 0.4) !important;
+        box-shadow: inset 0 0 0 1.5px #2E7CF6 !important;
       }
 
+      /* ── Info cards ─────────────────────────────────────────── */
       .fp-room-info {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         padding: 16px 20px;
-        border-radius: 8px;
+        border-radius: 12px;
         z-index: 40;
         width: min(320px, calc(100% - 32px));
-        background: rgba(13, 17, 23, 0.95);
-        border: 1px solid rgba(0, 202, 255, 0.25);
-        backdrop-filter: blur(12px);
-        animation: fadeIn 0.2s ease;
+        background: #FFFFFF;
+        border: 1px solid #E3E1DC;
+        box-shadow: 0 2px 2px rgba(31, 41, 51, 0.06);
+        animation: fadeIn 0.2s ease-out;
       }
 
       .fp-room-info h3 {
         margin: 0 0 8px 0;
-        font-size: 0.9rem;
-        color: #00CAFF;
+        font-size: 16px;
+        font-weight: 600;
+        color: #1F2933;
       }
 
       .fp-room-info-section {
         margin-bottom: 6px;
-        font-size: 0.75rem;
-        color: #8b949e;
+        font-size: 13px;
+        color: #7B8794;
       }
 
       .fp-room-info-section strong {
         display: block;
         margin-bottom: 6px;
-        color: #e6edf3;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #7B8794;
       }
 
       .fp-room-info-devices {
@@ -1465,48 +1434,64 @@ export class FloorPlan2D {
         width: 100%;
         min-height: 32px;
         padding: 0.35rem 0.45rem;
-        border: 1px solid rgba(0, 202, 255, 0.14);
-        border-radius: 6px;
-        background: rgba(0, 202, 255, 0.06);
-        color: #e6edf3;
+        border: 1px solid #E3E1DC;
+        border-radius: 8px;
+        background: #F7F6F3;
+        color: #1F2933;
         font: inherit;
         text-align: left;
         cursor: pointer;
+        transition: border-color 0.2s ease, background 0.2s ease;
       }
 
       .fp-component-row:hover,
       .fp-component-row:focus-visible {
-        border-color: rgba(0, 202, 255, 0.5);
-        background: rgba(0, 202, 255, 0.12);
+        border-color: #2E7CF6;
+        background: #FFFFFF;
         outline: none;
+      }
+
+      .fp-component-row-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #7B8794;
       }
 
       .fp-component-row-label {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: 0.76rem;
-        font-weight: 600;
+        font-size: 13px;
+        font-weight: 500;
       }
 
       .fp-component-row-status,
       .fp-empty {
-        font-size: 0.68rem;
-        color: #8b949e;
+        font-size: 11px;
+        color: #7B8794;
       }
 
       .fp-component-info {
         position: absolute;
         top: 16px;
         right: 16px;
+      }
+
+      /* In deployment the event log owns the right edge — clear it */
+      [id="3d-container"].fullscreen .fp-component-info {
+        right: 356px;
+      }
+
+      .fp-component-info {
         width: min(280px, calc(100% - 32px));
         padding: 16px;
-        border-radius: 8px;
+        border-radius: 12px;
         z-index: 40;
-        background: rgba(13, 17, 23, 0.95);
-        border: 1px solid rgba(0, 202, 255, 0.25);
-        backdrop-filter: blur(12px);
-        animation: fadeInSide 0.2s ease;
+        background: #FFFFFF;
+        border: 1px solid #E3E1DC;
+        box-shadow: 0 2px 2px rgba(31, 41, 51, 0.06);
+        animation: fadeInSide 0.2s ease-out;
       }
 
       .fp-component-info-heading {
@@ -1522,22 +1507,23 @@ export class FloorPlan2D {
         justify-content: center;
         width: 36px;
         height: 36px;
-        border-radius: 8px;
-        background: rgba(0, 202, 255, 0.1);
-        border: 1px solid rgba(0, 202, 255, 0.22);
-        font-size: 1.2rem;
+        border-radius: 50%;
+        background: #F7F6F3;
+        border: 1.5px solid #E3E1DC;
+        color: #2E7CF6;
       }
 
       .fp-component-info h3 {
         margin: 0;
-        font-size: 0.95rem;
-        color: #00CAFF;
+        font-size: 16px;
+        font-weight: 600;
+        color: #1F2933;
       }
 
       .fp-component-info p {
         margin: 2px 0 0;
-        font-size: 0.72rem;
-        color: #8b949e;
+        font-size: 11px;
+        color: #7B8794;
         line-height: 1.3;
       }
 
@@ -1548,14 +1534,15 @@ export class FloorPlan2D {
         gap: 0.75rem;
         padding: 0.55rem 0.65rem;
         margin-bottom: 12px;
-        border-radius: 6px;
-        background: rgba(255, 255, 255, 0.04);
-        color: #8b949e;
-        font-size: 0.74rem;
+        border-radius: 8px;
+        background: #F7F6F3;
+        color: #7B8794;
+        font-size: 13px;
       }
 
       .fp-component-status strong {
-        color: #e6edf3;
+        color: #1F2933;
+        font-weight: 600;
       }
 
       .fp-component-actions {
@@ -1566,20 +1553,21 @@ export class FloorPlan2D {
 
       .fp-component-action {
         min-height: 34px;
-        border: 1px solid rgba(0, 202, 255, 0.22);
-        border-radius: 6px;
-        background: rgba(0, 202, 255, 0.08);
-        color: #e6edf3;
+        border: 1px solid #E3E1DC;
+        border-radius: 8px;
+        background: #FFFFFF;
+        color: #1F2933;
         font: inherit;
-        font-size: 0.75rem;
-        font-weight: 600;
+        font-size: 13px;
+        font-weight: 500;
         cursor: pointer;
+        transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
       }
 
       .fp-component-action:hover,
       .fp-component-action:focus-visible {
-        border-color: rgba(0, 202, 255, 0.65);
-        background: rgba(0, 202, 255, 0.16);
+        border-color: #2E7CF6;
+        color: #2E7CF6;
         outline: none;
       }
 
@@ -1589,18 +1577,20 @@ export class FloorPlan2D {
         right: 10px;
         background: none;
         border: none;
-        color: #8b949e;
+        color: #7B8794;
         cursor: pointer;
-        font-size: 0.9rem;
-        padding: 0;
+        font-size: 13px;
+        padding: 2px;
+        line-height: 1;
+        transition: color 0.2s ease;
       }
 
       .fp-room-info-close:hover {
-        color: #e6edf3;
+        color: #1F2933;
       }
 
       @keyframes fadeIn {
-        from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+        from { opacity: 0; transform: translate(-50%, -50%) scale(0.97); }
         to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
       }
 

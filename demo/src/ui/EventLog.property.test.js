@@ -190,16 +190,17 @@ describe('EventLog Property Tests - Event Log Entries', () => {
               store.emit('eventlog', entry);
             }
 
-            // Verify DOM order matches emission order
+            // Entries are prepended: newest on top, so DOM order is reversed
             const renderedEntries = log.entriesContainer.querySelectorAll('.event-log-entry');
             expect(renderedEntries.length).toBe(entries.length);
 
             for (let i = 0; i < entries.length; i++) {
+              const source = entries[entries.length - 1 - i];
               const actionEl = renderedEntries[i].querySelector('.event-log-action-name');
-              expect(actionEl.textContent).toBe(entries[i].action);
+              expect(actionEl.textContent).toBe(source.action);
 
               const deviceEl = renderedEntries[i].querySelector('.event-log-device');
-              expect(deviceEl.textContent).toBe(`→ ${entries[i].device}`);
+              expect(deviceEl.textContent).toBe(`→ ${source.device}`);
             }
           }
         ),

@@ -43,7 +43,7 @@ export class EventLog {
 
     this.container.innerHTML = `
       <div class="event-log-header">
-        <h3 class="event-log-title">📋 Event Log</h3>
+        <h3 class="event-log-title">Event Log</h3>
         <button class="event-log-close" aria-label="Close event log" title="Hide event log">✕</button>
       </div>
       <div id="event-log-entries" class="event-log-entries"></div>
@@ -186,7 +186,8 @@ export class EventLog {
 
     el.appendChild(badgeRow);
 
-    this.entriesContainer.appendChild(el);
+    // Newest entries on top
+    this.entriesContainer.prepend(el);
     this.autoScroll();
   }
 
@@ -258,11 +259,12 @@ export class EventLog {
   }
 
   /**
-   * Scrolls the entries container to the bottom to show the latest entry.
+   * Scrolls the entries container to the top to show the latest entry
+   * (newest entries are prepended).
    */
   autoScroll() {
     if (this.entriesContainer) {
-      this.entriesContainer.scrollTop = this.entriesContainer.scrollHeight;
+      this.entriesContainer.scrollTop = 0;
     }
   }
 
@@ -298,15 +300,17 @@ export class EventLog {
    * @returns {string}
    */
   getAccentColor(type) {
+    // Two-color system: blue = routine action, amber = decision/override
     const colorMap = {
-      ac_precool: '#00CAFF',
-      geyser_preheat: '#FF6B35',
-      security_arm: '#FFD700',
-      energy_optimization: '#00FF88',
-      comfort_lighting: '#FFB347',
-      power_cut: '#FF4757',
+      ac_precool: '#2E7CF6',
+      geyser_preheat: '#2E7CF6',
+      security_arm: '#2E7CF6',
+      energy_optimization: '#2E7CF6',
+      comfort_lighting: '#2E7CF6',
+      power_cut: '#F5A623',
+      error: '#F5A623',
     };
-    return colorMap[type] || '#00CAFF';
+    return colorMap[type] || '#2E7CF6';
   }
 
   /**

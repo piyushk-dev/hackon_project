@@ -4,74 +4,87 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ghar Sense — Sharma Niwas</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3.5 10.5 12 3.5l8.5 7' fill='none' stroke='%230E7C72' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/><path d='M5.5 9.5V20h13V9.5' fill='none' stroke='%230E7C72' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/src/styles/sense.css" />
 </head>
 <body class="sense-page">
   <div id="sense-app">
 
-    <!-- ─── Slim header ─────────────────────────────────────────── -->
+    <!-- ─── Header ──────────────────────────────────────────────── -->
     <header class="sense-header">
-      <div class="brand">
-        <span class="brand-mark">🏡</span>
-        <div>
-          <div class="brand-name">Ghar Sense</div>
-          <div class="brand-sub">Sharma Niwas</div>
+      <div class="header-row">
+        <div class="brand">
+          <span class="brand-mark" id="brand-mark"></span>
+          <div>
+            <div class="brand-name">Ghar Sense</div>
+            <div class="brand-sub">Alexa thinks ahead</div>
+          </div>
+        </div>
+
+        <div class="clock-block">
+          <span id="clock-sky" class="clock-sky"></span>
+          <div id="sim-clock" class="sim-clock">5:45 AM</div>
+          <button id="play-btn" class="play-btn">Play the day</button>
+          <div class="speed-group">
+            <button class="speed-btn" data-speed="2">1×</button>
+            <button class="speed-btn active" data-speed="4">2×</button>
+            <button class="speed-btn" data-speed="12">6×</button>
+          </div>
+          <button id="voice-btn" class="voice-btn" title="Alexa's voice on/off"></button>
+        </div>
+
+        <div class="stats-block">
+          <div class="stat">
+            <div id="stat-savings" class="stat-value">₹12</div>
+            <div class="stat-label">saved today</div>
+          </div>
+          <div class="stat">
+            <div id="stat-actions" class="stat-value">3</div>
+            <div class="stat-label">handled</div>
+          </div>
+          <a class="back-link" href="/classic.html" title="Open the classic 2D demo">2D</a>
         </div>
       </div>
 
-      <div class="clock-block">
-        <span id="clock-sky" class="clock-sky">🌅</span>
-        <div id="sim-clock" class="sim-clock">5:45 AM</div>
-        <button id="play-btn" class="play-btn">▶ Play the Day</button>
-        <div class="speed-group">
-          <button class="speed-btn" data-speed="2">1×</button>
-          <button class="speed-btn active" data-speed="4">2×</button>
-          <button class="speed-btn" data-speed="12">6×</button>
+      <div class="day-row">
+        <span class="day-edge">6 AM</span>
+        <div id="day-track" class="day-track">
+          <div id="day-fill" class="day-fill"></div>
+          <div id="day-now" class="day-now"></div>
         </div>
-      </div>
-
-      <div class="stats-block">
-        <div class="stat">
-          <div id="stat-savings" class="stat-value">₹12</div>
-          <div class="stat-label">saved</div>
-        </div>
-        <div class="stat">
-          <div id="stat-actions" class="stat-value">3</div>
-          <div class="stat-label">handled</div>
-        </div>
-        <a class="back-link" href="/classic.html" title="Open the classic 2D demo">2D</a>
+        <span class="day-edge">10 PM</span>
       </div>
     </header>
 
-    <!-- ─── The stage: 3D house + floating overlays ─────────────── -->
+    <!-- ─── The stage ───────────────────────────────────────────── -->
     <main class="stage">
       <div id="house-canvas"></div>
 
-      <!-- Alexa announcement bubble -->
-      <div id="alexa-toast" class="alexa-toast">
-        <div class="alexa-ring"><span></span></div>
-        <div class="alexa-toast-body">
-          <div id="alexa-toast-text" class="alexa-toast-text"></div>
-          <div id="alexa-toast-target" class="alexa-toast-target"></div>
+      <!-- Alexa — the voice of the house -->
+      <div id="alexa-bubble" class="alexa-bubble">
+        <div class="alexa-orb"><span></span><span></span></div>
+        <div class="alexa-bubble-body">
+          <div id="alexa-text" class="alexa-text"></div>
+          <div id="alexa-target" class="alexa-target"></div>
         </div>
       </div>
 
       <!-- Left: Alexa's diary -->
       <aside class="dock dock-left" id="diary-dock">
         <div class="dock-head">
-          <span class="dock-title">💭 Alexa's Diary</span>
+          <span class="dock-title" id="diary-title">Alexa's Diary</span>
           <button class="dock-toggle" title="Collapse">–</button>
         </div>
         <div class="dock-body" id="feed-panel"></div>
       </aside>
 
-      <!-- Right: family (asks, trust, wellness) -->
+      <!-- Right: family -->
       <aside class="dock dock-right" id="family-dock">
         <div class="dock-head">
-          <span class="dock-title">🤝 Family & Trust</span>
+          <span class="dock-title" id="family-title">Family &amp; Trust</span>
           <button class="dock-toggle" title="Collapse">–</button>
         </div>
         <div class="dock-body">
@@ -80,28 +93,43 @@
         </div>
       </aside>
 
-      <!-- Bottom: waveform + vitals pills -->
+      <!-- Bottom: waveform + vitals -->
       <div id="status-bar">
         <div id="wave-strip"></div>
         <div id="status-pills"></div>
       </div>
 
-      <span class="house-hint">🖱️ drag to look around</span>
+      <span class="house-hint">Drag to explore · click any device or person</span>
+
+      <!-- Click popup for devices / people -->
+      <div id="pick-pop" class="pick-pop hidden"></div>
 
       <!-- Scenario launcher -->
       <div class="scenario-fab-wrap">
         <div id="scenario-menu" class="scenario-menu">
-          <button class="scenario-btn" data-scenario="cooker">🍲 Cooker Whistles</button>
-          <button class="scenario-btn" data-scenario="motor">🚱 Motor Dry-Run</button>
-          <button class="scenario-btn" data-scenario="powercut">⚡ Power Cut</button>
-          <button class="scenario-btn" data-scenario="pooja">🛕 Pooja Bell</button>
-          <button class="scenario-btn" data-scenario="guest">🔔 Guests Arrive</button>
-          <button class="scenario-btn" data-scenario="aqi">💨 AQI Spike</button>
-          <button class="scenario-btn" data-scenario="iron">🔥 Iron Left On</button>
-          <button class="scenario-btn" data-scenario="cough">🤒 Night Cough</button>
-          <button class="scenario-btn" data-scenario="voice">🗣️ Voice Moments</button>
+          <button class="scenario-btn" data-scenario="cooker">Cooker whistles</button>
+          <button class="scenario-btn" data-scenario="motor">Motor dry-run</button>
+          <button class="scenario-btn" data-scenario="powercut">Power cut</button>
+          <button class="scenario-btn" data-scenario="pooja">Pooja bell</button>
+          <button class="scenario-btn" data-scenario="guest">Guests arrive</button>
+          <button class="scenario-btn" data-scenario="aqi">AQI spike</button>
+          <button class="scenario-btn" data-scenario="iron">Iron left on</button>
+          <button class="scenario-btn" data-scenario="cough">Night cough</button>
+          <button class="scenario-btn" data-scenario="voice">Voice moments</button>
         </div>
-        <button id="scenario-fab" class="scenario-fab">🎬 Scenarios</button>
+        <button id="scenario-fab" class="scenario-fab">Scenarios</button>
+      </div>
+
+      <!-- Intro splash -->
+      <div id="splash" class="splash">
+        <div class="splash-card">
+          <div class="splash-orb"><span></span><span></span></div>
+          <h1 class="splash-title">Ghar Sense</h1>
+          <p class="splash-tag">The home that thinks ahead</p>
+          <p class="splash-sub">Step inside <b>Sharma Niwas</b> — watch a full day unfold, click any device or family member, and hear Alexa explain every decision she makes.</p>
+          <button id="enter-btn" class="enter-btn">Enter Sharma Niwas</button>
+          <p class="splash-note">Sound on recommended · simulated data, real product design</p>
+        </div>
       </div>
     </main>
   </div>

@@ -1,17 +1,22 @@
 /**
  * VoicePanel — asks, trust ladder, and voice moments in the family dock.
  *
- * Ask cards (✓ Haan / ✗ Nahi) appear on top when Alexa wants permission;
- * answering moves the trust ladder (+5 / −15 — the backend's exact math).
- * The last couple of voice transcripts show below with speaker-ID chips.
+ * Ask cards appear when Alexa wants permission; answering moves the trust
+ * ladder (+5 / −15 — the backend's exact math). Members are shown with
+ * initial avatars, not emoji.
  */
 
 import { eventBus } from '../../utils/eventBus.js';
 import { SENSE_EVENTS } from '../SenseEngine.js';
 import { FAMILY, TIER_COLORS, tierFor, TIER_NAMES } from '../mockData.js';
+import { stripEmoji } from '../icons.js';
 
 const MAX_TRANSCRIPTS = 2;
 const LANG_LABELS = { hi: 'हिंदी', en: 'EN', 'hi-en': 'HINGLISH' };
+
+function avatar(member, size = '') {
+  return `<span class="avatar${size}" style="background:${member.color}1c;color:${member.color};border-color:${member.color}55">${member.name[0]}</span>`;
+}
 
 export class VoicePanel {
   constructor(container, engine) {
@@ -24,7 +29,8 @@ export class VoicePanel {
   _render() {
     this.container.innerHTML = `
       <div id="asks" class="asks"></div>
-      <div id="trust-rows" class="trust-rows" title="Trust grows when the family accepts Alexa's actions (+5) and drops on overrides (−15). Higher tiers = more autonomy."></div>
+      <div class="sec-label" title="Trust grows when the family accepts Alexa's actions (+5) and drops on overrides (−15). Higher tiers mean more autonomy.">Trust ladder</div>
+      <div id="trust-rows" class="trust-rows"></div>
       <div id="transcripts" class="transcripts"></div>
     `;
     this.asksEl = this.container.querySelector('#asks');
@@ -37,7 +43,7 @@ export class VoicePanel {
       const row = document.createElement('div');
       row.className = 'trust-row';
       row.innerHTML = `
-        <span class="trust-name" style="color:${member.color}">${member.emoji} ${member.name}</span>
+        <span class="trust-name">${avatar(member)}${member.name}</span>
         <div class="trust-track"><i class="trust-fill"></i><span class="trust-delta"></span></div>
         <span class="trust-tier"></span>
       `;
@@ -58,7 +64,6 @@ export class VoicePanel {
     els.fill.style.width = `${score}%`;
     els.fill.style.background = TIER_COLORS[tier];
     els.tier.textContent = TIER_NAMES[tier];
-    els.tier.style.color = TIER_COLORS[tier];
   }
 
   _bind() {
@@ -80,11 +85,12 @@ export class VoicePanel {
     const card = document.createElement('div');
     card.className = 'ask-card';
     card.innerHTML = `
-      <div class="ask-q">${ask.question}</div>
-      <div class="ask-meta">for <b style="color:${member.color}">${member.name}</b> · ${ask.category}</div>
+      <div class="ask-label">Alexa asks</div>
+      <div class="ask-q">${stripEmoji(ask.question)}</div>
+      <div class="ask-meta">for ${member.name} · ${ask.category}</div>
       <div class="ask-actions">
-        <button class="btn-yes">✓ Haan, karo</button>
-        <button class="btn-no">✗ Nahi</button>
+        <button class="btn-yes">Haan, karo</button>
+        <button class="btn-no">Nahi</button>
       </div>
     `;
     const close = (answered) => {
@@ -92,7 +98,7 @@ export class VoicePanel {
       setTimeout(() => card.remove(), 400);
       this.engine.feed(
         answered ? 'ACT' : 'EXPLAIN',
-        answered ? '✅' : '🙅',
+        '',
         answered ? `${member.name} accepted — trust +5` : `${member.name} overrode — trust −15`,
         answered
           ? 'One step closer to Alexa doing this without asking'
@@ -104,7 +110,6 @@ export class VoicePanel {
     this.asksEl.prepend(card);
     requestAnimationFrame(() => card.classList.add('in'));
 
-    // Auto-accept softly if the presenter doesn't click, so the day flows.
     setTimeout(() => {
       if (card.isConnected) {
         ask.accept();
@@ -119,11 +124,12 @@ export class VoicePanel {
     item.className = 'transcript';
     item.innerHTML = `
       <div class="tr-head">
-        <span class="speaker-chip" style="background:${member.color}18;border-color:${member.color}77;color:${member.color}">${member.emoji} ${member.name}</span>
+        ${avatar(member)}
+        <span class="tr-name" style="color:${member.color}">${member.name}</span>
         <span class="lang-chip">${LANG_LABELS[v.lang] || v.lang}</span>
       </div>
-      <div class="tr-text">“${v.text}”</div>
-      <div class="tr-intent">→ ${v.intent}</div>
+      <div class="tr-text">“${stripEmoji(v.text)}”</div>
+      <div class="tr-intent">${stripEmoji(v.intent)}</div>
     `;
     this.transcriptsEl.prepend(item);
     requestAnimationFrame(() => item.classList.add('in'));

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sketch 01 — The Learning Grid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #F4F1EA; --ink: #23201A; --muted: #8A8272;
+    --teal: #0E7C72; --teal-deep: #0A5A53; --amber: #C77414;
+    --hairline: rgba(35,32,26,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink);
+    height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+  .head { padding: 44px 64px 10px; }
+  .kicker {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 44px; letter-spacing: 0.002em;
+    line-height: 1.05;
+  }
+  .stage { flex: 1; display: flex; align-items: center; gap: 56px; padding: 0 64px 40px; min-height: 0; }
+  .grid-wrap { position: relative; }
+  svg { display: block; }
+
+  .side { width: 320px; flex: 0 0 320px; }
+  .conf-num {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 88px; line-height: 1;
+    color: var(--ink); font-variant-numeric: tabular-nums;
+  }
+  .conf-num small { font-size: 40px; color: var(--muted); }
+  .conf-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); margin-top: 6px;
+  }
+  .status { margin-top: 34px; display: flex; flex-direction: column; gap: 14px; }
+  .status-line {
+    font-size: 16.5px; line-height: 1.5; color: var(--ink); font-weight: 500;
+    opacity: 0; transform: translateY(8px); transition: opacity .6s, transform .6s;
+    border-left: 2.5px solid var(--teal); padding-left: 14px;
+  }
+  .status-line.amber { border-color: var(--amber); }
+  .status-line.show { opacity: 1; transform: none; }
+  .status-line b { font-weight: 700; }
+
+  .replay {
+    position: fixed; bottom: 26px; right: 28px;
+    font: 600 12px 'Inter', sans-serif; color: var(--muted);
+    background: #fff; border: 1px solid var(--hairline); border-radius: 9px;
+    padding: 8px 14px; cursor: pointer;
+  }
+  .replay:hover { color: var(--teal); border-color: var(--teal); }
+  .tag { position: fixed; top: 18px; right: 28px; font: 600 11px 'Inter'; color: var(--muted); letter-spacing: .08em; }
+</style>
+</head>
+<body>
+  <div class="head">
+    <div class="kicker">Chapter 02 · She watches</div>
+    <h1>30 mornings. One pattern.</h1>
+  </div>
+
+  <div class="stage">
+    <div class="grid-wrap"><svg id="grid" width="820" height="560"></svg></div>
+    <div class="side">
+      <div class="conf-num"><span id="conf">0</span><small>%</small></div>
+      <div class="conf-label">sure about Dadaji's bath</div>
+      <div class="status">
+        <div class="status-line" id="s1"><b>Day 14 —</b> she's sure now.<br/>Dadaji bathes at <b>6:45</b>, every weekday.</div>
+        <div class="status-line amber" id="s2">Sundays? <b>Around 8.</b> She knows that too.</div>
+        <div class="status-line" id="s3">No one told her. She just <b>watched the geyser.</b></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="replay" onclick="run()">↻ replay</button>
+  <div class="tag">SKETCH 01</div>
+
+<script>
+const SVG = document.getElementById('grid');
+const NS = 'http://www.w3.org/2000/svg';
+const conf = document.getElementById('conf');
+
+// Layout
+const LEFT = 96, TOP = 26, W = 690, ROW_H = 17.4, DAYS = 30;
+const T0 = 5.5 * 60, T1 = 9 * 60; // 5:30 → 9:00
+const X = (min) => LEFT + ((min - T0) / (T1 - T0)) * W;
+
+// Deterministic mock month: weekdays ~6:45, Sundays ~8:05, two early outliers
+function mulberry(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const rnd = mulberry(42);
+const days = [];
+for (let d = 0; d < DAYS; d++) {
+  const dow = d % 7; // day 0 = Monday
+  const sunday = dow === 6;
+  let t = sunday ? 485 + (rnd() - 0.5) * 26 : 405 + (rnd() - 0.5) * 18;
+  if (d === 2) t = 448;  // guests came, late morning
+  if (d === 9) t = 391;  // early train day
+  days.push({ t, sunday, dow });
+}
+
+function el(name, attrs) {
+  const e = document.createElementNS(NS, name);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  SVG.appendChild(e);
+  return e;
+}
+
+let timers = [];
+function clear() { timers.forEach(clearTimeout); timers = []; SVG.innerHTML = ''; }
+const at = (ms, fn) => timers.push(setTimeout(fn, ms));
+
+function axis() {
+  for (let h = 6; h <= 9; h++) {
+    const x = X(h * 60);
+    el('line', { x1: x, y1: TOP - 6, x2: x, y2: TOP + DAYS * ROW_H, stroke: 'rgba(35,32,26,0.08)', 'stroke-width': 1 });
+    const t = el('text', { x, y: TOP - 14, 'text-anchor': 'middle', fill: '#8A8272',
+      style: 'font:600 10.5px Inter; letter-spacing:.06em' });
+    t.textContent = h + ' AM';
+  }
+}
+
+function run() {
+  clear();
+  axis();
+  conf.textContent = '0';
+  document.querySelectorAll('.status-line').forEach(s => s.classList.remove('show'));
+
+  const bandWd = el('rect', { x: 0, y: TOP - 4, width: 0, height: DAYS * ROW_H + 8, rx: 8,
+    fill: 'rgba(14,124,114,0.10)', stroke: 'rgba(14,124,114,0)', 'stroke-width': 1.2 });
+  const bandSun = el('rect', { x: 0, y: TOP - 4, width: 0, height: DAYS * ROW_H + 8, rx: 8,
+    fill: 'rgba(199,116,20,0.10)', stroke: 'rgba(199,116,20,0)', 'stroke-width': 1.2 });
+
+  let wdTimes = [], sunTimes = [];
+  const DOW = ['M','T','W','T','F','S','S'];
+
+  days.forEach((day, i) => {
+    at(700 + i * 260, () => {
+      // row label
+      const lab = el('text', { x: LEFT - 30, y: TOP + i * ROW_H + 4, fill: day.sunday ? '#C77414' : '#B4AC9C',
+        style: 'font:600 10px Inter', 'text-anchor': 'end' });
+      lab.textContent = 'Day ' + (i + 1);
+      const dw = el('text', { x: LEFT - 14, y: TOP + i * ROW_H + 4, fill: day.sunday ? '#C77414' : '#CFC8B8',
+        style: 'font:700 9px Inter', 'text-anchor': 'middle' });
+      dw.textContent = DOW[day.dow];
+
+      // dot pops in
+      const c = el('circle', { cx: X(day.t), cy: TOP + i * ROW_H, r: 0,
+        fill: day.sunday ? '#C77414' : '#0E7C72', opacity: 0.92 });
+      c.animate([{ r: 0 }, { r: 7.5 }, { r: 5.2 }], { duration: 420, fill: 'forwards', easing: 'cubic-bezier(.2,1.4,.4,1)' });
+
+      // learn
+      (day.sunday ? sunTimes : wdTimes).push(day.t);
+      const fit = (arr, band) => {
+        if (arr.length < 3) return;
+        const m = arr.reduce((a, b) => a + b) / arr.length;
+        const sd = Math.sqrt(arr.reduce((a, b) => a + (b - m) ** 2, 0) / arr.length) + 4;
+        const x0 = X(m - sd * 1.7), x1 = X(m + sd * 1.7);
+        band.setAttribute('x', x0);
+        band.setAttribute('width', x1 - x0);
+      };
+      fit(wdTimes, bandWd);
+      fit(sunTimes, bandSun);
+
+      // confidence climbs with weekday evidence
+      const pct = Math.min(96, Math.round(wdTimes.length * 7.3));
+      conf.textContent = pct;
+
+      if (i === 13) document.getElementById('s1').classList.add('show');
+      if (i === 20) document.getElementById('s2').classList.add('show');
+    });
+  });
+
+  at(700 + DAYS * 260 + 600, () => {
+    bandWd.setAttribute('stroke', 'rgba(14,124,114,0.55)');
+    bandSun.setAttribute('stroke', 'rgba(199,116,20,0.55)');
+    document.getElementById('s3').classList.add('show');
+    // 6:45 marker
+    const x = X(405);
+    el('line', { x1: x, y1: TOP - 4, x2: x, y2: TOP + DAYS * ROW_H + 4, stroke: '#0A5A53', 'stroke-width': 1.6, 'stroke-dasharray': '2 5' });
+    const t = el('text', { x, y: TOP + DAYS * ROW_H + 24, 'text-anchor': 'middle', fill: '#0A5A53', style: 'font:700 12px Inter' });
+    t.textContent = '6:45 AM';
+  });
+}
+run();
+</script>
+</body>
+</html>

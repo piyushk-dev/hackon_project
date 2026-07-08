@@ -1,20 +1,17 @@
 /**
- * TrustGauges — Displays circular SVG gauge rings for each device category's
- * trust score and autonomy tier.
+ * TrustGauges — Trust scores as a clean vertical list.
  *
- * Each gauge shows:
- * - Category name
- * - Circular progress ring (SVG circle)
- * - Score value (0-100) in center
- * - Tier number (1-5)
+ * Each row shows:
+ * - Category name + tier chip
+ * - Score number, right-aligned
+ * - Slim horizontal progress bar (blue fill on a light-grey track)
  *
- * Subscribes to StateStore trust updates and animates gauge changes
- * via stroke-dashoffset transitions.
+ * Subscribes to StateStore trust updates and animates bar width changes.
  *
  * Requirements: 9.1, 9.2, 9.3
  */
 
-/** Device categories to display gauges for */
+/** Device categories to display rows for */
 const CATEGORIES = [
   'climate',
   'lighting',
@@ -26,41 +23,25 @@ const CATEGORIES = [
   'assistant',
 ];
 
-/** Tier color coding */
-const TIER_COLORS = {
-  1: '#666',      // gray
-  2: '#ff9f43',   // orange
-  3: '#00CAFF',   // cyan (Alexa blue)
-  4: '#4ecdc4',   // green
-  5: '#f7dc6f',   // gold
-};
-
-/** SVG ring geometry */
-const RING_RADIUS = 28;
-const RING_STROKE = 4;
-const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
-const SVG_SIZE = 70;
-
 export class TrustGauges {
   /**
    * @param {import('../simulation/StateStore.js').StateStore} stateStore
    */
   constructor(stateStore) {
     this.stateStore = stateStore;
-    this.gaugeElements = new Map(); // category → { circle, scoreText, tierText }
+    this.gaugeElements = new Map(); // category → { fill, scoreText, tierText }
     this.render();
     this.subscribeToUpdates();
   }
 
   /**
-   * Create the gauge HTML within #trust-gauges container.
-   * Each gauge has a title, SVG circle ring, score value, and tier number.
+   * Create the list HTML within #trust-gauges container.
+   * Each row has a label, tier chip, score, and progress bar.
    */
   render() {
     const container = document.getElementById('trust-gauges');
     if (!container) return;
 
-    // Build DOM programmatically for better compatibility with test environments
     container.innerHTML = '';
 
     // Title
@@ -69,102 +50,66 @@ export class TrustGauges {
     title.textContent = 'Trust Scores';
     container.appendChild(title);
 
-    // Grid container
-    const grid = document.createElement('div');
-    grid.className = 'trust-gauges-grid';
-    container.appendChild(grid);
+    // List container
+    const list = document.createElement('div');
+    list.className = 'trust-list';
+    container.appendChild(list);
 
-    // Create each gauge
+    // Create each row
     for (const category of CATEGORIES) {
-      const gaugeEl = this._createGaugeElement(category);
-      grid.appendChild(gaugeEl);
+      const rowEl = this._createRowElement(category);
+      list.appendChild(rowEl);
 
       // Cache references
-      const circle = gaugeEl.querySelector('.gauge-progress');
-      const scoreText = gaugeEl.querySelector('.gauge-score');
-      const tierText = gaugeEl.querySelector('.gauge-tier');
-      this.gaugeElements.set(category, { circle, scoreText, tierText });
+      const fill = rowEl.querySelector('.trust-row-fill');
+      const scoreText = rowEl.querySelector('.trust-row-score');
+      const tierText = rowEl.querySelector('.trust-row-tier');
+      this.gaugeElements.set(category, { fill, scoreText, tierText });
     }
   }
 
   /**
-   * Create a single gauge DOM element with SVG ring.
+   * Create a single trust row DOM element.
    * @param {string} category
    * @returns {HTMLElement}
    */
-  _createGaugeElement(category) {
+  _createRowElement(category) {
     const displayName = category.charAt(0).toUpperCase() + category.slice(1);
-    const center = SVG_SIZE / 2;
 
-    const wrapper = document.createElement('div');
-    wrapper.className = 'trust-gauge';
-    wrapper.setAttribute('data-gauge', category);
+    const row = document.createElement('div');
+    row.className = 'trust-row';
+    row.setAttribute('data-gauge', category);
 
-    // SVG element
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('width', String(SVG_SIZE));
-    svg.setAttribute('height', String(SVG_SIZE));
-    svg.setAttribute('viewBox', `0 0 ${SVG_SIZE} ${SVG_SIZE}`);
+    const label = document.createElement('span');
+    label.className = 'trust-row-label';
+    label.textContent = displayName;
 
-    // Background circle
-    const bgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    bgCircle.setAttribute('cx', String(center));
-    bgCircle.setAttribute('cy', String(center));
-    bgCircle.setAttribute('r', String(RING_RADIUS));
-    bgCircle.setAttribute('fill', 'none');
-    bgCircle.setAttribute('stroke', 'rgba(0,202,255,0.1)');
-    bgCircle.setAttribute('stroke-width', String(RING_STROKE));
-    svg.appendChild(bgCircle);
-
-    // Progress circle
-    const progressCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    progressCircle.classList.add('gauge-progress');
-    progressCircle.setAttribute('cx', String(center));
-    progressCircle.setAttribute('cy', String(center));
-    progressCircle.setAttribute('r', String(RING_RADIUS));
-    progressCircle.setAttribute('fill', 'none');
-    progressCircle.setAttribute('stroke', '#00CAFF');
-    progressCircle.setAttribute('stroke-width', String(RING_STROKE));
-    progressCircle.setAttribute('stroke-dasharray', String(RING_CIRCUMFERENCE));
-    progressCircle.setAttribute('stroke-dashoffset', String(RING_CIRCUMFERENCE));
-    progressCircle.setAttribute('stroke-linecap', 'round');
-    progressCircle.setAttribute('transform', `rotate(-90 ${center} ${center})`);
-    svg.appendChild(progressCircle);
-
-    // Score text in center
-    const scoreText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    scoreText.classList.add('gauge-score');
-    scoreText.setAttribute('x', String(center));
-    scoreText.setAttribute('y', String(center));
-    scoreText.setAttribute('text-anchor', 'middle');
-    scoreText.setAttribute('dominant-baseline', 'central');
-    scoreText.setAttribute('fill', '#e6edf3');
-    scoreText.setAttribute('font-size', '12');
-    scoreText.setAttribute('font-weight', '600');
-    scoreText.setAttribute('font-family', 'Inter, sans-serif');
-    scoreText.textContent = '0';
-    svg.appendChild(scoreText);
-
-    wrapper.appendChild(svg);
-
-    // Category name
-    const nameSpan = document.createElement('span');
-    nameSpan.className = 'gauge-category-name';
-    nameSpan.textContent = displayName;
-    wrapper.appendChild(nameSpan);
-
-    // Tier badge
     const tierSpan = document.createElement('span');
-    tierSpan.className = 'gauge-tier';
+    tierSpan.className = 'trust-row-tier';
     tierSpan.textContent = 'Tier 1';
-    wrapper.appendChild(tierSpan);
+    label.appendChild(tierSpan);
 
-    return wrapper;
+    const score = document.createElement('span');
+    score.className = 'trust-row-score';
+    score.textContent = '0';
+
+    const track = document.createElement('div');
+    track.className = 'trust-row-track';
+
+    const fill = document.createElement('div');
+    fill.className = 'trust-row-fill';
+    track.appendChild(fill);
+
+    row.appendChild(label);
+    row.appendChild(score);
+    row.appendChild(track);
+
+    return row;
   }
 
   /**
    * Subscribe to StateStore trust updates for each category.
-   * When trust:{category} fires, animate the corresponding gauge.
+   * When trust:{category} fires, animate the corresponding row.
    */
   subscribeToUpdates() {
     for (const category of CATEGORIES) {
@@ -175,8 +120,8 @@ export class TrustGauges {
   }
 
   /**
-   * Update a single gauge's SVG ring and text to reflect a new score/tier.
-   * Animates the stroke-dashoffset for a smooth fill transition.
+   * Update a single row's bar and text to reflect a new score/tier.
+   * The bar width animates via CSS transition.
    *
    * @param {string} category
    * @param {{ score: number, tier: number }} data
@@ -185,34 +130,25 @@ export class TrustGauges {
     const elements = this.gaugeElements.get(category);
     if (!elements) return;
 
-    const { circle, scoreText, tierText } = elements;
+    const { fill, scoreText, tierText } = elements;
 
-    // Calculate the new offset based on score (0-100), clamped
-    const percentage = Math.max(0, Math.min(100, score)) / 100;
-    const newOffset = RING_CIRCUMFERENCE * (1 - percentage);
+    const percentage = Math.max(0, Math.min(100, score));
 
-    // Animate the circle stroke-dashoffset via CSS transition
-    if (circle) {
-      circle.style.transition = 'stroke-dashoffset 0.6s ease-out, stroke 0.4s ease';
-      circle.setAttribute('stroke-dashoffset', String(newOffset));
-      // Apply tier-based color coding
-      const tierColor = TIER_COLORS[tier] || TIER_COLORS[1];
-      circle.setAttribute('stroke', tierColor);
+    if (fill) {
+      fill.style.width = `${percentage}%`;
     }
 
-    // Update score text
     if (scoreText) {
       scoreText.textContent = String(Math.round(score));
     }
 
-    // Update tier display
     if (tierText) {
       tierText.textContent = `Tier ${tier}`;
     }
   }
 
   /**
-   * Accept initial tier data (from DataLayer.getAutonomyTiers()) to set starting gauge values.
+   * Accept initial tier data (from DataLayer.getAutonomyTiers()) to set starting values.
    * @param {{ tiers: Array<{ category: string, currentTier: number, trustScore: number }> }} tiersData
    */
   initializeFromData(tiersData) {
@@ -223,7 +159,7 @@ export class TrustGauges {
       if (CATEGORIES.includes(category)) {
         // Set the state store so it's in sync
         this.stateStore.trustScores.set(category, { score: trustScore, tier: currentTier });
-        // Update the gauge visually
+        // Update the row visually
         this.updateGauge(category, { score: trustScore, tier: currentTier });
       }
     }

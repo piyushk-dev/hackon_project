@@ -80,8 +80,10 @@ describe('EventLog', () => {
       });
     });
 
+    // Entries are prepended (newest on top), so DOM order is reversed
     const emojiEls = document.querySelectorAll('.event-log-emoji');
-    types.forEach(({ emoji }, i) => {
+    const reversed = [...types].reverse();
+    reversed.forEach(({ emoji }, i) => {
       expect(emojiEls[i].textContent).toBe(emoji);
     });
   });
@@ -96,7 +98,8 @@ describe('EventLog', () => {
     });
 
     const entry = document.querySelector('.event-log-entry');
-    expect(entry.style.borderLeftColor).toBe('#FFD700');
+    // Routine actions carry the blue edge indicator
+    expect(entry.style.borderLeftColor).toBe('#2E7CF6');
   });
 
   it('should display stage info when provided', () => {

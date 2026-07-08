@@ -1,13 +1,15 @@
 /**
- * WaveStrip — the acoustic intelligence strip overlaid on the 3D view.
+ * WaveStrip — the acoustic intelligence strip in the status bar.
  *
- * A slim translucent bar across the bottom of the house: live waveform,
- * whistle counter, quiet-mode badge, privacy chip. Detections pop up as
- * floating chips above the strip and fade away on their own.
+ * Live waveform + whistle counter + quiet/privacy chips. Detections pop
+ * up as small labeled chips above the bar and fade on their own.
  */
 
 import { eventBus } from '../../utils/eventBus.js';
 import { SENSE_EVENTS } from '../SenseEngine.js';
+import { icon, stripEmoji } from '../icons.js';
+
+const TONE_COLORS = { info: '#0E7C72', alert: '#B03A2E', calm: '#6D5A96' };
 
 export class WaveStrip {
   constructor(container, engine) {
@@ -24,14 +26,14 @@ export class WaveStrip {
     this.container.innerHTML = `
       <div class="wave-pops" id="wave-pops"></div>
       <div class="wave-bar">
-        <span class="wave-mic">🎙️</span>
+        <span class="wave-mic">${icon('mic')}</span>
         <canvas id="wave-canvas"></canvas>
         <div id="whistle-counter" class="whistle-counter hidden">
-          <span>🍲</span>
+          <span class="whistle-label">cooker</span>
           <span class="whistle-dots"><i class="wdot" data-n="1"></i><i class="wdot" data-n="2"></i><i class="wdot" data-n="3"></i></span>
         </div>
-        <span id="quiet-badge" class="chip chip-quiet hidden">🤫 Quiet</span>
-        <span class="chip chip-privacy" title="Sound classification runs on the Echo itself. Raw audio is never recorded or uploaded.">🔒 On-device</span>
+        <span id="quiet-badge" class="chip chip-quiet hidden">quiet mode</span>
+        <span class="chip chip-privacy" title="Sound classification runs on the Echo itself. Raw audio is never recorded or uploaded.">${icon('lock')} on-device</span>
       </div>
     `;
     this.canvas = this.container.querySelector('#wave-canvas');
@@ -60,12 +62,13 @@ export class WaveStrip {
       if (n >= 3) setTimeout(() => this.whistleEl.classList.add('hidden'), 9000);
     }
 
-    // Floating detection chip above the strip.
+    const color = TONE_COLORS[evt.tone] || TONE_COLORS.info;
     const pop = document.createElement('div');
-    pop.className = `wave-pop tone-${evt.tone}`;
+    pop.className = 'wave-pop';
+    pop.style.setProperty('--tone', color);
     pop.innerHTML = `
-      <span class="pop-icon">${evt.icon}</span>
-      <span class="pop-text"><b>${evt.label}</b> · ${evt.room} · ${Math.round(evt.conf * 100)}%</span>
+      <i class="pop-dot"></i>
+      <span class="pop-text"><b>${stripEmoji(evt.label)}</b> · ${evt.room} · ${Math.round(evt.conf * 100)}%</span>
     `;
     this.popsEl.appendChild(pop);
     requestAnimationFrame(() => pop.classList.add('in'));
@@ -85,7 +88,7 @@ export class WaveStrip {
 
       this._energy *= 0.965;
       const quiet = this.engine.state.quietMode ? 0.4 : 1;
-      const amp = (0.07 + this._energy * 0.85) * quiet;
+      const amp = (0.08 + this._energy * 0.85) * quiet;
       this._samples.push((Math.random() * 2 - 1) * amp);
       const maxSamples = Math.floor(w / 3);
       while (this._samples.length > maxSamples) this._samples.shift();
@@ -96,11 +99,11 @@ export class WaveStrip {
         const v = Math.abs(this._samples[i]);
         const barH = Math.max(1.5, v * (h * 0.92));
         const heat = Math.min(1, v * 2.2);
-        // Teal → saffron as it gets loud.
-        const r = Math.round(14 + heat * 220);
-        const g = Math.round(111 + heat * 26);
-        const b = Math.round(110 - heat * 98);
-        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${0.5 + heat * 0.5})`;
+        // Petrol teal, warming toward amber as it gets loud
+        const r = Math.round(14 + heat * 200);
+        const g = Math.round(124 - heat * 10);
+        const b = Math.round(114 - heat * 100);
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${0.45 + heat * 0.5})`;
         ctx.fillRect(i * 3, mid - barH / 2, 2, barH);
       }
       requestAnimationFrame(draw);

@@ -52,7 +52,7 @@ describe('TrustGauges', () => {
       expect(trustGauges.stateStore).toBe(mockStateStore);
     });
 
-    it('calls render() creating gauge HTML', () => {
+    it('calls render() creating list HTML', () => {
       const container = document.getElementById('trust-gauges');
       expect(container.querySelector('.trust-gauges-title')).not.toBeNull();
     });
@@ -70,46 +70,46 @@ describe('TrustGauges', () => {
       expect(title.textContent).toBe('Trust Scores');
     });
 
-    it('creates one gauge per category (8 gauges)', () => {
-      const gauges = document.querySelectorAll('.trust-gauge');
-      expect(gauges.length).toBe(8);
+    it('creates one row per category (8 rows)', () => {
+      const rows = document.querySelectorAll('.trust-row');
+      expect(rows.length).toBe(8);
     });
 
-    it('each gauge has a data-gauge attribute matching its category', () => {
+    it('each row has a data-gauge attribute matching its category', () => {
       for (const category of CATEGORIES) {
-        const gauge = document.querySelector(`[data-gauge="${category}"]`);
-        expect(gauge).not.toBeNull();
+        const row = document.querySelector(`[data-gauge="${category}"]`);
+        expect(row).not.toBeNull();
       }
     });
 
-    it('each gauge contains an SVG with background and progress circles', () => {
-      const gauge = document.querySelector('[data-gauge="climate"]');
-      const circles = gauge.querySelectorAll('circle');
-      expect(circles.length).toBe(2); // background + progress
+    it('each row contains a progress track and fill bar', () => {
+      const row = document.querySelector('[data-gauge="climate"]');
+      expect(row.querySelector('.trust-row-track')).not.toBeNull();
+      expect(row.querySelector('.trust-row-fill')).not.toBeNull();
     });
 
-    it('each gauge shows score text defaulting to 0', () => {
-      const scoreText = document.querySelector('[data-gauge="climate"] .gauge-score');
+    it('each row shows score text defaulting to 0', () => {
+      const scoreText = document.querySelector('[data-gauge="climate"] .trust-row-score');
       expect(scoreText.textContent).toBe('0');
     });
 
-    it('each gauge shows tier defaulting to Tier 1', () => {
-      const tierText = document.querySelector('[data-gauge="climate"] .gauge-tier');
+    it('each row shows tier defaulting to Tier 1', () => {
+      const tierText = document.querySelector('[data-gauge="climate"] .trust-row-tier');
       expect(tierText.textContent).toBe('Tier 1');
     });
 
-    it('each gauge displays the category name', () => {
-      const nameEl = document.querySelector('[data-gauge="climate"] .gauge-category-name');
-      expect(nameEl.textContent).toBe('Climate');
+    it('each row displays the category name', () => {
+      const labelEl = document.querySelector('[data-gauge="climate"] .trust-row-label');
+      expect(labelEl.textContent).toContain('Climate');
     });
   });
 
   describe('subscribeToUpdates()', () => {
-    it('updates gauge when StateStore emits trust event', () => {
+    it('updates row when StateStore emits trust event', () => {
       mockStateStore.emit('trust:climate', { score: 75, tier: 4 });
 
-      const scoreText = document.querySelector('[data-gauge="climate"] .gauge-score');
-      const tierText = document.querySelector('[data-gauge="climate"] .gauge-tier');
+      const scoreText = document.querySelector('[data-gauge="climate"] .trust-row-score');
+      const tierText = document.querySelector('[data-gauge="climate"] .trust-row-tier');
       expect(scoreText.textContent).toBe('75');
       expect(tierText.textContent).toBe('Tier 4');
     });
@@ -118,58 +118,48 @@ describe('TrustGauges', () => {
       mockStateStore.emit('trust:lighting', { score: 50, tier: 3 });
       mockStateStore.emit('trust:security', { score: 20, tier: 1 });
 
-      const lightingScore = document.querySelector('[data-gauge="lighting"] .gauge-score');
-      const securityScore = document.querySelector('[data-gauge="security"] .gauge-score');
+      const lightingScore = document.querySelector('[data-gauge="lighting"] .trust-row-score');
+      const securityScore = document.querySelector('[data-gauge="security"] .trust-row-score');
       expect(lightingScore.textContent).toBe('50');
       expect(securityScore.textContent).toBe('20');
     });
   });
 
   describe('updateGauge()', () => {
-    it('sets stroke-dashoffset based on score percentage', () => {
+    it('sets fill width based on score percentage', () => {
       trustGauges.updateGauge('climate', { score: 50, tier: 3 });
 
-      const circle = document.querySelector('[data-gauge="climate"] .gauge-progress');
-      const circumference = 2 * Math.PI * 28; // radius=28
-      const expectedOffset = circumference * (1 - 0.5);
-      expect(Number(circle.getAttribute('stroke-dashoffset'))).toBeCloseTo(expectedOffset, 1);
+      const fill = document.querySelector('[data-gauge="climate"] .trust-row-fill');
+      expect(fill.style.width).toBe('50%');
     });
 
     it('clamps score to 0-100 range', () => {
       trustGauges.updateGauge('power', { score: 150, tier: 5 });
-      const circle = document.querySelector('[data-gauge="power"] .gauge-progress');
-      // Should be clamped to 100%: offset = 0
-      expect(Number(circle.getAttribute('stroke-dashoffset'))).toBeCloseTo(0, 1);
+      const fill = document.querySelector('[data-gauge="power"] .trust-row-fill');
+      expect(fill.style.width).toBe('100%');
     });
 
-    it('handles score of 0 (full offset)', () => {
+    it('handles score of 0 (empty bar)', () => {
       trustGauges.updateGauge('kitchen', { score: 0, tier: 1 });
-      const circle = document.querySelector('[data-gauge="kitchen"] .gauge-progress');
-      const circumference = 2 * Math.PI * 28;
-      expect(Number(circle.getAttribute('stroke-dashoffset'))).toBeCloseTo(circumference, 1);
+      const fill = document.querySelector('[data-gauge="kitchen"] .trust-row-fill');
+      expect(fill.style.width).toBe('0%');
     });
 
     it('updates score text to rounded value', () => {
       trustGauges.updateGauge('utility', { score: 62.7, tier: 3 });
-      const scoreText = document.querySelector('[data-gauge="utility"] .gauge-score');
+      const scoreText = document.querySelector('[data-gauge="utility"] .trust-row-score');
       expect(scoreText.textContent).toBe('63');
     });
 
     it('updates tier text', () => {
       trustGauges.updateGauge('assistant', { score: 95, tier: 5 });
-      const tierText = document.querySelector('[data-gauge="assistant"] .gauge-tier');
+      const tierText = document.querySelector('[data-gauge="assistant"] .trust-row-tier');
       expect(tierText.textContent).toBe('Tier 5');
-    });
-
-    it('applies CSS transition to circle for animation', () => {
-      trustGauges.updateGauge('entertainment', { score: 30, tier: 2 });
-      const circle = document.querySelector('[data-gauge="entertainment"] .gauge-progress');
-      expect(circle.style.transition).toContain('stroke-dashoffset');
     });
   });
 
   describe('initializeFromData()', () => {
-    it('sets initial gauge values from tier data', () => {
+    it('sets initial row values from tier data', () => {
       const tiersData = {
         tiers: [
           { category: 'climate', currentTier: 3, trustScore: 55 },
@@ -179,8 +169,8 @@ describe('TrustGauges', () => {
 
       trustGauges.initializeFromData(tiersData);
 
-      const climateScore = document.querySelector('[data-gauge="climate"] .gauge-score');
-      const lightingTier = document.querySelector('[data-gauge="lighting"] .gauge-tier');
+      const climateScore = document.querySelector('[data-gauge="climate"] .trust-row-score');
+      const lightingTier = document.querySelector('[data-gauge="lighting"] .trust-row-tier');
       expect(climateScore.textContent).toBe('55');
       expect(lightingTier.textContent).toBe('Tier 4');
     });

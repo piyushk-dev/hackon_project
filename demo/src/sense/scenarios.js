@@ -206,6 +206,22 @@ export function voiceScenario(engine) {
   ]);
 }
 
+// ─── Timeline markers for the day-progress bar ───────────────────────
+export const DAY_MOMENTS = [
+  { time: 6 * 60 + 15,  icon: '💧', label: 'Water motor — supply window' },
+  { time: 7 * 60 + 10,  icon: '🍲', label: 'Cooker whistles' },
+  { time: 8 * 60,       icon: '🛕', label: 'Pooja — quiet mode' },
+  { time: 9 * 60 + 30,  icon: '🛡️', label: 'Family leaves — away mode' },
+  { time: 11 * 60,      icon: '🗣️', label: 'Voice moments' },
+  { time: 14 * 60,      icon: '💨', label: 'AQI spike' },
+  { time: 15 * 60 + 30, icon: '⚡', label: 'Power cut' },
+  { time: 17 * 60,      icon: '❄️', label: 'Pre-cool before family returns' },
+  { time: 18 * 60 + 45, icon: '🔥', label: 'Iron left on' },
+  { time: 19 * 60 + 30, icon: '🔔', label: 'Guests arrive' },
+  { time: 21 * 60,      icon: '💊', label: "Dadaji's medicines" },
+  { time: 22 * 60,      icon: '🌙', label: 'Day summary' },
+];
+
 // ─── ▶ The full day script (compressed) ──────────────────────────────
 export function buildDayScript() {
   return [
