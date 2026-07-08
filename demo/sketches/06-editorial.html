@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Sketch 06 — Editorial film frames (design only)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f6f1e7;
+    --ink: #221e17;
+    --teal: #0e7c72;
+    --amber: #c77414;
+    --rose: #b0483a;
+    --muted: #8a8172;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #d8d2c4; font-family: Inter, sans-serif; color: var(--ink); }
+  .frame {
+    width: 1600px; height: 900px; margin: 0 auto; position: relative;
+    background: var(--paper); overflow: hidden;
+  }
+  .frame + .frame { border-top: 4px solid #d8d2c4; }
+  .kicker {
+    font: 700 15px/1 Inter; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--amber);
+  }
+
+  /* ── frame 1: title ── */
+  .f1 { display: flex; flex-direction: column; justify-content: center; padding: 0 140px; }
+  .f1 .grain {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 900px 500px at 85% 20%, rgba(199, 116, 20, 0.08), transparent),
+      radial-gradient(ellipse 700px 600px at 10% 90%, rgba(14, 124, 114, 0.07), transparent);
+  }
+  .f1 h1 { font: 600 128px/1.02 Fraunces, serif; letter-spacing: -0.015em; margin: 26px 0 30px; }
+  .f1 h1 em { font-style: italic; color: var(--teal); }
+  .f1 .sub { font: 400 26px/1.5 Inter; color: #5c554a; max-width: 800px; }
+  .f1 .sub b { color: var(--ink); }
+  .f1 .roof {
+    position: absolute; right: 120px; bottom: 110px; width: 340px; height: 230px;
+  }
+
+  /* ── frame 2: a moment ── */
+  .f2 { display: grid; grid-template-columns: 1fr 1fr; }
+  .f2 .left { padding: 120px 90px 0 140px; }
+  .f2 .time { font: 600 230px/1 Fraunces, serif; letter-spacing: -0.03em; }
+  .f2 .time small { font-size: 90px; color: var(--muted); }
+  .f2 h2 { font: 600 54px/1.15 Fraunces, serif; margin-top: 18px; max-width: 560px; }
+  .f2 h2 span { color: var(--rose); }
+  .f2 .right {
+    background: #efe6d3; border-left: 1px solid #ddd2ba;
+    padding: 120px 120px 0 90px;
+  }
+  .receipt {
+    background: #fffdf8; border-radius: 18px; padding: 42px 46px;
+    box-shadow: 0 24px 60px rgba(60, 48, 26, 0.14);
+    border-top: 6px solid var(--teal);
+  }
+  .receipt .rk { font: 700 13px/1 Inter; letter-spacing: 0.18em; color: var(--teal); text-transform: uppercase; }
+  .receipt .row { display: flex; justify-content: space-between; align-items: baseline; padding: 20px 0; border-bottom: 1px dashed #d9cdb2; }
+  .receipt .row:last-child { border-bottom: 0; }
+  .receipt .rl { font: 500 22px/1.35 Inter; max-width: 330px; }
+  .receipt .rv { font: 600 24px/1 Fraunces, serif; color: var(--teal); white-space: nowrap; }
+  .receipt .rv.amber { color: var(--amber); }
+
+  /* ── frame 3: the day's bill ── */
+  .f3 { display: flex; align-items: center; justify-content: center; background: #10312d; color: #f6f1e7; }
+  .f3 .wrap { text-align: center; }
+  .f3 .kicker { color: #e9a94e; }
+  .f3 h2 { font: 600 96px/1.08 Fraunces, serif; margin: 30px 0 60px; }
+  .f3 .stats { display: flex; gap: 76px; justify-content: center; }
+  .f3 .stat .n { font: 600 100px/1 Fraunces, serif; color: #7fd4c4; }
+  .f3 .stat .n.amber { color: #e9a94e; }
+  .f3 .stat .l { font: 500 18px/1.4 Inter; letter-spacing: 0.08em; color: #b9c7bd; margin-top: 14px; text-transform: uppercase; }
+
+  /* ── frame 4: 30 days of learning ── */
+  .f4 { display: grid; grid-template-columns: 620px 1fr; align-items: center; padding: 0 140px; gap: 90px; }
+  .f4 h2 { font: 600 62px/1.12 Fraunces, serif; margin: 24px 0 26px; }
+  .f4 p { font: 400 22px/1.6 Inter; color: #5c554a; }
+  .grid { display: grid; grid-template-columns: repeat(10, 44px); gap: 14px; }
+  .dot { width: 44px; height: 44px; border-radius: 50%; background: #e3dac6; position: relative; }
+  .dot.on { background: var(--teal); }
+  .dot.sun { background: var(--amber); }
+  .dot.miss { background: #e3dac6; box-shadow: inset 0 0 0 3px #cfc4a9; }
+  .legend { display: flex; gap: 28px; margin-top: 34px; font: 500 15px/1 Inter; color: #6b6353; }
+  .legend i { display: inline-block; width: 14px; height: 14px; border-radius: 50%; margin-right: 8px; vertical-align: -2px; }
+</style>
+</head>
+<body>
+
+<!-- FRAME 1 — title -->
+<section class="frame f1">
+  <div class="grain"></div>
+  <div class="kicker">HackOn with Amazon · Finals</div>
+  <h1>The home that<br /><em>notices.</em></h1>
+  <div class="sub">Ghar Sense gives Alexa a memory of your household — its rhythms, sounds and habits — so the right things happen <b>before anyone asks</b>.</div>
+  <svg class="roof" viewBox="0 0 340 230" fill="none">
+    <rect x="60" y="110" width="220" height="110" rx="10" fill="#0e7c72" opacity="0.12"/>
+    <path d="M40 118 L170 30 L300 118" stroke="#c77414" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <rect x="140" y="150" width="60" height="70" rx="6" fill="#c77414" opacity="0.85"/>
+    <circle cx="170" cy="96" r="14" fill="#0e7c72"/>
+    <circle cx="170" cy="96" r="26" stroke="#0e7c72" stroke-width="3" opacity="0.4"/>
+    <circle cx="170" cy="96" r="38" stroke="#0e7c72" stroke-width="2" opacity="0.2"/>
+  </svg>
+</section>
+
+<!-- FRAME 2 — one moment, explained -->
+<section class="frame f2">
+  <div class="left">
+    <div class="kicker">Day 30 · Morning</div>
+    <div class="time">6:45<small> AM</small></div>
+    <h2>Warm water for Dadaji's bath. <span>Nobody asked.</span></h2>
+  </div>
+  <div class="right">
+    <div class="receipt">
+      <div class="rk">Why the house did this</div>
+      <div class="row">
+        <div class="rl">Bath observed at 6:45, fourteen mornings straight</div>
+        <div class="rv">learned</div>
+      </div>
+      <div class="row">
+        <div class="rl">Geyser started on the off-peak tariff window</div>
+        <div class="rv amber">₹3 saved</div>
+      </div>
+      <div class="row">
+        <div class="rl">Switched off the moment the bathroom emptied</div>
+        <div class="rv">no waste</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FRAME 3 — the day's bill -->
+<section class="frame f3">
+  <div class="wrap">
+    <div class="kicker">One ordinary Tuesday</div>
+    <h2>The house kept its own diary.</h2>
+    <div class="stats">
+      <div class="stat"><div class="n">14</div><div class="l">things handled</div></div>
+      <div class="stat"><div class="n amber">₹38</div><div class="l">quietly saved</div></div>
+      <div class="stat"><div class="n">3</div><div class="l">asked first</div></div>
+      <div class="stat"><div class="n amber">0</div><div class="l">commands needed</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FRAME 4 — the learning itself -->
+<section class="frame f4">
+  <div>
+    <div class="kicker">Inside the memory</div>
+    <h2>Thirty mornings.<br />One habit, learned.</h2>
+    <p>Each dot is a day the geyser ran. By day fourteen the pattern is unmistakable — weekdays at 6:45, Sundays late. From then on, the house acts first and explains itself after.</p>
+    <div class="legend">
+      <span><i style="background:#0e7c72"></i>Weekday 6:45</span>
+      <span><i style="background:#c77414"></i>Sunday 8:10</span>
+      <span><i style="background:#e3dac6; box-shadow: inset 0 0 0 3px #cfc4a9"></i>Skipped</span>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<script>
+  const g = document.getElementById('grid');
+  let rnd = 42;
+  const rand = () => (rnd = (rnd * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < 30; i++) {
+    const d = document.createElement('div');
+    const sunday = i % 7 === 6;
+    const miss = !sunday && rand() < 0.1;
+    d.className = 'dot ' + (miss ? 'miss' : sunday ? 'sun' : 'on');
+    g.appendChild(d);
+  }
+</script>
+</body>
+</html>
