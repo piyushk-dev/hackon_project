@@ -150,7 +150,7 @@
     background: #1d1a15; box-shadow: 0 34px 80px rgba(60, 48, 26, 0.3);
     position: relative;
   }
-  .video-well video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .video-well video { width: 100%; height: 100%; object-fit: contain; display: block; }
   .video-well .drop {
     position: absolute; inset: 0; display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 10px; color: #b9ab8f;
@@ -334,7 +334,7 @@
 <section class="frame f7">
   <div class="kicker">Tech architecture</div>
   <h2>A routine model that knows the house, an LLM that knows <em>today</em>.</h2>
-  <p class="sub">Two timescales, one decision: slow-learned trends meet live context inside the reasoning core.</p>
+  <p class="sub">One loop runs all day — <b style="color:#221e17">SENSE → THINK → ACT → EXPLAIN</b> — slow-learned trends meeting today's context in the reasoning core.</p>
 
   <svg id="arch" width="1320" height="640" viewBox="0 0 1320 640"></svg>
   <div class="pageno">7 / 9</div>
@@ -346,11 +346,13 @@
   <h2>Built for the <em>next billion</em> homes.</h2>
 
   <div class="stats">
-    <div class="stat"><div class="sv">0</div><p>commands needed for the morning routine — hot water, lights and locks are simply ready</p></div>
-    <div class="stat"><div class="sv">~30%</div><p>of flexible load shifted off peak tariff by anticipating usage, not reacting to it</p></div>
-    <div class="stat"><div class="sv">100%</div><p>of proactive actions explained in plain language — with a one-tap Override</p></div>
-    <div class="stat"><div class="sv">5</div><p>autonomy tiers per device category — families decide how much Alexa may do alone</p></div>
+    <div class="stat"><div class="sv">20</div><p>routines learned from one week of the family's own activity log — six members, zero hand-written rules</p></div>
+    <div class="stat"><div class="sv">45 min</div><p>of head start — the geyser starts heating before the family is even awake, ready right at bath time</p></div>
+    <div class="stat"><div class="sv">7</div><p>proactive actions before 7 AM by day 30 — water motor, geyser, locks — with zero commands spoken</p></div>
+    <div class="stat"><div class="sv">~30%</div><p>of flexible load moved off the peak-tariff window, simply by acting earlier (simulated-day estimate)</p></div>
   </div>
+
+  <p style="font: 400 16.5px/1.5 Inter; color: #5c554a; margin: -18px 0 30px;"><b style="color:#221e17">And for Amazon:</b> anticipation is what turns Alexa from convenient into indispensable — deeper retention, a stronger pull into the Echo ecosystem, and trust no assistant has earned yet.</p>
 
   <div class="visk">WHERE THIS GOES NEXT</div>
   <div class="vision">

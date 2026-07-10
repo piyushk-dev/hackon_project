@@ -97,7 +97,7 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
   const s = slideBg();
   s.addImage({ path: join(HERE, 'assets/cover.png'), x: 0, y: 0, w: 13.333, h: 7.5 });
   s.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
-    x: X(48), y: X(818), w: X(560), h: X(44), rectRadius: 0.18,
+    x: X(48), y: X(818), w: X(660), h: X(44), rectRadius: 0.18,
     fill: { color: 'FFFDF8', transparency: 8 }, line: { color: HAIR, width: 0.75 },
   });
   s.addText([
@@ -105,8 +105,8 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     { text: 'Bar Raisers', options: { color: TEAL, bold: true } },
     { text: ' — Priyanshu Agarwal & Piyush Kumar · HackOn with Amazon', options: { color: INK } },
   ], {
-    x: X(48), y: X(818), w: X(560), h: X(44), margin: 0, align: 'center', valign: 'middle',
-    fontFace: TEXT, fontSize: F(15.5), bold: true,
+    x: X(48), y: X(818), w: X(660), h: X(44), margin: 0, align: 'center', valign: 'middle',
+    fontFace: TEXT, fontSize: F(14), bold: true, fit: 'shrink',
   });
 }
 
@@ -426,7 +426,9 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
   });
   const demoPath = join(HERE, 'assets/demo.mp4');
   if (existsSync(demoPath)) {
-    s.addMedia({ type: 'video', path: demoPath, x: X(210), y: X(226), w: X(1180), h: X(664) });
+    // recording is 1912×868 (2.2:1) — letterbox it inside the 16:9 well
+    const vw = 1180, vh = vw * (868 / 1912);
+    s.addMedia({ type: 'video', path: demoPath, x: X(210), y: X(226 + (664 - vh) / 2), w: X(vw), h: X(vh) });
   } else {
     s.addText([
       { text: 'demo.mp4\n', options: { fontFace: DISPLAY, fontSize: F(32), color: 'EFE6D3' } },
@@ -450,8 +452,12 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     x: X(140), y: X(92), w: X(1330), h: X(58), margin: 0,
     fontFace: DISPLAY, fontSize: F(42), color: INK,
   });
-  s.addText('Two timescales, one decision: slow-learned trends meet live context inside the reasoning core.', {
-    x: X(140), y: X(154), w: X(1200), h: X(28), margin: 0,
+  s.addText([
+    { text: 'One loop runs all day — ' },
+    { text: 'SENSE → THINK → ACT → EXPLAIN', options: { bold: true, color: INK } },
+    { text: ' — slow-learned trends meeting today’s context in the reasoning core.' },
+  ], {
+    x: X(140), y: X(154), w: X(1330), h: X(28), margin: 0,
     fontFace: TEXT, fontSize: F(17), color: BODY,
   });
 
@@ -556,11 +562,12 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     fontFace: DISPLAY, fontSize: F(64), color: INK,
   });
 
+  // Every number here is traceable to the demo itself
   const stats = [
-    ['0', TEAL, 'commands needed for the morning routine — hot water, lights and locks are simply ready'],
-    ['~30%', AMBER, 'of flexible load shifted off peak tariff by anticipating usage, not reacting to it'],
-    ['100%', ROSE, 'of proactive actions explained in plain language — with a one-tap Override'],
-    ['5', PURPLE, 'autonomy tiers per device category — families decide how much Alexa may do alone'],
+    ['20', TEAL, "routines learned from one week of the family's own activity log — six members, zero hand-written rules"],
+    ['45 min', AMBER, 'of head start — the geyser starts heating before the family is even awake, ready right at bath time'],
+    ['7', ROSE, 'proactive actions before 7 AM by day 30 — water motor, geyser, locks — with zero commands spoken'],
+    ['~30%', PURPLE, 'of flexible load moved off the peak-tariff window, simply by acting earlier (simulated-day estimate)'],
   ];
   stats.forEach(([v, c, p], i) => {
     const px = 140 + i * 336;
@@ -571,12 +578,20 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     });
     s.addText(p, {
       x: X(px + 30), y: X(336), w: X(252), h: X(104), margin: 0,
-      fontFace: TEXT, fontSize: F(15.5), color: '4C4639', lineSpacingMultiple: 1.2,
+      fontFace: TEXT, fontSize: F(15), color: '4C4639', lineSpacingMultiple: 1.2,
     });
   });
 
+  s.addText([
+    { text: 'And for Amazon: ', options: { bold: true, color: INK } },
+    { text: 'anticipation is what turns Alexa from convenient into indispensable — deeper retention, a stronger pull into the Echo ecosystem, and trust no assistant has earned yet.' },
+  ], {
+    x: X(140), y: X(478), w: X(1320), h: X(30), margin: 0,
+    fontFace: TEXT, fontSize: F(16.5), color: BODY,
+  });
+
   s.addText('WHERE THIS GOES NEXT', {
-    x: X(140), y: X(508), w: X(500), h: X(24), margin: 0,
+    x: X(140), y: X(534), w: X(500), h: X(24), margin: 0,
     fontFace: TEXT, fontSize: F(14), bold: true, color: MUTED, charSpacing: 2.4,
   });
   const vision = [
@@ -587,14 +602,14 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
   ];
   vision.forEach(([b, p], i) => {
     const px = 140 + i * 336;
-    hline(s, px, 552, 310, TEAL, 2.25);
+    hline(s, px, 578, 310, TEAL, 2.25);
     s.addText(b, {
-      x: X(px), y: X(568), w: X(310), h: X(28), margin: 0,
+      x: X(px), y: X(594), w: X(310), h: X(28), margin: 0,
       fontFace: TEXT, fontSize: F(19), bold: true, color: INK,
     });
     s.addText(p, {
-      x: X(px), y: X(602), w: X(310), h: X(140), margin: 0,
-      fontFace: TEXT, fontSize: F(15.5), color: BODY, lineSpacingMultiple: 1.25,
+      x: X(px), y: X(628), w: X(310), h: X(140), margin: 0,
+      fontFace: TEXT, fontSize: F(15), color: BODY, lineSpacingMultiple: 1.25,
     });
   });
   pageno(s, 8);
