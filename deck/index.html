@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Alexa Thinks Ahead — HackOn Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f6f1e7;
+    --ink: #221e17;
+    --teal: #0e7c72;
+    --amber: #c77414;
+    --rose: #b0483a;
+    --muted: #8a8172;
+    --card: #fffdf8;
+    --line: #ddd2ba;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #d8d2c4; font-family: Inter, sans-serif; color: var(--ink); }
+
+  .frame {
+    width: 1600px; height: 900px; margin: 0 auto; position: relative;
+    background: var(--paper); overflow: hidden;
+  }
+  .frame + .frame { border-top: 4px solid #d8d2c4; }
+
+  .pageno {
+    position: absolute; right: 46px; bottom: 34px; z-index: 5;
+    font: 600 13px/1 Inter; letter-spacing: 0.14em; color: var(--muted);
+  }
+  .kicker {
+    font: 700 15px/1 Inter; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--amber);
+  }
+  .lp {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1.5px solid var(--amber); color: var(--amber);
+    border-radius: 999px; padding: 8px 18px;
+    font: 600 14px/1 Inter; letter-spacing: 0.04em; white-space: nowrap;
+  }
+  .lp::before { content: '↳'; font-weight: 700; }
+  .lp.teal { border-color: var(--teal); color: var(--teal); }
+
+  h1, h2, h3 { font-family: Fraunces, serif; font-weight: 600; letter-spacing: -0.015em; }
+
+  /* ── 1 · cover ─────────────────────────────────────────────── */
+  .f1 { background: #fdf7ee; }
+  .f1 img.cover { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .f1 .team {
+    position: absolute; left: 48px; bottom: 40px;
+    background: rgba(255, 253, 248, 0.9); border: 1px solid var(--line);
+    border-radius: 999px; padding: 12px 26px;
+    font: 600 16px/1 Inter; color: var(--ink);
+    backdrop-filter: blur(4px);
+  }
+
+  /* ── 2 · agenda ────────────────────────────────────────────── */
+  .f2 { display: grid; grid-template-columns: 1.15fr 1fr; }
+  .f2 .left { padding: 110px 60px 0 140px; }
+  .f2 h2 { font-size: 92px; line-height: 1.05; margin: 24px 0 18px; }
+  .f2 h2 em { font-style: italic; color: var(--teal); }
+  .f2 .note { font: 400 21px/1.55 Inter; color: #5c554a; max-width: 520px; }
+  .f2 .right { padding: 96px 140px 0 40px; }
+  .agenda { list-style: none; }
+  .agenda li {
+    display: grid; grid-template-columns: 64px 1fr auto; align-items: baseline;
+    gap: 20px; padding: 21px 4px; border-bottom: 1px solid var(--line);
+  }
+  .agenda .no { font: 600 26px/1 Fraunces, serif; color: var(--amber); }
+  .agenda .what { font: 600 25px/1.2 Inter; }
+  .agenda .what small { display: block; font: 400 15px/1.5 Inter; color: var(--muted); margin-top: 4px; }
+  .agenda .t { font: 600 17px/1 Inter; color: var(--teal); font-variant-numeric: tabular-nums; }
+
+  /* ── 3 · problem ───────────────────────────────────────────── */
+  .f3 { padding: 96px 140px 0; }
+  .f3 h2 { font-size: 74px; line-height: 1.08; max-width: 1150px; margin: 22px 0 14px; }
+  .f3 h2 span { color: var(--rose); }
+  .f3 .sub { font: 400 22px/1.5 Inter; color: #5c554a; max-width: 880px; }
+  .rhythm { display: flex; align-items: stretch; gap: 0; margin: 52px 0 44px; }
+  .beat { flex: 1; position: relative; padding: 20px 18px 0 0; }
+  .beat::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 14px; height: 3px;
+    background: var(--line); border-radius: 3px;
+  }
+  .beat::after {
+    content: ''; position: absolute; top: -4px; left: 0; width: 11px; height: 11px;
+    border-radius: 50%; background: var(--teal);
+  }
+  .beat:nth-child(2n)::after { background: var(--amber); }
+  .beat.cut::after { background: var(--rose); }
+  .beat .bt { font: 600 20px/1 Fraunces, serif; margin-bottom: 7px; font-variant-numeric: tabular-nums; }
+  .beat .bl { font: 500 15.5px/1.4 Inter; color: #5c554a; }
+  .pains { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .pain {
+    background: var(--card); border-radius: 18px; padding: 30px 34px;
+    box-shadow: 0 18px 44px rgba(60, 48, 26, 0.10); border-top: 5px solid var(--rose);
+  }
+  .pain h3 { font-size: 27px; margin-bottom: 10px; }
+  .pain p { font: 400 16.5px/1.55 Inter; color: #5c554a; }
+  .f3 .lp { position: absolute; right: 140px; top: 104px; }
+
+  /* ── 4 · solution ──────────────────────────────────────────── */
+  .f4 { padding: 92px 140px 0; }
+  .f4 h2 { font-size: 68px; line-height: 1.08; margin: 22px 0 10px; }
+  .f4 h2 em { font-style: italic; color: var(--teal); }
+  .f4 .sub { font: 400 21px/1.5 Inter; color: #5c554a; }
+  .loop { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin: 46px 0 40px; }
+  .stage {
+    background: var(--card); border-radius: 18px; padding: 26px 28px 24px;
+    box-shadow: 0 18px 44px rgba(60, 48, 26, 0.10); position: relative;
+  }
+  .stage .tag { font: 700 13px/1 Inter; letter-spacing: 0.2em; margin-bottom: 12px; }
+  .stage:nth-child(1) { border-top: 5px solid #3a6ea8; }  .stage:nth-child(1) .tag { color: #3a6ea8; }
+  .stage:nth-child(2) { border-top: 5px solid #7a4fb3; }  .stage:nth-child(2) .tag { color: #7a4fb3; }
+  .stage:nth-child(3) { border-top: 5px solid var(--teal); } .stage:nth-child(3) .tag { color: var(--teal); }
+  .stage:nth-child(4) { border-top: 5px solid var(--amber); } .stage:nth-child(4) .tag { color: var(--amber); }
+  .stage p { font: 400 16.5px/1.55 Inter; color: #5c554a; }
+  .stage p b { color: var(--ink); }
+  .stage:not(:last-child)::after {
+    content: '→'; position: absolute; right: -21px; top: 42%;
+    font: 600 26px/1 Fraunces, serif; color: var(--muted); z-index: 2;
+  }
+  .stage .bedrock {
+    display: inline-block; margin-top: 12px; font: 700 12.5px/1 Inter; letter-spacing: 0.06em;
+    color: #7a4fb3; background: rgba(122, 79, 179, 0.1); border-radius: 6px; padding: 6px 10px;
+  }
+  .f4 .bottom { display: grid; grid-template-columns: 1.25fr 1fr; gap: 40px; align-items: start; }
+  .receipt {
+    background: var(--card); border-radius: 18px; padding: 30px 36px;
+    box-shadow: 0 24px 60px rgba(60, 48, 26, 0.14); border-top: 6px solid var(--teal);
+  }
+  .receipt .rk { font: 700 13px/1 Inter; letter-spacing: 0.18em; color: var(--muted); margin-bottom: 14px; }
+  .receipt .rq { font: 600 26px/1.35 Fraunces, serif; }
+  .receipt .rq em { color: var(--teal); font-style: italic; }
+  .tiers { display: flex; gap: 8px; align-items: flex-end; height: 128px; margin-top: 6px; }
+  .tier { flex: 1; border-radius: 10px 10px 4px 4px; position: relative; }
+  .tier i { position: absolute; left: 0; right: 0; bottom: -26px; text-align: center; font: 600 12.5px/1.2 Inter; color: var(--muted); font-style: normal; }
+  .tiers-wrap .tl { font: 700 13px/1 Inter; letter-spacing: 0.18em; color: var(--muted); margin-bottom: 12px; }
+  .f4 .lp-row { position: absolute; right: 140px; top: 100px; display: flex; gap: 12px; }
+
+  /* ── 5 · demo video ────────────────────────────────────────── */
+  .f5 { display: grid; grid-template-columns: 1.62fr 1fr; background: #efe6d3; }
+  .f5 .stagearea { padding: 84px 40px 0 120px; }
+  .f5 h2 { font-size: 58px; margin: 20px 0 26px; }
+  .f5 h2 em { font-style: italic; color: var(--teal); }
+  .video-well {
+    width: 100%; aspect-ratio: 16 / 9; border-radius: 20px; overflow: hidden;
+    background: #1d1a15; box-shadow: 0 30px 70px rgba(60, 48, 26, 0.28);
+    position: relative;
+  }
+  .video-well video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .video-well .drop {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 10px; color: #b9ab8f;
+    font: 500 18px/1.5 Inter; text-align: center; pointer-events: none;
+  }
+  .video-well .drop b { font: 600 30px/1.2 Fraunces, serif; color: #efe6d3; }
+  .f5 .watch { padding: 84px 110px 0 48px; border-left: 1px solid var(--line); }
+  .watch .wk { font: 700 14px/1 Inter; letter-spacing: 0.2em; color: var(--muted); margin: 20px 0 8px; }
+  .watch ol { list-style: none; counter-reset: w; }
+  .watch li {
+    counter-increment: w; padding: 19px 0 19px 56px; position: relative;
+    border-bottom: 1px solid var(--line); font: 500 17.5px/1.45 Inter; color: #4c4639;
+  }
+  .watch li b { color: var(--ink); }
+  .watch li::before {
+    content: counter(w); position: absolute; left: 0; top: 16px;
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--teal); color: #fffdf8;
+    font: 600 18px/38px Fraunces, serif; text-align: center;
+  }
+  .watch li:nth-child(2)::before { background: var(--amber); }
+  .watch li:nth-child(3)::before { background: var(--rose); }
+  .watch li:nth-child(4)::before { background: #7a4fb3; }
+  .watch .silent { margin-top: 26px; font: 400 15.5px/1.55 Inter; color: var(--muted); }
+
+  /* ── 6 · architecture ──────────────────────────────────────── */
+  .f6 { padding: 84px 140px 0; }
+  .f6 h2 { font-size: 62px; margin: 20px 0 8px; }
+  .f6 .sub { font: 400 20px/1.5 Inter; color: #5c554a; }
+  .arch { display: grid; grid-template-columns: 250px 1fr 320px; gap: 34px; margin-top: 42px; align-items: stretch; }
+  .col { display: flex; flex-direction: column; gap: 16px; }
+  .col .ct { font: 700 13px/1 Inter; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 2px; }
+  .node {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 16px 20px; box-shadow: 0 10px 26px rgba(60, 48, 26, 0.08);
+  }
+  .node b { display: block; font: 600 18px/1.25 Inter; }
+  .node span { font: 400 14px/1.45 Inter; color: var(--muted); }
+  .node.brain { border-top: 5px solid #7a4fb3; }
+  .node.brain b { font: 600 22px/1.2 Fraunces, serif; }
+  .node.data { border-top: 5px solid var(--teal); }
+  .lam { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .lam .node { padding: 13px 16px; }
+  .lam .node b { font-size: 15.5px; }
+  .lam .node span { font-size: 13px; }
+  .archnotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 40px; }
+  .an { border-top: 3px solid var(--amber); padding-top: 14px; }
+  .an b { font: 600 18px/1.3 Inter; display: block; margin-bottom: 6px; }
+  .an p { font: 400 15.5px/1.5 Inter; color: #5c554a; }
+  .f6 .lp-row { position: absolute; right: 140px; top: 92px; display: flex; gap: 12px; }
+
+  /* ── 7 · impact & vision ───────────────────────────────────── */
+  .f7 { padding: 90px 140px 0; }
+  .f7 h2 { font-size: 66px; margin: 20px 0 40px; }
+  .f7 h2 em { font-style: italic; color: var(--teal); }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; margin-bottom: 52px; }
+  .stat { background: var(--card); border-radius: 18px; padding: 26px 30px; box-shadow: 0 18px 44px rgba(60, 48, 26, 0.10); }
+  .stat .sv { font: 600 44px/1 Fraunces, serif; color: var(--teal); margin-bottom: 8px; }
+  .stat:nth-child(2) .sv { color: var(--amber); }
+  .stat:nth-child(3) .sv { color: var(--rose); }
+  .stat:nth-child(4) .sv { color: #7a4fb3; }
+  .stat p { font: 500 16px/1.45 Inter; color: #4c4639; }
+  .vision { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; }
+  .vis { border-top: 3px solid var(--teal); padding-top: 16px; }
+  .vis b { font: 600 19px/1.3 Inter; display: block; margin-bottom: 8px; }
+  .vis p { font: 400 15.5px/1.55 Inter; color: #5c554a; }
+  .f7 .lp-row { position: absolute; right: 140px; top: 98px; display: flex; gap: 12px; }
+  .f7 .visk { font: 700 14px/1 Inter; letter-spacing: 0.2em; color: var(--muted); margin: 0 0 18px; }
+
+  /* ── 8 · close ─────────────────────────────────────────────── */
+  .f8 { display: flex; flex-direction: column; justify-content: center; padding: 0 150px; }
+  .f8 .grain {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 900px 500px at 85% 15%, rgba(199, 116, 20, 0.09), transparent),
+      radial-gradient(ellipse 700px 600px at 8% 92%, rgba(14, 124, 114, 0.08), transparent);
+  }
+  .f8 h2 { font-size: 96px; line-height: 1.06; max-width: 1250px; margin: 26px 0 34px; }
+  .f8 h2 em { font-style: italic; color: var(--teal); }
+  .f8 .links { display: flex; gap: 16px; margin-top: 10px; }
+  .pillL {
+    border: 1.5px solid var(--ink); border-radius: 999px; padding: 13px 26px;
+    font: 600 17px/1 Inter; color: var(--ink); text-decoration: none;
+  }
+  .pillL.solid { background: var(--ink); color: var(--paper); }
+  .f8 .lps { display: flex; gap: 12px; margin-top: 54px; flex-wrap: wrap; }
+
+  @media print {
+    body { background: none; }
+    .frame { page-break-after: always; border: none !important; }
+    @page { size: 1600px 900px; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ 1 · COVER ═══ -->
+<section class="frame f1">
+  <img class="cover" src="assets/cover.png" alt="Alexa Thinks Ahead — built for the next billion" />
+  <div class="team">Team · HackOn with Amazon — Season 6.0</div>
+</section>
+
+<!-- ═══ 2 · AGENDA ═══ -->
+<section class="frame f2">
+  <div class="left">
+    <div class="kicker">The next ten minutes</div>
+    <h2>From a command-taker to a <em>household partner</em>.</h2>
+    <p class="note">Alexa that learns the rhythm of an Indian home and acts <b>before</b> anyone asks — every action explained, every liberty earned.</p>
+  </div>
+  <div class="right">
+    <ol class="agenda">
+      <li><span class="no">01</span><span class="what">The problem<small>Smart homes still wait for orders</small></span><span class="t">1.5 min</span></li>
+      <li><span class="no">02</span><span class="what">Our solution<small>Sense → Think → Act → Explain, gated by trust</small></span><span class="t">1.5 min</span></li>
+      <li><span class="no">03</span><span class="what">Live demo<small>One simulated day in the Sharma home</small></span><span class="t">3 min</span></li>
+      <li><span class="no">04</span><span class="what">Tech architecture<small>Serverless AWS, Bedrock as the brain</small></span><span class="t">2 min</span></li>
+      <li><span class="no">05</span><span class="what">Impact &amp; future vision<small>What this unlocks for the next billion</small></span><span class="t">1.5 min</span></li>
+      <li><span class="no">06</span><span class="what">Questions<small>We kept a buffer on purpose</small></span><span class="t">0.5 min</span></li>
+    </ol>
+  </div>
+  <div class="pageno">2 / 8</div>
+</section>
+
+<!-- ═══ 3 · PROBLEM ═══ -->
+<section class="frame f3">
+  <div class="kicker">The problem</div>
+  <span class="lp">Customer Obsession</span>
+  <h2>Indian homes run on rhythm.<br/>Smart homes still <span>wait for orders</span>.</h2>
+  <p class="sub">A multi-generational household — working parents, two kids, grandparents — issues dozens of commands a day to devices that never learn what happens next.</p>
+
+  <div class="rhythm">
+    <div class="beat"><div class="bt">05:30</div><div class="bl">Morning pooja</div></div>
+    <div class="beat"><div class="bt">06:15</div><div class="bl">Geyser for bath</div></div>
+    <div class="beat"><div class="bt">07:30</div><div class="bl">Pressure-cooker breakfast</div></div>
+    <div class="beat"><div class="bt">08:00</div><div class="bl">Water motor on</div></div>
+    <div class="beat cut"><div class="bt">14:00</div><div class="bl">Power cut</div></div>
+    <div class="beat"><div class="bt">17:00</div><div class="bl">Tuition hours</div></div>
+    <div class="beat"><div class="bt">18:30</div><div class="bl">Evening chai</div></div>
+  </div>
+
+  <div class="pains">
+    <div class="pain">
+      <h3>Reactive, not ready</h3>
+      <p>"Alexa, turn on the geyser" — every single morning. The assistant obeys, but the hot water is still 20 minutes late.</p>
+    </div>
+    <div class="pain">
+      <h3>Context-blind</h3>
+      <p>It doesn't know a power cut is different during a child's online class, or that grandparents bathe before everyone wakes.</p>
+    </div>
+    <div class="pain">
+      <h3>Trust was never earned</h3>
+      <p>No explanations, no way to correct it — so families keep automation switched off and do everything by hand.</p>
+    </div>
+  </div>
+  <div class="pageno">3 / 8</div>
+</section>
+
+<!-- ═══ 4 · SOLUTION ═══ -->
+<section class="frame f4">
+  <div class="kicker">Our solution</div>
+  <div class="lp-row"><span class="lp teal">Invent &amp; Simplify</span><span class="lp">Earn Trust</span></div>
+  <h2>Alexa Thinks Ahead — it <em>anticipates the need</em> behind the routine.</h2>
+  <p class="sub">Upload last week's activity log. Alexa learns each member's routines and plans today ahead of time — one cognitive loop, running all day.</p>
+
+  <div class="loop">
+    <div class="stage"><div class="tag">SENSE</div><p>Fuses <b>10 devices</b>, presence, time of day and household history into one context.</p></div>
+    <div class="stage"><div class="tag">THINK</div><p>Reasons about what the home needs <b>next</b> — not what was just said.</p><span class="bedrock">Amazon Bedrock · Claude</span></div>
+    <div class="stage"><div class="tag">ACT</div><p>Fires the action <b>ahead of the routine</b> — gated by how much trust it has earned.</p></div>
+    <div class="stage"><div class="tag">EXPLAIN</div><p>Every action ships with a <b>plain-language reason</b> — and an Override button.</p></div>
+  </div>
+
+  <div class="bottom">
+    <div class="receipt">
+      <div class="rk">WHAT IT SOUNDS LIKE</div>
+      <div class="rq">"Pre-heating the geyser at <em>05:15</em> — the family usually wakes around 06:00."</div>
+    </div>
+    <div class="tiers-wrap">
+      <div class="tl">TRUST → 5 AUTONOMY TIERS · overrides lower it, acceptance raises it</div>
+      <div class="tiers">
+        <div class="tier" style="height:22%;background:#c9cdd4"><i>Observe</i></div>
+        <div class="tier" style="height:41%;background:#e2a266"><i>Ask first</i></div>
+        <div class="tier" style="height:60%;background:#7fa3d9"><i>Act + notify</i></div>
+        <div class="tier" style="height:79%;background:#5fb3a5"><i>Act quietly</i></div>
+        <div class="tier" style="height:100%;background:#e0b45c"><i>Trusted</i></div>
+      </div>
+    </div>
+  </div>
+  <div class="pageno">4 / 8</div>
+</section>
+
+<!-- ═══ 5 · DEMO ═══ -->
+<section class="frame f5">
+  <div class="stagearea">
+    <div class="kicker">Live demo</div>
+    <h2>One day in the <em>Sharma home</em>.</h2>
+    <div class="video-well">
+      <video controls muted preload="metadata" src="assets/demo.mp4" poster=""></video>
+      <div class="drop"><b>demo.mp4</b>drop the voiceless screen-recording into <span style="font-family:monospace">deck/assets/</span></div>
+    </div>
+  </div>
+  <div class="watch">
+    <div class="wk">WHAT TO WATCH FOR</div>
+    <ol>
+      <li><b>Learn</b> — upload last week's CSV; Bedrock finds each member's routines with confidence scores.</li>
+      <li><b>Deploy</b> — a 24-hour day plays out; Alexa acts <b>before</b> each routine: geyser, pre-cooling, security.</li>
+      <li><b>Override</b> — one tap says "you were wrong"; the trust score drops and Alexa asks first next time.</li>
+      <li><b>Power cut</b> — Alexa triages: the child's online class stays powered, comfort loads shed to inverter.</li>
+    </ol>
+    <p class="silent">The video is intentionally silent — we narrate it live, and pause anywhere the judges want to dig in.</p>
+  </div>
+  <div class="pageno">5 / 8</div>
+</section>
+
+<!-- ═══ 6 · ARCHITECTURE ═══ -->
+<section class="frame f6">
+  <div class="kicker">Tech architecture</div>
+  <div class="lp-row"><span class="lp teal">Frugality</span><span class="lp">Dive Deep</span></div>
+  <h2>Serverless AWS, with Bedrock as the brain.</h2>
+  <p class="sub">Event-driven end to end — near-zero cost at idle, scales per request, no servers to babysit during a demo.</p>
+
+  <div class="arch">
+    <div class="col">
+      <div class="ct">CLIENTS</div>
+      <div class="node"><b>Interactive demo</b><span>Vite · isometric sim UI</span></div>
+      <div class="node"><b>Alexa voice</b><span>Smart Home Skill</span></div>
+      <div class="ct" style="margin-top:10px">API &amp; EVENTING</div>
+      <div class="node"><b>API Gateway</b><span>REST · JWT · CORS</span></div>
+      <div class="node"><b>EventBridge</b><span>SmartHomeEventBus</span></div>
+    </div>
+    <div class="col">
+      <div class="ct">COMPUTE — AWS LAMBDA · PYTHON</div>
+      <div class="lam">
+        <div class="node"><b>api_handler</b><span>devices · context · autonomy · predict</span></div>
+        <div class="node"><b>context_handler</b><span>scheduled sensor fusion, every minute</span></div>
+        <div class="node"><b>reasoning proxy</b><span>contextual inference</span></div>
+        <div class="node"><b>event_handler</b><span>critical-event routing (power cut)</span></div>
+        <div class="node"><b>skill_handler</b><span>discovery · control · query</span></div>
+        <div class="node"><b>CSV predictor</b><span>statistical fallback if Bedrock is down</span></div>
+      </div>
+      <div class="node brain" style="margin-top:6px"><b>Amazon Bedrock — Claude</b><span>turns learned routines + live context into anticipatory actions with human-readable reasoning</span></div>
+    </div>
+    <div class="col">
+      <div class="ct">STATE — DYNAMODB, ON-DEMAND</div>
+      <div class="node data"><b>DeviceState</b><span>live device truth</span></div>
+      <div class="node data"><b>ContextSnapshot</b><span>fused context, 1-min cadence</span></div>
+      <div class="node data"><b>TrustScore</b><span>per-category autonomy tiers</span></div>
+      <div class="node data"><b>Preference</b><span>family overrides &amp; habits</span></div>
+    </div>
+  </div>
+
+  <div class="archnotes">
+    <div class="an"><b>Bedrock is the brain, not a bolt-on</b><p>Claude does the genuinely hard part: anticipation with a rationale. Everything else is plumbing.</p></div>
+    <div class="an"><b>Degrades gracefully</b><p>An on-device statistical predictor keeps the demo and the home working if the cloud is unreachable.</p></div>
+    <div class="an"><b>Explainability is stored, not bolted on</b><p>Reasoning and trust live in DynamoDB next to state — the audit trail is the data model.</p></div>
+  </div>
+  <div class="pageno">6 / 8</div>
+</section>
+
+<!-- ═══ 7 · IMPACT & VISION ═══ -->
+<section class="frame f7">
+  <div class="kicker">Impact &amp; future vision</div>
+  <div class="lp-row"><span class="lp teal">Think Big</span><span class="lp">Deliver Results</span></div>
+  <h2>Built for the <em>next billion</em> homes.</h2>
+
+  <div class="stats">
+    <div class="stat"><div class="sv">0</div><p>commands needed for the morning routine — hot water, lights and locks are simply ready</p></div>
+    <div class="stat"><div class="sv">~30%</div><p>of flexible load shifted off peak tariff by anticipating usage, not reacting to it</p></div>
+    <div class="stat"><div class="sv">100%</div><p>of proactive actions explained in plain language — with a one-tap Override</p></div>
+    <div class="stat"><div class="sv">5</div><p>autonomy tiers per device category — families decide how much Alexa may do alone</p></div>
+  </div>
+
+  <div class="visk">WHERE THIS GOES NEXT</div>
+  <div class="vision">
+    <div class="vis"><b>Sensor fusion</b><p>Hear the pressure-cooker whistle and the water-motor hum — context from sound and power signatures, no new hardware.</p></div>
+    <div class="vis"><b>Hindi &amp; Hinglish voice</b><p>Proactive suggestions in the language the household actually speaks, member by member.</p></div>
+    <div class="vis"><b>Private by default</b><p>Routine learning moves on-device; only anonymised patterns ever reach the cloud.</p></div>
+    <div class="vis"><b>Beyond one home</b><p>Matter ecosystem support and society-level insight: a colony that pre-arms for the 14:00 power cut together.</p></div>
+  </div>
+  <div class="pageno">7 / 8</div>
+</section>
+
+<!-- ═══ 8 · CLOSE ═══ -->
+<section class="frame f8">
+  <div class="grain"></div>
+  <div class="kicker">Thank you</div>
+  <h2>An Alexa that earns trust,<br/>one morning <em>chai</em> at a time.</h2>
+  <div class="links">
+    <a class="pillL solid" href="http://54.252.207.144/">Live demo — 54.252.207.144</a>
+    <a class="pillL" href="#">github.com/your-repo</a>
+  </div>
+  <div class="lps">
+    <span class="lp">Customer Obsession</span>
+    <span class="lp teal">Invent &amp; Simplify</span>
+    <span class="lp">Earn Trust</span>
+    <span class="lp teal">Frugality</span>
+    <span class="lp">Think Big</span>
+  </div>
+  <div class="pageno">8 / 8</div>
+</section>
+
+</body>
+</html>
