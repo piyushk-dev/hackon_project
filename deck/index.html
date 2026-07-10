@@ -10,6 +10,7 @@
     --paper: #f6f1e7;
     --ink: #221e17;
     --teal: #0e7c72;
+    --teal-deep: #0a5a53;
     --amber: #c77414;
     --rose: #b0483a;
     --muted: #8a8172;
@@ -33,15 +34,6 @@
     font: 700 15px/1 Inter; letter-spacing: 0.22em; text-transform: uppercase;
     color: var(--amber);
   }
-  .lp {
-    display: inline-flex; align-items: center; gap: 8px;
-    border: 1.5px solid var(--amber); color: var(--amber);
-    border-radius: 999px; padding: 8px 18px;
-    font: 600 14px/1 Inter; letter-spacing: 0.04em; white-space: nowrap;
-  }
-  .lp::before { content: '↳'; font-weight: 700; }
-  .lp.teal { border-color: var(--teal); color: var(--teal); }
-
   h1, h2, h3 { font-family: Fraunces, serif; font-weight: 600; letter-spacing: -0.015em; }
 
   /* ── 1 · cover ─────────────────────────────────────────────── */
@@ -54,6 +46,7 @@
     font: 600 16px/1 Inter; color: var(--ink);
     backdrop-filter: blur(4px);
   }
+  .f1 .team b { color: var(--teal); }
 
   /* ── 2 · agenda ────────────────────────────────────────────── */
   .f2 { display: grid; grid-template-columns: 1.15fr 1fr; }
@@ -98,14 +91,46 @@
   }
   .pain h3 { font-size: 27px; margin-bottom: 10px; }
   .pain p { font: 400 16.5px/1.55 Inter; color: #5c554a; }
-  .f3 .lp { position: absolute; right: 140px; top: 104px; }
 
-  /* ── 4 · solution ──────────────────────────────────────────── */
-  .f4 { padding: 92px 140px 0; }
-  .f4 h2 { font-size: 68px; line-height: 1.08; margin: 22px 0 10px; }
+  /* ── 4 · learning grid ─────────────────────────────────────── */
+  .f4 { padding: 84px 140px 0; }
+  .f4 h2 { font-size: 66px; margin: 20px 0 6px; }
   .f4 h2 em { font-style: italic; color: var(--teal); }
-  .f4 .sub { font: 400 21px/1.5 Inter; color: #5c554a; }
-  .loop { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin: 46px 0 40px; }
+  .f4 .stagegrid { display: flex; align-items: flex-start; gap: 64px; margin-top: 26px; }
+  .f4 svg#grid { display: block; }
+  .f4 .side { width: 360px; flex: 0 0 360px; padding-top: 24px; }
+  .conf-num {
+    font-family: Fraunces, serif; font-weight: 600; font-size: 96px; line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .conf-num small { font-size: 44px; color: var(--muted); }
+  .conf-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted); margin-top: 8px;
+  }
+  .status { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; }
+  .status-line {
+    font-size: 18px; line-height: 1.5; font-weight: 500;
+    opacity: 0; transform: translateY(8px); transition: opacity 0.6s, transform 0.6s;
+    border-left: 3px solid var(--teal); padding-left: 16px;
+  }
+  .status-line.amber { border-color: var(--amber); }
+  .status-line.show { opacity: 1; transform: none; }
+  .status-line b { font-weight: 700; }
+  .replay {
+    position: absolute; bottom: 30px; left: 140px;
+    font: 600 13px Inter; color: var(--muted);
+    background: var(--card); border: 1px solid var(--line); border-radius: 9px;
+    padding: 9px 16px; cursor: pointer;
+  }
+  .replay:hover { color: var(--teal); border-color: var(--teal); }
+
+  /* ── 5 · solution ──────────────────────────────────────────── */
+  .f5 { padding: 92px 140px 0; }
+  .f5 h2 { font-size: 68px; line-height: 1.08; margin: 22px 0 10px; }
+  .f5 h2 em { font-style: italic; color: var(--teal); }
+  .f5 .sub { font: 400 21px/1.5 Inter; color: #5c554a; }
+  .loop { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin: 46px 0 44px; }
   .stage {
     background: var(--card); border-radius: 18px; padding: 26px 28px 24px;
     box-shadow: 0 18px 44px rgba(60, 48, 26, 0.10); position: relative;
@@ -125,7 +150,7 @@
     display: inline-block; margin-top: 12px; font: 700 12.5px/1 Inter; letter-spacing: 0.06em;
     color: #7a4fb3; background: rgba(122, 79, 179, 0.1); border-radius: 6px; padding: 6px 10px;
   }
-  .f4 .bottom { display: grid; grid-template-columns: 1.25fr 1fr; gap: 40px; align-items: start; }
+  .f5 .bottom { display: grid; grid-template-columns: 1.2fr 1fr; gap: 44px; align-items: center; }
   .receipt {
     background: var(--card); border-radius: 18px; padding: 30px 36px;
     box-shadow: 0 24px 60px rgba(60, 48, 26, 0.14); border-top: 6px solid var(--teal);
@@ -133,20 +158,16 @@
   .receipt .rk { font: 700 13px/1 Inter; letter-spacing: 0.18em; color: var(--muted); margin-bottom: 14px; }
   .receipt .rq { font: 600 26px/1.35 Fraunces, serif; }
   .receipt .rq em { color: var(--teal); font-style: italic; }
-  .tiers { display: flex; gap: 8px; align-items: flex-end; height: 128px; margin-top: 6px; }
-  .tier { flex: 1; border-radius: 10px 10px 4px 4px; position: relative; }
-  .tier i { position: absolute; left: 0; right: 0; bottom: -26px; text-align: center; font: 600 12.5px/1.2 Inter; color: var(--muted); font-style: normal; }
-  .tiers-wrap .tl { font: 700 13px/1 Inter; letter-spacing: 0.18em; color: var(--muted); margin-bottom: 12px; }
-  .f4 .lp-row { position: absolute; right: 140px; top: 100px; display: flex; gap: 12px; }
+  .trustnote { font: 400 18.5px/1.6 Inter; color: #5c554a; }
+  .trustnote b { color: var(--ink); }
 
-  /* ── 5 · demo video ────────────────────────────────────────── */
-  .f5 { display: grid; grid-template-columns: 1.62fr 1fr; background: #efe6d3; }
-  .f5 .stagearea { padding: 84px 40px 0 120px; }
-  .f5 h2 { font-size: 58px; margin: 20px 0 26px; }
-  .f5 h2 em { font-style: italic; color: var(--teal); }
+  /* ── 6 · demo video ────────────────────────────────────────── */
+  .f6 { display: flex; flex-direction: column; align-items: center; padding-top: 74px; }
+  .f6 h2 { font-size: 60px; margin: 18px 0 34px; text-align: center; }
+  .f6 h2 em { font-style: italic; color: var(--teal); }
   .video-well {
-    width: 100%; aspect-ratio: 16 / 9; border-radius: 20px; overflow: hidden;
-    background: #1d1a15; box-shadow: 0 30px 70px rgba(60, 48, 26, 0.28);
+    width: 1180px; aspect-ratio: 16 / 9; border-radius: 22px; overflow: hidden;
+    background: #1d1a15; box-shadow: 0 34px 80px rgba(60, 48, 26, 0.3);
     position: relative;
   }
   .video-well video { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -155,56 +176,23 @@
     align-items: center; justify-content: center; gap: 10px; color: #b9ab8f;
     font: 500 18px/1.5 Inter; text-align: center; pointer-events: none;
   }
-  .video-well .drop b { font: 600 30px/1.2 Fraunces, serif; color: #efe6d3; }
-  .f5 .watch { padding: 84px 110px 0 48px; border-left: 1px solid var(--line); }
-  .watch .wk { font: 700 14px/1 Inter; letter-spacing: 0.2em; color: var(--muted); margin: 20px 0 8px; }
-  .watch ol { list-style: none; counter-reset: w; }
-  .watch li {
-    counter-increment: w; padding: 19px 0 19px 56px; position: relative;
-    border-bottom: 1px solid var(--line); font: 500 17.5px/1.45 Inter; color: #4c4639;
-  }
-  .watch li b { color: var(--ink); }
-  .watch li::before {
-    content: counter(w); position: absolute; left: 0; top: 16px;
-    width: 38px; height: 38px; border-radius: 50%;
-    background: var(--teal); color: #fffdf8;
-    font: 600 18px/38px Fraunces, serif; text-align: center;
-  }
-  .watch li:nth-child(2)::before { background: var(--amber); }
-  .watch li:nth-child(3)::before { background: var(--rose); }
-  .watch li:nth-child(4)::before { background: #7a4fb3; }
-  .watch .silent { margin-top: 26px; font: 400 15.5px/1.55 Inter; color: var(--muted); }
+  .video-well .drop b { font: 600 32px/1.2 Fraunces, serif; color: #efe6d3; }
 
-  /* ── 6 · architecture ──────────────────────────────────────── */
-  .f6 { padding: 84px 140px 0; }
-  .f6 h2 { font-size: 62px; margin: 20px 0 8px; }
-  .f6 .sub { font: 400 20px/1.5 Inter; color: #5c554a; }
-  .arch { display: grid; grid-template-columns: 250px 1fr 320px; gap: 34px; margin-top: 42px; align-items: stretch; }
-  .col { display: flex; flex-direction: column; gap: 16px; }
-  .col .ct { font: 700 13px/1 Inter; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 2px; }
-  .node {
-    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
-    padding: 16px 20px; box-shadow: 0 10px 26px rgba(60, 48, 26, 0.08);
-  }
-  .node b { display: block; font: 600 18px/1.25 Inter; }
-  .node span { font: 400 14px/1.45 Inter; color: var(--muted); }
-  .node.brain { border-top: 5px solid #7a4fb3; }
-  .node.brain b { font: 600 22px/1.2 Fraunces, serif; }
-  .node.data { border-top: 5px solid var(--teal); }
-  .lam { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .lam .node { padding: 13px 16px; }
-  .lam .node b { font-size: 15.5px; }
-  .lam .node span { font-size: 13px; }
-  .archnotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 40px; }
+  /* ── 7 · architecture ──────────────────────────────────────── */
+  .f7 { padding: 64px 140px 0; }
+  .f7 h2 { font-size: 52px; margin: 16px 0 8px; }
+  .f7 h2 em { font-style: italic; color: var(--teal); }
+  .f7 .sub { font: 400 19px/1.5 Inter; color: #5c554a; }
+  .f7 svg#arch { display: block; margin: 26px auto 0; }
+  .archnotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 20px; }
   .an { border-top: 3px solid var(--amber); padding-top: 14px; }
   .an b { font: 600 18px/1.3 Inter; display: block; margin-bottom: 6px; }
   .an p { font: 400 15.5px/1.5 Inter; color: #5c554a; }
-  .f6 .lp-row { position: absolute; right: 140px; top: 92px; display: flex; gap: 12px; }
 
-  /* ── 7 · impact & vision ───────────────────────────────────── */
-  .f7 { padding: 90px 140px 0; }
-  .f7 h2 { font-size: 66px; margin: 20px 0 40px; }
-  .f7 h2 em { font-style: italic; color: var(--teal); }
+  /* ── 8 · impact & vision ───────────────────────────────────── */
+  .f8 { padding: 90px 140px 0; }
+  .f8 h2 { font-size: 66px; margin: 20px 0 40px; }
+  .f8 h2 em { font-style: italic; color: var(--teal); }
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; margin-bottom: 52px; }
   .stat { background: var(--card); border-radius: 18px; padding: 26px 30px; box-shadow: 0 18px 44px rgba(60, 48, 26, 0.10); }
   .stat .sv { font: 600 44px/1 Fraunces, serif; color: var(--teal); margin-bottom: 8px; }
@@ -216,30 +204,31 @@
   .vis { border-top: 3px solid var(--teal); padding-top: 16px; }
   .vis b { font: 600 19px/1.3 Inter; display: block; margin-bottom: 8px; }
   .vis p { font: 400 15.5px/1.55 Inter; color: #5c554a; }
-  .f7 .lp-row { position: absolute; right: 140px; top: 98px; display: flex; gap: 12px; }
-  .f7 .visk { font: 700 14px/1 Inter; letter-spacing: 0.2em; color: var(--muted); margin: 0 0 18px; }
+  .f8 .visk { font: 700 14px/1 Inter; letter-spacing: 0.2em; color: var(--muted); margin: 0 0 18px; }
 
-  /* ── 8 · close ─────────────────────────────────────────────── */
-  .f8 { display: flex; flex-direction: column; justify-content: center; padding: 0 150px; }
-  .f8 .grain {
+  /* ── 9 · close ─────────────────────────────────────────────── */
+  .f9 { display: flex; flex-direction: column; justify-content: center; padding: 0 150px; }
+  .f9 .grain {
     position: absolute; inset: 0;
     background:
       radial-gradient(ellipse 900px 500px at 85% 15%, rgba(199, 116, 20, 0.09), transparent),
       radial-gradient(ellipse 700px 600px at 8% 92%, rgba(14, 124, 114, 0.08), transparent);
   }
-  .f8 h2 { font-size: 96px; line-height: 1.06; max-width: 1250px; margin: 26px 0 34px; }
-  .f8 h2 em { font-style: italic; color: var(--teal); }
-  .f8 .links { display: flex; gap: 16px; margin-top: 10px; }
+  .f9 h2 { font-size: 96px; line-height: 1.06; max-width: 1250px; margin: 26px 0 34px; }
+  .f9 h2 em { font-style: italic; color: var(--teal); }
+  .f9 .links { display: flex; gap: 16px; margin-top: 10px; }
   .pillL {
     border: 1.5px solid var(--ink); border-radius: 999px; padding: 13px 26px;
     font: 600 17px/1 Inter; color: var(--ink); text-decoration: none;
   }
   .pillL.solid { background: var(--ink); color: var(--paper); }
-  .f8 .lps { display: flex; gap: 12px; margin-top: 54px; flex-wrap: wrap; }
+  .f9 .byline { margin-top: 60px; font: 600 17px/1 Inter; color: var(--muted); }
+  .f9 .byline b { color: var(--ink); }
 
   @media print {
     body { background: none; }
     .frame { page-break-after: always; border: none !important; }
+    .replay { display: none; }
     @page { size: 1600px 900px; margin: 0; }
   }
 </style>
@@ -249,7 +238,7 @@
 <!-- ═══ 1 · COVER ═══ -->
 <section class="frame f1">
   <img class="cover" src="assets/cover.png" alt="Alexa Thinks Ahead — built for the next billion" />
-  <div class="team">Team · HackOn with Amazon — Season 6.0</div>
+  <div class="team">Team <b>Bar Raisers</b> · HackOn with Amazon — Season 6.0</div>
 </section>
 
 <!-- ═══ 2 · AGENDA ═══ -->
@@ -262,20 +251,19 @@
   <div class="right">
     <ol class="agenda">
       <li><span class="no">01</span><span class="what">The problem<small>Smart homes still wait for orders</small></span><span class="t">1.5 min</span></li>
-      <li><span class="no">02</span><span class="what">Our solution<small>Sense → Think → Act → Explain, gated by trust</small></span><span class="t">1.5 min</span></li>
-      <li><span class="no">03</span><span class="what">Live demo<small>One simulated day in the Sharma home</small></span><span class="t">3 min</span></li>
-      <li><span class="no">04</span><span class="what">Tech architecture<small>Serverless AWS, Bedrock as the brain</small></span><span class="t">2 min</span></li>
+      <li><span class="no">02</span><span class="what">Our solution<small>Learn the rhythm, act ahead, explain everything</small></span><span class="t">1.5 min</span></li>
+      <li><span class="no">03</span><span class="what">Live demo<small>One day in an Indian home</small></span><span class="t">3 min</span></li>
+      <li><span class="no">04</span><span class="what">Tech architecture<small>A routine model + an LLM that knows today</small></span><span class="t">2 min</span></li>
       <li><span class="no">05</span><span class="what">Impact &amp; future vision<small>What this unlocks for the next billion</small></span><span class="t">1.5 min</span></li>
       <li><span class="no">06</span><span class="what">Questions<small>We kept a buffer on purpose</small></span><span class="t">0.5 min</span></li>
     </ol>
   </div>
-  <div class="pageno">2 / 8</div>
+  <div class="pageno">2 / 9</div>
 </section>
 
 <!-- ═══ 3 · PROBLEM ═══ -->
 <section class="frame f3">
   <div class="kicker">The problem</div>
-  <span class="lp">Customer Obsession</span>
   <h2>Indian homes run on rhythm.<br/>Smart homes still <span>wait for orders</span>.</h2>
   <p class="sub">A multi-generational household — working parents, two kids, grandparents — issues dozens of commands a day to devices that never learn what happens next.</p>
 
@@ -303,18 +291,38 @@
       <p>No explanations, no way to correct it — so families keep automation switched off and do everything by hand.</p>
     </div>
   </div>
-  <div class="pageno">3 / 8</div>
+  <div class="pageno">3 / 9</div>
 </section>
 
-<!-- ═══ 4 · SOLUTION ═══ -->
+<!-- ═══ 4 · LEARNING GRID ═══ -->
 <section class="frame f4">
+  <div class="kicker">How she learns</div>
+  <h2>30 mornings. <em>One pattern.</em></h2>
+
+  <div class="stagegrid">
+    <svg id="grid" width="860" height="640"></svg>
+    <div class="side">
+      <div class="conf-num"><span id="conf">0</span><small>%</small></div>
+      <div class="conf-label">sure about Dadaji's bath</div>
+      <div class="status">
+        <div class="status-line" id="s1"><b>Day 14 —</b> she's sure now.<br/>Dadaji bathes at <b>6:45</b>, every weekday.</div>
+        <div class="status-line amber" id="s2">Sundays? <b>Around 8.</b> She knows that too.</div>
+        <div class="status-line" id="s3">No one told her. She just <b>watched the geyser.</b></div>
+      </div>
+    </div>
+  </div>
+  <button class="replay" onclick="runGrid()">↻ replay</button>
+  <div class="pageno">4 / 9</div>
+</section>
+
+<!-- ═══ 5 · SOLUTION ═══ -->
+<section class="frame f5">
   <div class="kicker">Our solution</div>
-  <div class="lp-row"><span class="lp teal">Invent &amp; Simplify</span><span class="lp">Earn Trust</span></div>
   <h2>Alexa Thinks Ahead — it <em>anticipates the need</em> behind the routine.</h2>
-  <p class="sub">Upload last week's activity log. Alexa learns each member's routines and plans today ahead of time — one cognitive loop, running all day.</p>
+  <p class="sub">It learns each member's routines from the home's own history and plans today ahead of time — one cognitive loop, running all day.</p>
 
   <div class="loop">
-    <div class="stage"><div class="tag">SENSE</div><p>Fuses <b>10 devices</b>, presence, time of day and household history into one context.</p></div>
+    <div class="stage"><div class="tag">SENSE</div><p>Fuses <b>devices, presence and time</b> — plus what kind of day today is.</p></div>
     <div class="stage"><div class="tag">THINK</div><p>Reasons about what the home needs <b>next</b> — not what was just said.</p><span class="bedrock">Amazon Bedrock · Claude</span></div>
     <div class="stage"><div class="tag">ACT</div><p>Fires the action <b>ahead of the routine</b> — gated by how much trust it has earned.</p></div>
     <div class="stage"><div class="tag">EXPLAIN</div><p>Every action ships with a <b>plain-language reason</b> — and an Override button.</p></div>
@@ -325,92 +333,41 @@
       <div class="rk">WHAT IT SOUNDS LIKE</div>
       <div class="rq">"Pre-heating the geyser at <em>05:15</em> — the family usually wakes around 06:00."</div>
     </div>
-    <div class="tiers-wrap">
-      <div class="tl">TRUST → 5 AUTONOMY TIERS · overrides lower it, acceptance raises it</div>
-      <div class="tiers">
-        <div class="tier" style="height:22%;background:#c9cdd4"><i>Observe</i></div>
-        <div class="tier" style="height:41%;background:#e2a266"><i>Ask first</i></div>
-        <div class="tier" style="height:60%;background:#7fa3d9"><i>Act + notify</i></div>
-        <div class="tier" style="height:79%;background:#5fb3a5"><i>Act quietly</i></div>
-        <div class="tier" style="height:100%;background:#e0b45c"><i>Trusted</i></div>
-      </div>
-    </div>
+    <p class="trustnote"><b>Trust is earned, not assumed.</b> Every accepted action raises Alexa's autonomy for that category; every override lowers it — so the family always decides how much she may do alone.</p>
   </div>
-  <div class="pageno">4 / 8</div>
+  <div class="pageno">5 / 9</div>
 </section>
 
-<!-- ═══ 5 · DEMO ═══ -->
-<section class="frame f5">
-  <div class="stagearea">
-    <div class="kicker">Live demo</div>
-    <h2>One day in the <em>Sharma home</em>.</h2>
-    <div class="video-well">
-      <video controls muted preload="metadata" src="assets/demo.mp4" poster=""></video>
-      <div class="drop"><b>demo.mp4</b>drop the voiceless screen-recording into <span style="font-family:monospace">deck/assets/</span></div>
-    </div>
-  </div>
-  <div class="watch">
-    <div class="wk">WHAT TO WATCH FOR</div>
-    <ol>
-      <li><b>Learn</b> — upload last week's CSV; Bedrock finds each member's routines with confidence scores.</li>
-      <li><b>Deploy</b> — a 24-hour day plays out; Alexa acts <b>before</b> each routine: geyser, pre-cooling, security.</li>
-      <li><b>Override</b> — one tap says "you were wrong"; the trust score drops and Alexa asks first next time.</li>
-      <li><b>Power cut</b> — Alexa triages: the child's online class stays powered, comfort loads shed to inverter.</li>
-    </ol>
-    <p class="silent">The video is intentionally silent — we narrate it live, and pause anywhere the judges want to dig in.</p>
-  </div>
-  <div class="pageno">5 / 8</div>
-</section>
-
-<!-- ═══ 6 · ARCHITECTURE ═══ -->
+<!-- ═══ 6 · DEMO ═══ -->
 <section class="frame f6">
-  <div class="kicker">Tech architecture</div>
-  <div class="lp-row"><span class="lp teal">Frugality</span><span class="lp">Dive Deep</span></div>
-  <h2>Serverless AWS, with Bedrock as the brain.</h2>
-  <p class="sub">Event-driven end to end — near-zero cost at idle, scales per request, no servers to babysit during a demo.</p>
-
-  <div class="arch">
-    <div class="col">
-      <div class="ct">CLIENTS</div>
-      <div class="node"><b>Interactive demo</b><span>Vite · isometric sim UI</span></div>
-      <div class="node"><b>Alexa voice</b><span>Smart Home Skill</span></div>
-      <div class="ct" style="margin-top:10px">API &amp; EVENTING</div>
-      <div class="node"><b>API Gateway</b><span>REST · JWT · CORS</span></div>
-      <div class="node"><b>EventBridge</b><span>SmartHomeEventBus</span></div>
-    </div>
-    <div class="col">
-      <div class="ct">COMPUTE — AWS LAMBDA · PYTHON</div>
-      <div class="lam">
-        <div class="node"><b>api_handler</b><span>devices · context · autonomy · predict</span></div>
-        <div class="node"><b>context_handler</b><span>scheduled sensor fusion, every minute</span></div>
-        <div class="node"><b>reasoning proxy</b><span>contextual inference</span></div>
-        <div class="node"><b>event_handler</b><span>critical-event routing (power cut)</span></div>
-        <div class="node"><b>skill_handler</b><span>discovery · control · query</span></div>
-        <div class="node"><b>CSV predictor</b><span>statistical fallback if Bedrock is down</span></div>
-      </div>
-      <div class="node brain" style="margin-top:6px"><b>Amazon Bedrock — Claude</b><span>turns learned routines + live context into anticipatory actions with human-readable reasoning</span></div>
-    </div>
-    <div class="col">
-      <div class="ct">STATE — DYNAMODB, ON-DEMAND</div>
-      <div class="node data"><b>DeviceState</b><span>live device truth</span></div>
-      <div class="node data"><b>ContextSnapshot</b><span>fused context, 1-min cadence</span></div>
-      <div class="node data"><b>TrustScore</b><span>per-category autonomy tiers</span></div>
-      <div class="node data"><b>Preference</b><span>family overrides &amp; habits</span></div>
-    </div>
+  <div class="kicker">Live demo</div>
+  <h2>One day in an <em>Indian home</em>.</h2>
+  <div class="video-well">
+    <video controls muted preload="metadata" src="assets/demo.mp4" poster=""></video>
+    <div class="drop"><b>demo.mp4</b>drop the screen-recording into <span style="font-family:monospace">deck/assets/</span></div>
   </div>
+  <div class="pageno">6 / 9</div>
+</section>
+
+<!-- ═══ 7 · ARCHITECTURE ═══ -->
+<section class="frame f7">
+  <div class="kicker">Tech architecture</div>
+  <h2>A routine model that knows the house, an LLM that knows <em>today</em>.</h2>
+  <p class="sub">Two timescales, one decision: slow-learned trends meet live context inside the reasoning core.</p>
+
+  <svg id="arch" width="1320" height="448" viewBox="0 0 1320 448"></svg>
 
   <div class="archnotes">
-    <div class="an"><b>Bedrock is the brain, not a bolt-on</b><p>Claude does the genuinely hard part: anticipation with a rationale. Everything else is plumbing.</p></div>
-    <div class="an"><b>Degrades gracefully</b><p>An on-device statistical predictor keeps the demo and the home working if the cloud is unreachable.</p></div>
-    <div class="an"><b>Explainability is stored, not bolted on</b><p>Reasoning and trust live in DynamoDB next to state — the audit trail is the data model.</p></div>
+    <div class="an"><b>Learning is separated from deciding</b><p>The sequence model distills months of time-series logs into event probabilities — cheap to run nightly, easy to retrain.</p></div>
+    <div class="an"><b>The LLM sees today, not just history</b><p>Occupancy, festivals, tariff windows and grid state ride along in the prompt — the same pattern Alexa+ uses for contextual reasoning.</p></div>
+    <div class="an"><b>Trust gates every action</b><p>Confidence and earned trust decide whether Alexa acts, suggests, or stays silent — and feedback flows straight back into the loop.</p></div>
   </div>
-  <div class="pageno">6 / 8</div>
+  <div class="pageno">7 / 9</div>
 </section>
 
-<!-- ═══ 7 · IMPACT & VISION ═══ -->
-<section class="frame f7">
+<!-- ═══ 8 · IMPACT & VISION ═══ -->
+<section class="frame f8">
   <div class="kicker">Impact &amp; future vision</div>
-  <div class="lp-row"><span class="lp teal">Think Big</span><span class="lp">Deliver Results</span></div>
   <h2>Built for the <em>next billion</em> homes.</h2>
 
   <div class="stats">
@@ -427,11 +384,11 @@
     <div class="vis"><b>Private by default</b><p>Routine learning moves on-device; only anonymised patterns ever reach the cloud.</p></div>
     <div class="vis"><b>Beyond one home</b><p>Matter ecosystem support and society-level insight: a colony that pre-arms for the 14:00 power cut together.</p></div>
   </div>
-  <div class="pageno">7 / 8</div>
+  <div class="pageno">8 / 9</div>
 </section>
 
-<!-- ═══ 8 · CLOSE ═══ -->
-<section class="frame f8">
+<!-- ═══ 9 · CLOSE ═══ -->
+<section class="frame f9">
   <div class="grain"></div>
   <div class="kicker">Thank you</div>
   <h2>An Alexa that earns trust,<br/>one morning <em>chai</em> at a time.</h2>
@@ -439,15 +396,181 @@
     <a class="pillL solid" href="http://54.252.207.144/">Live demo — 54.252.207.144</a>
     <a class="pillL" href="#">github.com/your-repo</a>
   </div>
-  <div class="lps">
-    <span class="lp">Customer Obsession</span>
-    <span class="lp teal">Invent &amp; Simplify</span>
-    <span class="lp">Earn Trust</span>
-    <span class="lp teal">Frugality</span>
-    <span class="lp">Think Big</span>
-  </div>
-  <div class="pageno">8 / 8</div>
+  <div class="byline">Team <b>Bar Raisers</b> · HackOn with Amazon — Season 6.0</div>
+  <div class="pageno">9 / 9</div>
 </section>
 
+<script>
+/* ═══ Learning grid (from sketch 01) ═══ */
+const SVG = document.getElementById('grid');
+const NS = 'http://www.w3.org/2000/svg';
+const conf = document.getElementById('conf');
+
+const LEFT = 100, TOP = 30, W = 720, ROW_H = 18.4, DAYS = 30;
+const T0 = 5.5 * 60, T1 = 9 * 60;
+const X = (min) => LEFT + ((min - T0) / (T1 - T0)) * W;
+
+function mulberry(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const rnd = mulberry(42);
+const days = [];
+for (let d = 0; d < DAYS; d++) {
+  const dow = d % 7;
+  const sunday = dow === 6;
+  let t = sunday ? 485 + (rnd() - 0.5) * 26 : 405 + (rnd() - 0.5) * 18;
+  if (d === 2) t = 448;
+  if (d === 9) t = 391;
+  days.push({ t, sunday, dow });
+}
+
+function el(name, attrs) {
+  const e = document.createElementNS(NS, name);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  SVG.appendChild(e);
+  return e;
+}
+
+let timers = [];
+function clearGrid() { timers.forEach(clearTimeout); timers = []; SVG.innerHTML = ''; }
+const at = (ms, fn) => timers.push(setTimeout(fn, ms));
+
+function axis() {
+  for (let h = 6; h <= 9; h++) {
+    const x = X(h * 60);
+    el('line', { x1: x, y1: TOP - 6, x2: x, y2: TOP + DAYS * ROW_H, stroke: 'rgba(35,32,26,0.08)', 'stroke-width': 1 });
+    const t = el('text', { x, y: TOP - 14, 'text-anchor': 'middle', fill: '#8a8172',
+      style: 'font:600 11px Inter; letter-spacing:.06em' });
+    t.textContent = h + ' AM';
+  }
+}
+
+function runGrid() {
+  clearGrid();
+  axis();
+  conf.textContent = '0';
+  document.querySelectorAll('.status-line').forEach(s => s.classList.remove('show'));
+
+  const bandWd = el('rect', { x: 0, y: TOP - 4, width: 0, height: DAYS * ROW_H + 8, rx: 8,
+    fill: 'rgba(14,124,114,0.10)' });
+  const bandSun = el('rect', { x: 0, y: TOP - 4, width: 0, height: DAYS * ROW_H + 8, rx: 8,
+    fill: 'rgba(199,116,20,0.10)' });
+
+  let wdTimes = [], sunTimes = [];
+  const DOW = ['M','T','W','T','F','S','S'];
+
+  days.forEach((day, i) => {
+    at(600 + i * 230, () => {
+      const lab = el('text', { x: LEFT - 32, y: TOP + i * ROW_H + 4, fill: day.sunday ? '#c77414' : '#b4ac9c',
+        style: 'font:600 10.5px Inter', 'text-anchor': 'end' });
+      lab.textContent = 'Day ' + (i + 1);
+      const dw = el('text', { x: LEFT - 15, y: TOP + i * ROW_H + 4, fill: day.sunday ? '#c77414' : '#cfc8b8',
+        style: 'font:700 9.5px Inter', 'text-anchor': 'middle' });
+      dw.textContent = DOW[day.dow];
+
+      const c = el('circle', { cx: X(day.t), cy: TOP + i * ROW_H, r: 0,
+        fill: day.sunday ? '#c77414' : '#0e7c72', opacity: 0.92 });
+      c.animate([{ r: 0 }, { r: 7.5 }, { r: 5.4 }], { duration: 420, fill: 'forwards', easing: 'cubic-bezier(.2,1.4,.4,1)' });
+
+      (day.sunday ? sunTimes : wdTimes).push(day.t);
+      const fit = (arr, band) => {
+        if (arr.length < 3) return;
+        const m = arr.reduce((a, b) => a + b) / arr.length;
+        const sd = Math.sqrt(arr.reduce((a, b) => a + (b - m) ** 2, 0) / arr.length) + 4;
+        band.setAttribute('x', X(m - sd * 1.7));
+        band.setAttribute('width', X(m + sd * 1.7) - X(m - sd * 1.7));
+      };
+      fit(wdTimes, bandWd);
+      fit(sunTimes, bandSun);
+
+      conf.textContent = Math.min(96, Math.round(wdTimes.length * 7.3));
+
+      if (i === 13) document.getElementById('s1').classList.add('show');
+      if (i === 20) document.getElementById('s2').classList.add('show');
+    });
+  });
+
+  at(600 + DAYS * 230 + 500, () => {
+    document.getElementById('s3').classList.add('show');
+    const x = X(405);
+    el('line', { x1: x, y1: TOP - 4, x2: x, y2: TOP + DAYS * ROW_H + 4, stroke: '#0a5a53', 'stroke-width': 1.8, 'stroke-dasharray': '2 5' });
+    const t = el('text', { x, y: TOP + DAYS * ROW_H + 26, 'text-anchor': 'middle', fill: '#0a5a53', style: 'font:700 13px Inter' });
+    t.textContent = '6:45 AM';
+  });
+}
+runGrid();
+
+/* ═══ Architecture diagram ═══ */
+(function drawArch() {
+  const svg = document.getElementById('arch');
+  const A = (name, attrs, parent = svg) => {
+    const e = document.createElementNS(NS, name);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  };
+
+  // arrowheads
+  const defs = A('defs', {});
+  for (const [id, color] of [['ah', '#8a8172'], ['ahT', '#0e7c72'], ['ahA', '#c77414']]) {
+    const m = A('marker', { id, viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 7.5, markerHeight: 7.5, orient: 'auto-start-reverse' }, defs);
+    A('path', { d: 'M 0 0 L 10 5 L 0 10 z', fill: color }, m);
+  }
+
+  const wrap = (parent, x, y, lines, style, anchor = 'start') => {
+    const t = A('text', { x, y, 'text-anchor': anchor, style }, parent);
+    lines.forEach((ln, i) => {
+      const ts = A('tspan', { x, dy: i === 0 ? 0 : 19 }, t);
+      ts.textContent = ln;
+    });
+    return t;
+  };
+
+  const node = (x, y, w, h, title, sub, accent) => {
+    const g = A('g', {});
+    A('rect', { x, y, width: w, height: h, rx: 14, fill: '#fffdf8', stroke: '#ddd2ba', 'stroke-width': 1 }, g);
+    A('rect', { x, y, width: w, height: 5, rx: 2.5, fill: accent }, g);
+    wrap(g, x + 22, y + 36, [title], 'font:600 19px Inter; fill:#221e17');
+    wrap(g, x + 22, y + 62, sub, 'font:400 14px Inter; fill:#8a8172');
+    return g;
+  };
+
+  const lane = (x, y, text, color) =>
+    wrap(svg, x, y, [text], `font:700 13px Inter; letter-spacing:2.4px; fill:${color}`);
+
+  const arrow = (d, marker, dash) =>
+    A('path', { d, fill: 'none', stroke: marker === 'ahT' ? '#0e7c72' : marker === 'ahA' ? '#c77414' : '#8a8172',
+      'stroke-width': 2, 'marker-end': `url(#${marker})`, ...(dash ? { 'stroke-dasharray': '6 7' } : {}) });
+
+  const alabel = (x, y, lines, color = '#8a8172', anchor = 'middle') =>
+    wrap(svg, x, y, lines, `font:600 13.5px Inter; fill:${color}`, anchor);
+
+  // ── learn lane (top) ──
+  lane(0, 22, 'LEARN THE RHYTHM · TRAINED ON THE HOME’S OWN HISTORY', '#0e7c72');
+  node(0, 40, 292, 96, 'Home activity logs', ['months of time-stamped device,', 'presence & usage events'], '#0e7c72');
+  node(392, 40, 300, 96, 'Routine model — DNN', ['sequence model over the', 'time-series of events'], '#0e7c72');
+  arrow('M 292 88 L 386 88', 'ahT');
+
+  // trends arrow into the LLM
+  arrow('M 692 88 L 900 88 L 900 176', 'ahT');
+  alabel(800, 42, ['P(event x at time t)', 'the house’s trends'], '#0a5a53');
+
+  // ── context lane (bottom-left) ──
+  lane(0, 258, 'TODAY’S CONTEXT · LIVE', '#c77414');
+  node(0, 276, 292, 118, 'Live home context', ['who’s home · festival or special', 'day · tariff window · grid state'], '#c77414');
+  arrow('M 292 335 L 660 335 L 660 292', 'ahA');
+  alabel(475, 320, ['rides along in the prompt'], '#c77414');
+
+  // ── reasoning core ──
+  node(620, 182, 460, 110, 'Reasoning core — Amazon Bedrock (Claude)', ['the house’s trends + today’s context → “what should the', 'home do next, and why” — the Alexa+ pattern'], '#7a4fb3');
+
+  // ── action ──
+  node(1160, 182, 160, 110, 'Trust gate', ['act · suggest ·', 'stay silent'], '#221e17');
+  arrow('M 1080 237 L 1154 237', 'ah');
+  alabel(1117, 218, ['action + reason'], '#8a8172');
+
+  // ── feedback loop ──
+  arrow('M 1240 292 L 1240 420 L 146 420 L 146 400', 'ah', true);
+  alabel(693, 408, ['accept or override → trust rises or falls · every action becomes tomorrow’s training data'], '#8a8172');
+})();
+</script>
 </body>
 </html>
