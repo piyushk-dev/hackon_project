@@ -26,13 +26,13 @@ const CATEGORIES = [
   'assistant',
 ];
 
-/** Tier color coding */
+/** Tier color coding — semantic category palette */
 const TIER_COLORS = {
-  1: '#666',      // gray
-  2: '#ff9f43',   // orange
-  3: '#00CAFF',   // cyan (Alexa blue)
-  4: '#4ecdc4',   // green
-  5: '#f7dc6f',   // gold
+  1: '#a3a9b3',   // slate — just observing
+  2: '#ed8936',   // orange — asks first
+  3: '#3f74f5',   // blue — acts with notice
+  4: '#0eaf9b',   // teal — acts autonomously
+  5: '#f2b01e',   // gold — fully trusted
 };
 
 /** SVG ring geometry */
@@ -112,7 +112,7 @@ export class TrustGauges {
     bgCircle.setAttribute('cy', String(center));
     bgCircle.setAttribute('r', String(RING_RADIUS));
     bgCircle.setAttribute('fill', 'none');
-    bgCircle.setAttribute('stroke', 'rgba(0,202,255,0.1)');
+    bgCircle.setAttribute('stroke', '#eceae4');
     bgCircle.setAttribute('stroke-width', String(RING_STROKE));
     svg.appendChild(bgCircle);
 
@@ -138,10 +138,10 @@ export class TrustGauges {
     scoreText.setAttribute('y', String(center));
     scoreText.setAttribute('text-anchor', 'middle');
     scoreText.setAttribute('dominant-baseline', 'central');
-    scoreText.setAttribute('fill', '#e6edf3');
-    scoreText.setAttribute('font-size', '12');
-    scoreText.setAttribute('font-weight', '600');
-    scoreText.setAttribute('font-family', 'Inter, sans-serif');
+    scoreText.setAttribute('fill', '#1a1c1e');
+    scoreText.setAttribute('font-size', '13');
+    scoreText.setAttribute('font-weight', '700');
+    scoreText.setAttribute('font-family', "'Space Grotesk', Inter, sans-serif");
     scoreText.textContent = '0';
     svg.appendChild(scoreText);
 

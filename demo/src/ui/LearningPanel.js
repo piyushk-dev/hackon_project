@@ -119,16 +119,29 @@ export class LearningPanel {
 
     formEl.innerHTML = `
       <div class="learning-panel-header">
+        <span class="learning-kicker">Learning Phase</span>
         <h3>Alexa is learning your household</h3>
-        <p id="routine-counter" class="routine-counter">Alexa has learned ${this.events.length} routines for ${uniqueMembers} family members</p>
+        <p id="routine-counter" class="routine-counter"><strong>${this.events.length}</strong> routines learned across <strong>${uniqueMembers}</strong> family members</p>
       </div>
 
       <div class="csv-upload-section">
-        <h4>📂 Upload last week's activity log</h4>
+        <h4>Teach Alexa with real data</h4>
         <p class="csv-help">
-          Alexa sends your household's previous-week routine to Amazon Bedrock to
-          predict today's events and decide what to do <em>ahead of time</em>.
+          Upload last week's activity log and Amazon Bedrock will predict today's
+          events — so Alexa can act <em>ahead of time</em>.
         </p>
+        <label class="csv-dropzone" id="csv-dropzone">
+          <input type="file" id="csv-file-input" accept=".csv,text/csv" aria-label="Activity log CSV file" />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16.5V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5"/>
+          </svg>
+          <span class="csv-dropzone-title">Upload activity log</span>
+          <span class="csv-dropzone-hint" id="csv-file-name">CSV — click to browse or drop here</span>
+        </label>
+        <div class="csv-controls">
+          <button type="button" id="csv-analyze-btn" class="btn-accent">✦ Analyze with Bedrock</button>
+          <button type="button" id="csv-download-btn" class="csv-sample-link">Sample CSV</button>
+        </div>
         <details class="csv-format">
           <summary>CSV format</summary>
           <ul>
@@ -140,11 +153,6 @@ export class LearningPanel {
 2026-06-13,06:00,Priya,Wake up,Master Bedroom,Lights|Geyser
 2026-06-13,08:00,Rajesh,Leave home,Balcony,Lock|Camera</code>
         </details>
-        <div class="csv-controls">
-          <input type="file" id="csv-file-input" accept=".csv,text/csv" aria-label="Activity log CSV file" />
-          <button type="button" id="csv-analyze-btn" class="btn-ghost">Analyze with Bedrock</button>
-        </div>
-        <button type="button" id="csv-download-btn" class="csv-sample-link">⬇ Download sample CSV</button>
         <div id="csv-status" class="csv-status csv-status-info"></div>
       </div>
 
@@ -175,14 +183,20 @@ export class LearningPanel {
     const extras = Object.keys(grouped).filter((m) => !FAMILY_MEMBERS.includes(m)).sort();
     const memberOrder = [...FAMILY_MEMBERS, ...extras];
 
+    const memberColors = {
+      Rajesh: '#ff8f6b', Priya: '#4ecdc4', Arjun: '#5eb3f6',
+      Ananya: '#f7d774', Dadaji: '#c39be8', Dadiji: '#8fe3a9',
+    };
+
     let html = '';
     for (const member of memberOrder) {
       const items = grouped[member];
       if (!items || items.length === 0) continue;
       items.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
 
+      const dotColor = memberColors[member] || '#2dd6ff';
       html += `<div class="event-group">
-        <h4 class="event-group-title">${member}</h4>`;
+        <h4 class="event-group-title" style="--member-color:${dotColor}"><span class="member-dot" aria-hidden="true"></span>${member}</h4>`;
       for (const evt of items) {
         const typeLabel = evt.type === 'Custom' && evt.customLabel ? `Custom/${evt.customLabel}` : evt.type;
         const conf = typeof evt.confidence === 'number'
@@ -211,7 +225,7 @@ export class LearningPanel {
     const counterEl = document.getElementById('routine-counter');
     if (!counterEl) return;
     const uniqueMembers = new Set(this.events.map((e) => e.member)).size;
-    counterEl.textContent = `Alexa has learned ${this.events.length} routines for ${uniqueMembers} family members`;
+    counterEl.innerHTML = `<strong>${this.events.length}</strong> routines learned across <strong>${uniqueMembers}</strong> family members`;
   }
 
   /**
@@ -338,6 +352,25 @@ export class LearningPanel {
     const analyzeBtn = document.getElementById('csv-analyze-btn');
     if (analyzeBtn) {
       analyzeBtn.addEventListener('click', () => this._analyzeCsv());
+    }
+
+    // Reflect the chosen file name in the dropzone
+    const fileInput = document.getElementById('csv-file-input');
+    const dropzone = document.getElementById('csv-dropzone');
+    const fileName = document.getElementById('csv-file-name');
+    if (fileInput && dropzone && fileName) {
+      fileInput.addEventListener('change', () => {
+        const file = fileInput.files && fileInput.files[0];
+        dropzone.classList.toggle('has-file', !!file);
+        fileName.textContent = file ? file.name : 'CSV — click to browse or drop here';
+      });
+      // Drag styling (drop is handled natively by the full-size input)
+      ['dragenter', 'dragover'].forEach((evt) =>
+        dropzone.addEventListener(evt, () => dropzone.classList.add('is-drag'))
+      );
+      ['dragleave', 'drop'].forEach((evt) =>
+        dropzone.addEventListener(evt, () => dropzone.classList.remove('is-drag'))
+      );
     }
 
     const downloadBtn = document.getElementById('csv-download-btn');

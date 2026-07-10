@@ -190,14 +190,15 @@ eventBus.on(EVENTS.PHASE_CHANGE, (payload) => {
   }
 });
 
-// 3. Data mode toggle button
+// 3. Data mode toggle (segmented switch in the top bar)
 const dataToggleContainer = document.getElementById('data-toggle');
 if (dataToggleContainer) {
   dataToggleContainer.innerHTML = `
     <div class="data-toggle-inner">
-      <span class="data-toggle-label">Data Mode:</span>
-      <button id="data-mode-btn" class="btn-accent data-mode-btn">
-        Mock
+      <span class="data-toggle-label">Data</span>
+      <button id="data-mode-btn" class="data-mode-btn" type="button" role="switch" aria-checked="false" aria-label="Toggle data mode">
+        <span class="data-mode-opt" data-v="mock">Mock</span>
+        <span class="data-mode-opt" data-v="real">Live</span>
       </button>
     </div>
   `;
@@ -206,10 +207,27 @@ if (dataToggleContainer) {
   dataModeBtn.addEventListener('click', () => {
     const newMode = dataLayer.mode === 'mock' ? 'real' : 'mock';
     dataLayer.setMode(newMode);
-    dataModeBtn.textContent = newMode === 'mock' ? 'Mock' : 'Real';
     dataModeBtn.classList.toggle('data-mode-real', newMode === 'real');
+    dataModeBtn.setAttribute('aria-checked', String(newMode === 'real'));
   });
 }
+
+// 3b. Top-bar phase stepper follows the Learn → Deploy transition,
+//     and Alexa's presence orb switches from "studying" to "acting" mode.
+eventBus.on(EVENTS.PHASE_CHANGE, (payload) => {
+  if (payload && payload.phase === 'deployment') {
+    floorPlan.setAlexaMode('deployment');
+    const learnStep = document.querySelector('.phase-step[data-phase="learning"]');
+    const deployStep = document.querySelector('.phase-step[data-phase="deployment"]');
+    if (learnStep) {
+      learnStep.classList.remove('is-active');
+      learnStep.classList.add('is-done');
+      const idx = learnStep.querySelector('.phase-step-index');
+      if (idx) idx.textContent = '✓';
+    }
+    if (deployStep) deployStep.classList.add('is-active');
+  }
+});
 
 // Helper: resolve a device ID to its room for the real-mode power-cut animation.
 // Uses known device-to-room mappings from DEVICE_PLACEMENTS in FloorPlan2D.

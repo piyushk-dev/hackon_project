@@ -43,7 +43,7 @@ export class EventLog {
 
     this.container.innerHTML = `
       <div class="event-log-header">
-        <h3 class="event-log-title">📋 Event Log</h3>
+        <h3 class="event-log-title"><span class="alexa-ring-dot" aria-hidden="true"></span>Alexa Activity</h3>
         <button class="event-log-close" aria-label="Close event log" title="Hide event log">✕</button>
       </div>
       <div id="event-log-entries" class="event-log-entries"></div>
@@ -94,6 +94,7 @@ export class EventLog {
 
     const el = document.createElement('div');
     el.className = 'event-log-entry';
+    if (entry.type) el.dataset.type = entry.type;
 
     const accentColor = this.getAccentColor(entry.type);
     el.style.borderLeftColor = accentColor;

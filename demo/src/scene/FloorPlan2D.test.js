@@ -17,24 +17,17 @@ describe('FloorPlan2D', () => {
     container = setupDOM();
   });
 
-  it('renders rooms and clickable device components', () => {
+  it('renders the isometric house with rooms and clickable device components', () => {
     new FloorPlan2D(container);
 
-    expect(container.querySelector('.floor-plan-wrapper')).not.toBeNull();
-    expect(container.querySelector('.fp-roof')).not.toBeNull();
-    expect(container.querySelector('.fp-house-shell')).not.toBeNull();
-    expect(container.querySelectorAll('.fp-room')).toHaveLength(7);
+    expect(container.querySelector('.iso-stage')).not.toBeNull();
+    expect(container.querySelector('svg.iso-svg')).not.toBeNull();
+    expect(container.querySelectorAll('.iso-room')).toHaveLength(7);
+    expect(container.querySelector('.iso-room[data-room-id="living_room"]')).not.toBeNull();
+    expect(container.querySelector('.iso-room[data-room-id="bath"]')).not.toBeNull();
+    expect(container.querySelectorAll('.iso-room-label')).toHaveLength(7);
 
-    const bath = container.querySelector('[data-room-id="bath"]');
-    const livingRoom = container.querySelector('[data-room-id="living_room"]');
-    expect(bath.style.left).toBe('42%');
-    expect(bath.style.top).toBe('42%');
-    expect(bath.style.height).toBe('58%');
-    expect(livingRoom.style.left).toBe('0%');
-    expect(livingRoom.style.width).toBe('42%');
-    expect(livingRoom.querySelector('.fp-prop-sofa')).not.toBeNull();
-
-    const devices = container.querySelectorAll('.fp-device');
+    const devices = container.querySelectorAll('.iso-device');
     expect(devices.length).toBeGreaterThan(10);
     expect(devices[0].tagName).toBe('BUTTON');
   });
@@ -46,27 +39,26 @@ describe('FloorPlan2D', () => {
     ac.click();
 
     expect(ac.classList.contains('selected')).toBe(true);
-    expect(container.querySelector('.fp-component-info').textContent).toContain('AC');
-    expect(container.querySelector('.fp-component-info').textContent).toContain('Off');
+    expect(container.querySelector('.iso-info-card').textContent).toContain('AC');
+    expect(container.querySelector('.iso-info-card').textContent).toContain('Off');
 
     container.querySelector('[data-action="toggle"]').click();
 
     expect(ac.dataset.state).toBe('on');
-    expect(container.querySelector('.fp-component-info').textContent).toContain('Cooling');
+    expect(container.querySelector('.iso-info-card').textContent).toContain('Cooling');
   });
 
   it('opens room details with clickable components inside the room', () => {
     new FloorPlan2D(container);
 
-    container.querySelector('[data-room-id="living_room"]').click();
+    container.querySelector('.iso-room-label[data-room-label="living_room"]').click();
 
-    const roomInfo = container.querySelector('.fp-room-info');
+    const roomInfo = container.querySelector('.iso-info-card');
     expect(roomInfo.textContent).toContain('Living Room');
-    expect(roomInfo.querySelectorAll('.fp-component-row').length).toBeGreaterThan(0);
+    expect(roomInfo.querySelectorAll('.iso-info-device').length).toBeGreaterThan(0);
 
     roomInfo.querySelector('[data-device-id="smart_tv"]').click();
 
-    expect(container.querySelector('.fp-room-info')).toBeNull();
-    expect(container.querySelector('.fp-component-info').textContent).toContain('TV');
+    expect(container.querySelector('.iso-info-card').textContent).toContain('TV');
   });
 });

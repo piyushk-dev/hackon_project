@@ -3,55 +3,81 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alexa Thinks Ahead - Interactive Smart Home Demo</title>
+  <title>Alexa Thinks Ahead — Proactive Smart Home</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/src/styles/main.css" />
   <link rel="stylesheet" href="/src/styles/glassmorphism.css" />
   <link rel="stylesheet" href="/src/styles/panels.css" />
 </head>
 <body>
-  <div id="app">
-    <!-- 3D Scene Container -->
+  <div id="app" data-daypart="day">
+    <!-- Ambient sky / aurora backdrop -->
+    <div class="sky-backdrop" aria-hidden="true">
+      <div class="sky-aurora"></div>
+      <div class="sky-stars"></div>
+    </div>
+
+    <!-- Top App Bar -->
+    <header id="topbar">
+      <div class="topbar-brand">
+        <span class="brand-mark" aria-hidden="true">
+          <!-- Alexa-style mark: ring resolving into a voice swoosh -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2.5a9.5 9.5 0 1 0 0 19"/>
+            <path d="M12 21.5a9.5 9.5 0 0 0 9.5-9.5"/>
+            <path d="M7.5 13.5c3 2.4 6 2.4 9 0"/>
+          </svg>
+        </span>
+        <div class="topbar-titles">
+          <span class="topbar-title">Alexa Thinks Ahead</span>
+          <span class="topbar-subtitle">Sharma Family · Smart Home Simulation</span>
+        </div>
+      </div>
+
+      <nav class="phase-stepper" aria-label="Demo phase">
+        <span class="phase-step is-active" data-phase="learning">
+          <span class="phase-step-index">1</span> Learn
+        </span>
+        <span class="phase-step-track" aria-hidden="true"></span>
+        <span class="phase-step" data-phase="deployment">
+          <span class="phase-step-index">2</span> Deploy
+        </span>
+      </nav>
+
+      <div class="topbar-actions">
+        <div id="data-toggle"></div>
+      </div>
+    </header>
+
+    <!-- Isometric house stage -->
     <div id="3d-container"></div>
 
     <!-- Flicker Overlay for Power Cut Effect -->
     <div id="flicker-overlay"></div>
 
     <!-- Learning Phase Panel -->
-    <div id="learning-phase" class="phase-panel">
-      <div class="panel-content glass-panel">
-        <div class="brand-header">
-          <span class="brand-badge">●</span>
-          <div>
-            <div class="brand-title">Alexa Thinks Ahead</div>
-            <div class="brand-subtitle">Learning Phase</div>
-          </div>
-        </div>
+    <aside id="learning-phase" class="phase-panel">
+      <div class="panel-content surface-panel">
         <div id="event-form"></div>
         <div id="event-list"></div>
-        <button id="deploy-btn" class="btn-deploy">Deploy →</button>
+        <button id="deploy-btn" class="btn-deploy">
+          <span>Deploy Alexa</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
       </div>
-    </div>
+    </aside>
 
-    <!-- Deployment Phase Panel -->
+    <!-- Deployment Phase Panels -->
     <div id="deployment-phase" class="phase-panel hidden">
-      <!-- Timeline Scrubber (bottom) -->
-      <div id="timeline-panel" class="glass-panel"></div>
-
-      <!-- Event Log Sidebar (right) -->
-      <div id="event-log-panel" class="glass-panel"></div>
-
-      <!-- Trust Gauges Overlay -->
-      <div id="trust-gauges" class="glass-panel"></div>
+      <div id="timeline-panel" class="surface-panel"></div>
+      <div id="event-log-panel" class="surface-panel"></div>
+      <div id="trust-gauges" class="surface-panel"></div>
     </div>
 
     <!-- Reasoning Panel (Power Cut Overlay) -->
-    <div id="reasoning-panel" class="glass-panel hidden"></div>
-
-    <!-- Data Mode Toggle -->
-    <div id="data-toggle" class="glass-panel"></div>
+    <div id="reasoning-panel" class="hidden"></div>
   </div>
 
   <script type="module" src="/src/main.js"></script>

@@ -103,8 +103,18 @@ export class DeploymentPanel {
 
     scrubber.addEventListener('input', (e) => {
       const value = parseInt(e.target.value, 10);
+      this._updateScrubberFill(scrubber, value);
       this.simulation.seekTo(value);
     });
+  }
+
+  /**
+   * Update the scrubber's CSS fill variable so the track shows progress.
+   * @private
+   */
+  _updateScrubberFill(scrubber, minutes) {
+    if (!scrubber || !scrubber.style) return;
+    scrubber.style.setProperty('--p', `${((minutes / 1439) * 100).toFixed(2)}%`);
   }
 
   /**
@@ -167,6 +177,7 @@ export class DeploymentPanel {
 
       if (scrubber) {
         scrubber.value = roundedMinutes;
+        this._updateScrubberFill(scrubber, roundedMinutes);
       }
       if (timeDisplay) {
         timeDisplay.textContent = formatTime(roundedMinutes);
