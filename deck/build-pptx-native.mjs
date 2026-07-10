@@ -448,11 +448,7 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     x: X(140), y: X(92), w: X(1330), h: X(58), margin: 0,
     fontFace: DISPLAY, fontSize: F(42), color: INK,
   });
-  s.addText([
-    { text: 'One loop runs all day — ' },
-    { text: 'SENSE → THINK → ACT → EXPLAIN', options: { bold: true, color: INK } },
-    { text: ' — slow-learned trends meeting today’s context in the reasoning core.' },
-  ], {
+  s.addText('Two timescales, one decision — slow-learned trends meet today’s context inside the reasoning core.', {
     x: X(140), y: X(154), w: X(1330), h: X(28), margin: 0,
     fontFace: TEXT, fontSize: F(17), color: BODY,
   });
@@ -558,38 +554,39 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     fontFace: DISPLAY, fontSize: F(64), color: INK,
   });
 
-  // No invented metrics — what concretely changes, and why it scales
-  const colHead = (cx, t) => s.addText(t, {
-    x: X(cx), y: X(236), w: X(620), h: X(36), margin: 0,
-    fontFace: DISPLAY, fontSize: F(24), color: INK,
+  // Hero stat + three adoption points
+  s.addText('~1 hour', {
+    x: X(140), y: X(258), w: X(460), h: X(96), margin: 0,
+    fontFace: DISPLAY, fontSize: F(80), color: TEAL,
   });
-  colHead(140, 'For the Sharma family');
-  colHead(830, 'Why it scales');
+  s.addText([
+    { text: 'given back to the family every day', options: { bold: true, color: INK } },
+    { text: ' — the small chores of remembering (geyser, motor, locks, cooling) simply stop existing.' },
+  ], {
+    x: X(140), y: X(368), w: X(430), h: X(150), margin: 0,
+    fontFace: TEXT, fontSize: F(18), color: BODY, lineSpacingMultiple: 1.35,
+  });
 
-  const impact = [
-    [140, [
-      ['The morning runs itself.', ' Hot water at bath time, the motor off before the tank overflows, doors locked behind the last person out — nobody says a word.'],
-      ["A power cut isn't an emergency.", " The inverter carries what matters — the online class, the grandparents' room — and quietly sheds the rest."],
-      ['The family stays the boss.', ' Every action arrives with its reason; one override, and Alexa asks first next time.'],
-    ]],
-    [830, [
-      ['Anticipation is the feature India needs.', ' Power cuts, water-supply windows and tariff slots are the daily rhythm here — a purely reactive assistant cannot keep up with them.'],
-      ['For Amazon, it makes Alexa indispensable.', " The Echo already in the living room becomes the household's brain — not just another speaker."],
-    ]],
+  const points = [
+    ['It sets itself up.', ' Most people never open the routines tab — automation that demands configuration never gets adopted. This one configures itself, just by watching.'],
+    ["A power cut isn't an emergency.", " The inverter carries what matters — the online class, the grandparents' room — and quietly sheds the rest."],
+    ['More than a speaker.', " For homes like these, the Echo in the living room stops being a music box and becomes the household's brain — that is what makes Alexa indispensable."],
   ];
-  for (const [cx, rows] of impact) {
-    let iy = 290;
-    for (const [lead, rest] of rows) {
-      s.addText([
-        { text: lead, options: { bold: true, color: INK } },
-        { text: rest, options: { color: BODY } },
-      ], {
-        x: X(cx), y: X(iy), w: X(630), h: X(96), margin: 0,
-        fontFace: TEXT, fontSize: F(17), lineSpacingMultiple: 1.3,
-      });
-      iy += 106;
-    }
+  let iy = 262;
+  for (const [lead, rest] of points) {
+    s.addText([
+      { text: lead, options: { bold: true, color: INK } },
+      { text: rest, options: { color: BODY } },
+    ], {
+      x: X(680), y: X(iy), w: X(780), h: X(100), margin: 0,
+      fontFace: TEXT, fontSize: F(18), lineSpacingMultiple: 1.3,
+    });
+    iy += 118;
   }
+  s.addShape(pptx.shapes.LINE, {
+    x: X(632), y: X(266), w: 0, h: X(330), line: { color: HAIR, width: 1 },
+  });
+
   hline(s, 140, 616, 1320);
 
   s.addText('Where this goes next', {
