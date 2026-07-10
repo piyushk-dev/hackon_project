@@ -159,15 +159,11 @@
   .video-well .drop b { font: 600 32px/1.2 Fraunces, serif; color: #efe6d3; }
 
   /* ── 7 · architecture ──────────────────────────────────────── */
-  .f7 { padding: 64px 140px 0; }
-  .f7 h2 { font-size: 52px; margin: 16px 0 8px; }
+  .f7 { padding: 56px 140px 0; }
+  .f7 h2 { font-size: 44px; margin: 14px 0 6px; }
   .f7 h2 em { font-style: italic; color: var(--teal); }
-  .f7 .sub { font: 400 19px/1.5 Inter; color: #5c554a; }
-  .f7 svg#arch { display: block; margin: 26px auto 0; }
-  .archnotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 20px; }
-  .an { border-top: 3px solid var(--amber); padding-top: 14px; }
-  .an b { font: 600 18px/1.3 Inter; display: block; margin-bottom: 6px; }
-  .an p { font: 400 15.5px/1.5 Inter; color: #5c554a; }
+  .f7 .sub { font: 400 18px/1.5 Inter; color: #5c554a; }
+  .f7 svg#arch { display: block; margin: 20px auto 0; }
 
   /* ── 8 · impact & vision ───────────────────────────────────── */
   .f8 { padding: 90px 140px 0; }
@@ -218,7 +214,7 @@
 <!-- ═══ 1 · COVER ═══ -->
 <section class="frame f1">
   <img class="cover" src="assets/cover.png" alt="Alexa Thinks Ahead — built for the next billion" />
-  <div class="team">Team <b>Bar Raisers</b> · HackOn with Amazon</div>
+  <div class="team">Team <b>Bar Raisers</b> — Priyanshu Agarwal &amp; Piyush Kumar · HackOn with Amazon</div>
 </section>
 
 <!-- ═══ 2 · AGENDA ═══ -->
@@ -340,13 +336,7 @@
   <h2>A routine model that knows the house, an LLM that knows <em>today</em>.</h2>
   <p class="sub">Two timescales, one decision: slow-learned trends meet live context inside the reasoning core.</p>
 
-  <svg id="arch" width="1320" height="448" viewBox="0 0 1320 448"></svg>
-
-  <div class="archnotes">
-    <div class="an"><b>Learning is separated from deciding</b><p>The sequence model distills months of time-series logs into event probabilities — cheap to run nightly, easy to retrain.</p></div>
-    <div class="an"><b>The LLM sees today, not just history</b><p>Occupancy, festivals, tariff windows and grid state ride along in the prompt — the same pattern Alexa+ uses for contextual reasoning.</p></div>
-    <div class="an"><b>Trust gates every action</b><p>Confidence and earned trust decide whether Alexa acts, suggests, or stays silent — and feedback flows straight back into the loop.</p></div>
-  </div>
+  <svg id="arch" width="1320" height="640" viewBox="0 0 1320 640"></svg>
   <div class="pageno">7 / 9</div>
 </section>
 
@@ -382,7 +372,7 @@
     <a class="pillL solid" href="http://54.252.207.144/">Live demo — 54.252.207.144</a>
     <a class="pillL" href="https://github.com/piyushk-dev/hackon_project">github.com/piyushk-dev/hackon_project</a>
   </div>
-  <div class="byline">Team <b>Bar Raisers</b> · HackOn with Amazon</div>
+  <div class="byline">Team <b>Bar Raisers</b> — Priyanshu Agarwal &amp; Piyush Kumar · HackOn with Amazon</div>
   <div class="pageno">9 / 9</div>
 </section>
 
@@ -494,7 +484,6 @@ runGrid();
     return e;
   };
 
-  // arrowheads
   const defs = A('defs', {});
   for (const [id, color] of [['ah', '#8a8172'], ['ahT', '#0e7c72'], ['ahA', '#c77414']]) {
     const m = A('marker', { id, viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 7.5, markerHeight: 7.5, orient: 'auto-start-reverse' }, defs);
@@ -504,58 +493,83 @@ runGrid();
   const wrap = (parent, x, y, lines, style, anchor = 'start') => {
     const t = A('text', { x, y, 'text-anchor': anchor, style }, parent);
     lines.forEach((ln, i) => {
-      const ts = A('tspan', { x, dy: i === 0 ? 0 : 19 }, t);
+      const ts = A('tspan', { x, dy: i === 0 ? 0 : 17.5 }, t);
       ts.textContent = ln;
     });
     return t;
   };
 
-  const node = (x, y, w, h, title, sub, accent) => {
+  const node = (x, y, w, h, num, title, sub, accent) => {
     const g = A('g', {});
-    A('rect', { x, y, width: w, height: h, rx: 14, fill: '#fffdf8', stroke: '#ddd2ba', 'stroke-width': 1 }, g);
+    A('rect', { x, y, width: w, height: h, rx: 13, fill: '#fffdf8', stroke: '#ddd2ba', 'stroke-width': 1 }, g);
     A('rect', { x, y, width: w, height: 5, rx: 2.5, fill: accent }, g);
-    wrap(g, x + 22, y + 36, [title], 'font:600 19px Inter; fill:#221e17');
-    wrap(g, x + 22, y + 62, sub, 'font:400 14px Inter; fill:#8a8172');
+    let ty = y + 30;
+    if (num) {
+      wrap(g, x + 20, ty, [num], `font:700 11.5px Inter; letter-spacing:1.8px; fill:${accent === '#221e17' ? '#8a8172' : accent}`);
+      ty += 24;
+    }
+    wrap(g, x + 20, ty, [title], 'font:600 17.5px Inter; fill:#221e17');
+    wrap(g, x + 20, ty + 24, sub, 'font:400 13px Inter; fill:#8a8172');
     return g;
   };
 
   const lane = (x, y, text, color) =>
-    wrap(svg, x, y, [text], `font:700 13px Inter; letter-spacing:2.4px; fill:${color}`);
+    wrap(svg, x, y, [text], `font:700 12.5px Inter; letter-spacing:2.4px; fill:${color}`);
 
   const arrow = (d, marker, dash) =>
     A('path', { d, fill: 'none', stroke: marker === 'ahT' ? '#0e7c72' : marker === 'ahA' ? '#c77414' : '#8a8172',
       'stroke-width': 2, 'marker-end': `url(#${marker})`, ...(dash ? { 'stroke-dasharray': '6 7' } : {}) });
 
   const alabel = (x, y, lines, color = '#8a8172', anchor = 'middle') =>
-    wrap(svg, x, y, lines, `font:600 13.5px Inter; fill:${color}`, anchor);
+    wrap(svg, x, y, lines, `font:600 12.5px Inter; fill:${color}`, anchor);
 
-  // ── learn lane (top) ──
-  lane(0, 22, 'LEARN THE RHYTHM · TRAINED ON THE HOME’S OWN HISTORY', '#0e7c72');
-  node(0, 40, 292, 96, 'Home activity logs', ['months of time-stamped device,', 'presence & usage events'], '#0e7c72');
-  node(392, 40, 300, 96, 'Routine model — DNN', ['sequence model over the', 'time-series of events'], '#0e7c72');
-  arrow('M 292 88 L 386 88', 'ahT');
+  // ── real-time decision path (teal) ──
+  lane(0, 24, 'REAL-TIME — THE DECISION PATH', '#0e7c72');
+  node(0, 44, 240, 170, '1 · CAPTURE', 'Home events', ['who left or arrived', 'lights & appliances on/off', 'geyser · AC · motor usage', 'temperature & occupancy', 'voice interactions'], '#0e7c72');
+  node(300, 62, 185, 134, '2 · INGEST', 'Event stream', ['validate & de-duplicate,', 'enrich with device,', 'member, room, time'], '#0e7c72');
+  node(545, 62, 190, 134, '3 · STORE', 'Time-series DB', ['raw event log —', 'months of the home\u2019s', 'own history'], '#0e7c72');
+  node(795, 44, 265, 170, '6 · REASONING CORE', 'Amazon Bedrock (Claude)', ['learned patterns + today\u2019s', 'context \u2192 \u201cwhat should the', 'home do next, and why\u201d —', 'the Alexa+ pattern'], '#7a4fb3');
+  node(1120, 44, 200, 170, '7 · TRUST GATE', 'Safety & permissions', ['confidence score \u00d7', 'earned trust tier \u2192', 'act · suggest ·', 'stay silent'], '#221e17');
 
-  // trends arrow into the LLM
-  arrow('M 692 88 L 900 88 L 900 176', 'ahT');
-  alabel(800, 42, ['P(event x at time t)', 'the house’s trends'], '#0a5a53');
+  arrow('M 240 130 L 294 130', 'ahT');
+  arrow('M 485 130 L 539 130', 'ahT');
+  arrow('M 735 110 L 789 110', 'ahT');
+  alabel(762, 70, ['recent', 'context'], '#0a5a53');
+  arrow('M 1060 100 L 1114 100', 'ahT');
+  alabel(1087, 66, ['action +', 'reason'], '#8a8172');
+  arrow('M 1220 214 L 1220 274', 'ahT');
+  node(1120, 280, 200, 100, '8 · ALEXA ACTS', 'Speaks or automates', ['geyser, AC, lights, locks,', 'announcements'], '#0e7c72');
 
-  // ── context lane (bottom-left) ──
-  lane(0, 258, 'TODAY’S CONTEXT · LIVE', '#c77414');
-  node(0, 276, 292, 118, 'Live home context', ['who’s home · festival or special', 'day · tariff window · grid state'], '#c77414');
-  arrow('M 292 335 L 660 335 L 660 292', 'ahA');
-  alabel(475, 320, ['rides along in the prompt'], '#c77414');
+  // live context feeding the LLM
+  node(795, 280, 265, 100, 'LIVE', 'Today\u2019s context', ['occupancy · festival or special', 'day · tariff window · weather'], '#c77414');
+  arrow('M 927 280 L 927 220', 'ahA');
 
-  // ── reasoning core ──
-  node(620, 182, 460, 110, 'Reasoning core — Amazon Bedrock (Claude)', ['the house’s trends + today’s context → “what should the', 'home do next, and why” — the Alexa+ pattern'], '#7a4fb3');
+  // ── offline learning path (amber) ──
+  lane(520, 428, 'OFFLINE — LEARNING THE RHYTHM, NIGHTLY', '#c77414');
+  node(300, 444, 185, 140, '4 · PROCESS', 'Feature pipeline', ['clean & sessionize by', 'time window; features:', 'time, season, occupancy'], '#c77414');
+  node(545, 444, 190, 140, '5 · TRAIN', 'Routine model — DNN', ['sequence model over the', 'event series (LSTM /', 'Transformer)'], '#c77414');
 
-  // ── action ──
-  node(1160, 182, 160, 110, 'Trust gate', ['act · suggest ·', 'stay silent'], '#221e17');
-  arrow('M 1080 237 L 1154 237', 'ah');
-  alabel(1117, 218, ['action + reason'], '#8a8172');
+  arrow('M 600 196 L 600 406 L 396 406 L 396 438', 'ahA');
+  alabel(610, 300, ['historical data', '(months)'], '#c77414', 'start');
+  arrow('M 485 514 L 539 514', 'ahA');
+  arrow('M 735 514 L 1090 514 L 1090 170 L 1066 170', 'ahA');
+  alabel(913, 498, ['learned patterns — P(event x at time t)'], '#c77414');
 
-  // ── feedback loop ──
-  arrow('M 1240 292 L 1240 420 L 146 420 L 146 400', 'ah', true);
-  alabel(693, 408, ['accept or override → trust rises or falls · every action becomes tomorrow’s training data'], '#8a8172');
+  // ── feedback loop (dashed) ──
+  arrow('M 1220 380 L 1220 608 L 30 608 L 30 218', 'ah', true);
+  alabel(640, 630, ['outcome — accepted or overridden \u2192 trust rises or falls · every action becomes tomorrow\u2019s training data'], '#8a8172');
+
+  // ── legend ──
+  const leg = [
+    ['#0e7c72', 'real-time decision path', false],
+    ['#c77414', 'offline learning path', false],
+    ['#8a8172', 'feedback loop', true],
+  ];
+  leg.forEach(([c, label, dash], i) => {
+    const y = 452 + i * 26;
+    A('line', { x1: 70, y1: y, x2: 112, y2: y, stroke: c, 'stroke-width': 2, ...(dash ? { 'stroke-dasharray': '6 7' } : {}) });
+    wrap(svg, 122, y + 4.5, [label], 'font:500 13px Inter; fill:#5c554a');
+  });
 })();
 </script>
 </body>

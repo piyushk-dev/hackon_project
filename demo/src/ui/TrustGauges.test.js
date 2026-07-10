@@ -93,9 +93,9 @@ describe('TrustGauges', () => {
       expect(scoreText.textContent).toBe('0');
     });
 
-    it('each gauge shows tier defaulting to Tier 1', () => {
+    it('each gauge shows tier defaulting to the observing label', () => {
       const tierText = document.querySelector('[data-gauge="climate"] .gauge-tier');
-      expect(tierText.textContent).toBe('Tier 1');
+      expect(tierText.textContent).toBe('Observing');
     });
 
     it('each gauge displays the category name', () => {
@@ -111,7 +111,7 @@ describe('TrustGauges', () => {
       const scoreText = document.querySelector('[data-gauge="climate"] .gauge-score');
       const tierText = document.querySelector('[data-gauge="climate"] .gauge-tier');
       expect(scoreText.textContent).toBe('75');
-      expect(tierText.textContent).toBe('Tier 4');
+      expect(tierText.textContent).toBe('Acts on its own');
     });
 
     it('responds to multiple category updates independently', () => {
@@ -158,7 +158,7 @@ describe('TrustGauges', () => {
     it('updates tier text', () => {
       trustGauges.updateGauge('assistant', { score: 95, tier: 5 });
       const tierText = document.querySelector('[data-gauge="assistant"] .gauge-tier');
-      expect(tierText.textContent).toBe('Tier 5');
+      expect(tierText.textContent).toBe('Fully trusted');
     });
 
     it('applies CSS transition to circle for animation', () => {
@@ -182,7 +182,7 @@ describe('TrustGauges', () => {
       const climateScore = document.querySelector('[data-gauge="climate"] .gauge-score');
       const lightingTier = document.querySelector('[data-gauge="lighting"] .gauge-tier');
       expect(climateScore.textContent).toBe('55');
-      expect(lightingTier.textContent).toBe('Tier 4');
+      expect(lightingTier.textContent).toBe('Acts on its own');
     });
 
     it('updates stateStore trustScores map', () => {

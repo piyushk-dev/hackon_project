@@ -35,6 +35,15 @@ const TIER_COLORS = {
   5: '#f2b01e',   // gold — fully trusted
 };
 
+/** What each tier lets Alexa do — shown under the gauge so the score reads as a permission level */
+const TIER_LABELS = {
+  1: 'Observing',
+  2: 'Asks first',
+  3: 'Acts + notifies',
+  4: 'Acts on its own',
+  5: 'Fully trusted',
+};
+
 /** SVG ring geometry */
 const RING_RADIUS = 28;
 const RING_STROKE = 4;
@@ -63,11 +72,16 @@ export class TrustGauges {
     // Build DOM programmatically for better compatibility with test environments
     container.innerHTML = '';
 
-    // Title
+    // Title + what the numbers mean
     const title = document.createElement('h3');
     title.className = 'trust-gauges-title';
     title.textContent = 'Trust Scores';
     container.appendChild(title);
+
+    const sub = document.createElement('p');
+    sub.className = 'trust-gauges-sub';
+    sub.textContent = 'How much Alexa may do alone, per category. Accepted actions raise it; every override lowers it.';
+    container.appendChild(sub);
 
     // Grid container
     const grid = document.createElement('div');
@@ -154,10 +168,10 @@ export class TrustGauges {
     nameSpan.textContent = displayName;
     wrapper.appendChild(nameSpan);
 
-    // Tier badge
+    // Tier badge — behavior label, not a bare number
     const tierSpan = document.createElement('span');
     tierSpan.className = 'gauge-tier';
-    tierSpan.textContent = 'Tier 1';
+    tierSpan.textContent = TIER_LABELS[1];
     wrapper.appendChild(tierSpan);
 
     return wrapper;
@@ -208,7 +222,8 @@ export class TrustGauges {
 
     // Update tier display
     if (tierText) {
-      tierText.textContent = `Tier ${tier}`;
+      tierText.textContent = TIER_LABELS[tier] || TIER_LABELS[1];
+      tierText.style.color = TIER_COLORS[tier] || TIER_COLORS[1];
     }
   }
 
