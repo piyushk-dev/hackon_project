@@ -45,7 +45,7 @@ function slideBg() {
 function kicker(s, xPx, yPx, text) {
   s.addText(text.toUpperCase(), {
     x: X(xPx), y: X(yPx), w: X(700), h: X(26), margin: 0,
-    fontFace: TEXT, fontSize: F(15), bold: true, color: AMBER, charSpacing: 3,
+    fontFace: TEXT, fontSize: F(15), bold: true, color: AMBER, charSpacing: 1.5,
   });
 }
 
@@ -398,7 +398,7 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
   const s = slideBg();
   s.addText('LIVE DEMO', {
     x: 0, y: X(74), w: 13.333, h: X(26), margin: 0, align: 'center',
-    fontFace: TEXT, fontSize: F(15), bold: true, color: AMBER, charSpacing: 3,
+    fontFace: TEXT, fontSize: F(15), bold: true, color: AMBER, charSpacing: 1.5,
   });
   s.addText([
     { text: 'One day in an ' },
@@ -560,11 +560,11 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
 
   // No invented metrics — what concretely changes, and why it scales
   const colHead = (cx, t) => s.addText(t, {
-    x: X(cx), y: X(244), w: X(620), h: X(24), margin: 0,
-    fontFace: TEXT, fontSize: F(14), bold: true, color: MUTED, charSpacing: 2.4,
+    x: X(cx), y: X(236), w: X(620), h: X(36), margin: 0,
+    fontFace: DISPLAY, fontSize: F(24), color: INK,
   });
-  colHead(140, 'FOR THE SHARMA FAMILY');
-  colHead(830, 'WHY IT SCALES');
+  colHead(140, 'For the Sharma family');
+  colHead(830, 'Why it scales');
 
   const impact = [
     [140, [
@@ -574,12 +574,11 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     ]],
     [830, [
       ['Anticipation is the feature India needs.', ' Power cuts, water-supply windows and tariff slots are the daily rhythm here — a purely reactive assistant cannot keep up with them.'],
-      ['Time-of-use tariffs are arriving nationwide.', ' A home that moves its load before the peak window turns anticipation into money.'],
       ['For Amazon, it makes Alexa indispensable.', " The Echo already in the living room becomes the household's brain — not just another speaker."],
     ]],
   ];
   for (const [cx, rows] of impact) {
-    let iy = 284;
+    let iy = 290;
     for (const [lead, rest] of rows) {
       s.addText([
         { text: lead, options: { bold: true, color: INK } },
@@ -593,9 +592,9 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
   }
   hline(s, 140, 616, 1320);
 
-  s.addText('WHERE THIS GOES NEXT', {
-    x: X(140), y: X(640), w: X(500), h: X(24), margin: 0,
-    fontFace: TEXT, fontSize: F(14), bold: true, color: MUTED, charSpacing: 2.4,
+  s.addText('Where this goes next', {
+    x: X(140), y: X(632), w: X(500), h: X(36), margin: 0,
+    fontFace: DISPLAY, fontSize: F(24), color: INK,
   });
   const vision = [
     ['Sensor fusion', 'Hear the pressure-cooker whistle and the water-motor hum — context from sound and power signatures, no new hardware.'],
@@ -638,6 +637,7 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
   s.addText('Live demo — 54.252.207.144', {
     x: X(150), y: X(504), w: X(340), h: X(52), margin: 0, align: 'center', valign: 'middle',
     fontFace: TEXT, fontSize: F(17), bold: true, color: PAPER,
+    hyperlink: { url: 'http://54.252.207.144/' },
   });
   s.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
     x: X(510), y: X(504), w: X(420), h: X(52), rectRadius: 0.21,
@@ -646,6 +646,7 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
   s.addText('github.com/piyushk-dev/hackon_project', {
     x: X(510), y: X(504), w: X(420), h: X(52), margin: 0, align: 'center', valign: 'middle',
     fontFace: TEXT, fontSize: F(17), bold: true, color: INK,
+    hyperlink: { url: 'https://github.com/piyushk-dev/hackon_project' },
   });
 
   s.addText([

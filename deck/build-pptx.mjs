@@ -8,7 +8,7 @@ pptx.layout = 'WIDE';
 pptx.author = 'Team Bar Raisers';
 pptx.title = 'Alexa Thinks Ahead — HackOn with Amazon Season 6.0';
 
-const files = readdirSync(FRAMES).filter((f) => f.endsWith('.png')).sort();
+const files = readdirSync(FRAMES).filter((f) => f.endsWith('.png') || f.endsWith('.jpg')).sort();
 const DEMO_SLIDE_INDEX = 5; // slide-06 = the demo video slide
 
 files.forEach((f, i) => {
@@ -21,12 +21,12 @@ files.forEach((f, i) => {
     slide.addMedia({
       type: 'video',
       path: '/home/thequacker/hackon_project/hackon_project/deck/assets/demo.mp4',
-      x: (210 / 1600) * 13.333, y: (220 / 900) * 7.5,
-      w: (1180 / 1600) * 13.333, h: (664 / 900) * 7.5,
+      x: (210 / 1600) * 13.333, y: (290 / 900) * 7.5,
+      w: (1180 / 1600) * 13.333, h: (536 / 900) * 7.5,
     });
     console.log('embedded demo.mp4 on slide', i + 1);
   }
 });
 
-await pptx.writeFile({ fileName: '/home/thequacker/hackon_project/hackon_project/deck/Alexa-Thinks-Ahead-Bar-Raisers.pptx' });
+await pptx.writeFile({ fileName: '/home/thequacker/hackon_project/hackon_project/deck/Alexa-Thinks-Ahead-Bar-Raisers-images.pptx' });
 console.log('wrote pptx with', files.length, 'slides');
