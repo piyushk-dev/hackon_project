@@ -556,14 +556,14 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
 
   // Hero stat + three adoption points
   s.addText('~1 hour', {
-    x: X(140), y: X(258), w: X(460), h: X(96), margin: 0,
-    fontFace: DISPLAY, fontSize: F(80), color: TEAL,
+    x: X(140), y: X(262), w: X(430), h: X(60), margin: 0,
+    fontFace: DISPLAY, fontSize: F(48), color: TEAL,
   });
   s.addText([
     { text: 'given back to the family every day', options: { bold: true, color: INK } },
     { text: ' — the small chores of remembering (geyser, motor, locks, cooling) simply stop existing.' },
   ], {
-    x: X(140), y: X(368), w: X(430), h: X(150), margin: 0,
+    x: X(140), y: X(334), w: X(430), h: X(150), margin: 0,
     fontFace: TEXT, fontSize: F(18), color: BODY, lineSpacingMultiple: 1.35,
   });
 
@@ -595,20 +595,19 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
   });
   const vision = [
     ['Sensor fusion', 'Hear the pressure-cooker whistle and the water-motor hum — context from sound and power signatures, no new hardware.'],
-    ['Hindi & Hinglish voice', 'Proactive suggestions in the language the household actually speaks, member by member.'],
-    ['Private by default', 'Routine learning moves on-device; only anonymised patterns ever reach the cloud.'],
-    ['Beyond one home', 'Matter ecosystem support and society-level insight: a colony that pre-arms for the 14:00 power cut together.'],
+    ['Location-aware context', "The home knows its city — the electricity board's outage schedule, municipal water timings, local weather, the region's festival calendar. Alexa arrives pre-informed."],
+    ['Reflexes for emergencies', "Sub-100 ms on-device inference for safety-critical events — a gas leak or a fire can't wait for a 3-second cloud round-trip."],
   ];
   vision.forEach(([b, p], i) => {
-    const px = 140 + i * 336;
-    hline(s, px, 684, 310, TEAL, 2.25);
+    const px = 140 + i * 456;
+    hline(s, px, 684, 408, TEAL, 2.25);
     s.addText(b, {
-      x: X(px), y: X(700), w: X(310), h: X(28), margin: 0,
+      x: X(px), y: X(700), w: X(408), h: X(28), margin: 0,
       fontFace: TEXT, fontSize: F(18), bold: true, color: INK,
     });
     s.addText(p, {
-      x: X(px), y: X(732), w: X(310), h: X(130), margin: 0,
-      fontFace: TEXT, fontSize: F(14.5), color: BODY, lineSpacingMultiple: 1.22,
+      x: X(px), y: X(732), w: X(408), h: X(130), margin: 0,
+      fontFace: TEXT, fontSize: F(15), color: BODY, lineSpacingMultiple: 1.25,
     });
   });
   pageno(s, 8);
