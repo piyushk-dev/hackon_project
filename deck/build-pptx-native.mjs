@@ -96,17 +96,14 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
 {
   const s = slideBg();
   s.addImage({ path: join(HERE, 'assets/cover.png'), x: 0, y: 0, w: 13.333, h: 7.5 });
-  s.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
-    x: X(48), y: X(818), w: X(660), h: X(44), rectRadius: 0.18,
-    fill: { color: 'FFFDF8', transparency: 8 }, line: { color: HAIR, width: 0.75 },
-  });
+  // quiet ink text, no chrome — sits on the pale flooring of the photo
   s.addText([
     { text: 'Team ', options: { color: INK } },
-    { text: 'Bar Raisers', options: { color: TEAL, bold: true } },
-    { text: ' — Priyanshu Agarwal & Piyush Kumar · HackOn with Amazon', options: { color: INK } },
+    { text: 'Bar Raisers', options: { color: TEAL_D, bold: true } },
+    { text: '  ·  Priyanshu Agarwal & Piyush Kumar', options: { color: INK } },
   ], {
-    x: X(48), y: X(818), w: X(660), h: X(44), margin: 0, align: 'center', valign: 'middle',
-    fontFace: TEXT, fontSize: F(14), bold: true, fit: 'shrink',
+    x: X(52), y: X(830), w: X(760), h: X(36), margin: 0, align: 'left', valign: 'middle',
+    fontFace: TEXT, fontSize: F(16), bold: true,
   });
 }
 
@@ -172,15 +169,15 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     { text: 'wait for orders', options: { color: ROSE } },
     { text: '.' },
   ], {
-    x: X(140), y: X(136), w: X(1180), h: X(180), margin: 0,
-    fontFace: DISPLAY, fontSize: F(70), color: INK, lineSpacingMultiple: 1.0,
+    x: X(140), y: X(134), w: X(1330), h: X(196), margin: 0,
+    fontFace: DISPLAY, fontSize: F(60), color: INK, lineSpacingMultiple: 1.02,
   });
   s.addText([
-    { text: '“Alexa, you should already know this.”', options: { fontFace: DISPLAY, italic: true, fontSize: F(24), color: INK } },
+    { text: '“Alexa, you should already know this.”', options: { fontFace: DISPLAY, italic: true, fontSize: F(23), color: INK } },
     { text: '  — a multi-generational household issues dozens of commands a day to devices that never learn what happens next.', options: {} },
   ], {
-    x: X(140), y: X(330), w: X(1240), h: X(70), margin: 0,
-    fontFace: TEXT, fontSize: F(21), color: BODY, lineSpacingMultiple: 1.2,
+    x: X(140), y: X(348), w: X(1320), h: X(70), margin: 0,
+    fontFace: TEXT, fontSize: F(20), color: BODY, lineSpacingMultiple: 1.2,
   });
 
   const beats = [
@@ -419,17 +416,24 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     x: 0, y: X(112), w: 13.333, h: X(80), margin: 0, align: 'center',
     fontFace: DISPLAY, fontSize: F(58), color: INK,
   });
-  s.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
-    x: X(210), y: X(226), w: X(1180), h: X(664), rectRadius: 0.18,
-    fill: { color: '1D1A15' }, line: { type: 'none' },
-    shadow: { type: 'outer', color: '3C301A', opacity: 0.3, blur: 22, offset: 6, angle: 90 },
-  });
   const demoPath = join(HERE, 'assets/demo.mp4');
   if (existsSync(demoPath)) {
-    // recording is 1912×868 (2.2:1) — letterbox it inside the 16:9 well
-    const vw = 1180, vh = vw * (868 / 1912);
-    s.addMedia({ type: 'video', path: demoPath, x: X(210), y: X(226 + (664 - vh) / 2), w: X(vw), h: X(vh) });
+    // recording is 1912×868 (2.2:1) — size the frame to the video exactly,
+    // no fake letterbox around it
+    const vw = 1250, vh = vw * (868 / 1912); // ≈ 567
+    const vx = (1600 - vw) / 2, vy = 250;
+    s.addShape(pptx.shapes.RECTANGLE, {
+      x: X(vx), y: X(vy), w: X(vw), h: X(vh),
+      fill: { color: '1D1A15' }, line: { type: 'none' },
+      shadow: { type: 'outer', color: '3C301A', opacity: 0.3, blur: 22, offset: 6, angle: 90 },
+    });
+    s.addMedia({ type: 'video', path: demoPath, x: X(vx), y: X(vy), w: X(vw), h: X(vh) });
   } else {
+    s.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+      x: X(210), y: X(226), w: X(1180), h: X(664), rectRadius: 0.18,
+      fill: { color: '1D1A15' }, line: { type: 'none' },
+      shadow: { type: 'outer', color: '3C301A', opacity: 0.3, blur: 22, offset: 6, angle: 90 },
+    });
     s.addText([
       { text: 'demo.mp4\n', options: { fontFace: DISPLAY, fontSize: F(32), color: 'EFE6D3' } },
       { text: 'insert the screen-recording here (Insert → Video)', options: { fontFace: TEXT, fontSize: F(17), color: 'B9AB8F' } },
@@ -475,11 +479,11 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
       ty += 22;
     }
     s.addText(title, {
-      x: X(ox + sx + 20), y: X(oy + ty), w: X(w - 36), h: X(24), margin: 0,
-      fontFace: TEXT, fontSize: F(17.5), bold: true, color: INK,
+      x: X(ox + sx + 20), y: X(oy + ty), w: X(w - 34), h: X(26), margin: 0,
+      fontFace: TEXT, fontSize: F(16), bold: true, color: INK,
     });
     s.addText(lines.join('\n'), {
-      x: X(ox + sx + 20), y: X(oy + ty + 28), w: X(w - 36), h: X(h - (ty - sy) - 34), margin: 0,
+      x: X(ox + sx + 20), y: X(oy + ty + 30), w: X(w - 34), h: X(h - (ty - sy) - 36), margin: 0,
       fontFace: TEXT, fontSize: F(13), color: MUTED, lineSpacingMultiple: 1.15,
     });
   };
@@ -500,7 +504,7 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     ['validate & de-duplicate,', 'enrich with device,', 'member, room, time'], TEAL);
   N(545, 62, 190, 134, '3 · STORE', 'Time-series DB',
     ['raw event log —', "months of the home's", 'own history'], TEAL);
-  N(795, 44, 265, 170, '6 · REASONING CORE', 'Amazon Bedrock (Claude)',
+  N(795, 44, 265, 170, '6 · REASONING CORE', 'Amazon Bedrock — Claude',
     ["learned patterns + today's", 'context → "what should the', 'home do next, and why" —', 'the Alexa+ pattern'], PURPLE);
   N(1120, 44, 200, 170, '7 · TRUST GATE', 'Safety & permissions',
     ['confidence score ×', 'earned trust tier →', 'act · suggest ·', 'stay silent'], INK);
@@ -512,7 +516,7 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
   ARROW([[1060, 100], [1114, 100]], TEAL);
   LBL(1087, 48, 'action +\nreason', MUTED, 'center', 120);
   ARROW([[1220, 214], [1220, 274]], TEAL);
-  N(1120, 280, 200, 100, '8 · ALEXA ACTS', 'Speaks or automates',
+  N(1120, 280, 200, 100, '8 · ALEXA ACTS', 'Takes action',
     ['geyser, AC, lights, locks,', 'announcements'], TEAL);
 
   N(795, 280, 265, 100, 'LIVE', "Today's context",
@@ -562,23 +566,22 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     fontFace: DISPLAY, fontSize: F(64), color: INK,
   });
 
-  // Every number here is traceable to the demo itself
+  // Outcomes a family (or an exec) actually cares about
   const stats = [
-    ['20', TEAL, "routines learned from one week of the family's own activity log — six members, zero hand-written rules"],
-    ['45 min', AMBER, 'of head start — the geyser starts heating before the family is even awake, ready right at bath time'],
-    ['7', ROSE, 'proactive actions before 7 AM by day 30 — water motor, geyser, locks — with zero commands spoken'],
-    ['~30%', PURPLE, 'of flexible load moved off the peak-tariff window, simply by acting earlier (simulated-day estimate)'],
+    ['~0', TEAL, 'voice commands left in the daily routine — down from dozens. Hot water, cooling, locks: simply ready.'],
+    ['20', AMBER, "routines learned from one week of the family's own activity log — six members, zero setup, zero rules written."],
+    ['~30%', PURPLE, 'of flexible load shifted off the peak-tariff window just by acting early — a lower bill with no lifestyle change (simulated estimate).'],
   ];
   stats.forEach(([v, c, p], i) => {
-    const px = 140 + i * 336;
-    card(s, px, 250, 310, 200);
+    const px = 140 + i * 456;
+    card(s, px, 250, 408, 200);
     s.addText(v, {
-      x: X(px + 30), y: X(276), w: X(250), h: X(52), margin: 0,
+      x: X(px + 32), y: X(276), w: X(340), h: X(52), margin: 0,
       fontFace: DISPLAY, fontSize: F(42), color: c,
     });
     s.addText(p, {
-      x: X(px + 30), y: X(336), w: X(252), h: X(104), margin: 0,
-      fontFace: TEXT, fontSize: F(15), color: '4C4639', lineSpacingMultiple: 1.2,
+      x: X(px + 32), y: X(336), w: X(346), h: X(104), margin: 0,
+      fontFace: TEXT, fontSize: F(16), color: '4C4639', lineSpacingMultiple: 1.25,
     });
   });
 
