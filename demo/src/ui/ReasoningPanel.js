@@ -52,12 +52,12 @@ export class ReasoningPanel {
    */
   showPowerCutReasoning(prioritizedRooms) {
     const content = `
-      <h3>⚡ Power Cut — Alexa's Reasoning</h3>
+      <h3>Power Cut — Alexa's Reasoning</h3>
       <div class="reasoning-steps">
-        <p>🧠 <strong>SENSE:</strong> Power grid failure detected. Arjun in online class. Battery 80%.</p>
-        <p>🧠 <strong>THINK:</strong> Priority = Wi-Fi + Study Room. Shed AC + Geyser.</p>
-        <p>⚡ <strong>ACT:</strong> AC OFF, Geyser OFF, Study lights → battery mode</p>
-        <p>💬 <strong>EXPLAIN:</strong> Announcing to family...</p>
+        <p><strong>SENSE:</strong> Power grid failure detected. Arjun in online class. Battery 80%.</p>
+        <p><strong>THINK:</strong> Priority = Wi-Fi + Study Room. Shed AC + Geyser.</p>
+        <p><strong>ACT:</strong> AC OFF, Geyser OFF, Study lights → battery mode</p>
+        <p><strong>EXPLAIN:</strong> Announcing to family...</p>
         <p><strong>Prioritized Rooms:</strong> ${prioritizedRooms.join(', ')}</p>
         <p><strong>Estimated backup:</strong> 2.5 hours at current load</p>
       </div>

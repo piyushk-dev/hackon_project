@@ -2,19 +2,13 @@
  * EventLog — Right sidebar panel displaying chronological proactive action entries.
  *
  * Subscribes to StateStore 'eventlog' events and renders each entry with:
- * - Timestamp [HH:MM]
- * - Action name with emoji based on type
- * - Target device line: "→ {device}"
- * - Reasoning line: "→ Reason: {reasoning}"
- * - Type/tier badge (styled with Alexa blue background)
- * - Optional "Override" button that:
- *   a. Removes the entry visually (strikethrough)
- *   b. Calls stateStore.updateTrustScore(category, -15) to reduce trust
+ * - HH:MM timestamp plus stage/tier/confidence meta
+ * - Action name with a category line icon
+ * - Human-readable device line and plain reasoning sentence
+ * - Semantic category badge (Comfort / Security / Energy Saving / Power)
+ * - "Override" button that strikes the entry and reduces trust by 15
  *
  * Auto-scrolls to the bottom when new entries arrive.
- * Entries have visual variety based on actionType (emoji icons).
- *
- * Styled with glassmorphism sub-cards and border-left accent color per action type.
  *
  * Requirements: 7.3, 8.1
  */
@@ -35,7 +29,7 @@ export class EventLog {
 
   /**
    * Creates the HTML structure inside #event-log-panel:
-   * - Title header: "📋 Event Log"
+   * - "Alexa Activity" header with close button
    * - Scrollable entries container (#event-log-entries)
    */
   render() {
@@ -79,13 +73,8 @@ export class EventLog {
   /**
    * Creates a DOM element for a log entry and appends it to the entries container.
    *
-   * Each entry card contains:
-   * - [HH:MM] timestamp
-   * - Action name in bold with emoji
-   * - Device target line: "→ {device}"
-   * - Reason line: "→ Reason: {reasoning}"
-   * - Type/tier badge with Alexa blue background
-   * - Override button for trust score reduction
+   * Each entry card contains a timestamp, action name with category icon,
+   * device line, reasoning sentence, semantic badge, and an Override button.
    *
    * @param {object} entry — { time, action, device, reasoning, type, tier?, confidence?, stage?, category? }
    */
@@ -99,7 +88,7 @@ export class EventLog {
     const accentColor = this.getAccentColor(entry.type);
     el.style.borderLeftColor = accentColor;
 
-    const emoji = this.getEmoji(entry.type);
+    const icon = this.getIcon(entry.type);
     const timestamp = this.formatTime(entry.time);
 
     // Header row
@@ -119,7 +108,7 @@ export class EventLog {
       if (entry.stage) {
         const stageSpan = document.createElement('span');
         stageSpan.className = 'event-log-stage';
-        stageSpan.textContent = `[${entry.stage}]`;
+        stageSpan.textContent = entry.stage;
         meta.appendChild(stageSpan);
       }
       if (entry.tier !== undefined) {
@@ -140,14 +129,15 @@ export class EventLog {
 
     el.appendChild(header);
 
-    // Action row (emoji + name)
+    // Action row (icon + name)
     const actionRow = document.createElement('div');
     actionRow.className = 'event-log-entry-action';
 
-    const emojiSpan = document.createElement('span');
-    emojiSpan.className = 'event-log-emoji';
-    emojiSpan.textContent = emoji;
-    actionRow.appendChild(emojiSpan);
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'event-log-icon';
+    iconSpan.setAttribute('aria-hidden', 'true');
+    iconSpan.innerHTML = icon;
+    actionRow.appendChild(iconSpan);
 
     const actionName = document.createElement('span');
     actionName.className = 'event-log-action-name';
@@ -156,16 +146,16 @@ export class EventLog {
 
     el.appendChild(actionRow);
 
-    // Device target line
+    // Device target line — human-readable device name
     const deviceDiv = document.createElement('div');
     deviceDiv.className = 'event-log-device';
-    deviceDiv.textContent = `→ ${entry.device || ''}`;
+    deviceDiv.textContent = this._formatDeviceName(entry.device);
     el.appendChild(deviceDiv);
 
-    // Reasoning line
+    // Reasoning line — plain sentence, no prefix
     const reasoningDiv = document.createElement('div');
     reasoningDiv.className = 'event-log-reasoning';
-    reasoningDiv.textContent = `→ Reason: ${entry.reasoning || ''}`;
+    reasoningDiv.textContent = entry.reasoning || '';
     el.appendChild(reasoningDiv);
 
     // Badge row (type/tier badge + Override button)
@@ -230,20 +220,40 @@ export class EventLog {
       comfort_lighting: 'lighting',
       power_cut: 'power',
     };
-    return typeToCategory[type] || 'assistant';
+    return Object.hasOwn(typeToCategory, type) ? typeToCategory[type] : 'assistant';
   }
 
   /**
-   * Build badge text showing type and tier info.
+   * Badge text — the semantic benefit category (the title already names the
+   * action, so repeating the type here would be noise).
    * @param {object} entry
    * @returns {string}
    */
   _getBadgeText(entry) {
-    const typeLabel = this._formatTypeName(entry.type);
-    if (entry.tier !== undefined) {
-      return `${typeLabel} • Tier ${entry.tier}`;
-    }
-    return typeLabel;
+    const labels = {
+      ac_precool: 'Comfort',
+      comfort_lighting: 'Comfort',
+      geyser_preheat: 'Comfort',
+      security_arm: 'Security',
+      energy_optimization: 'Energy Saving',
+      power_cut: 'Power',
+    };
+    return Object.hasOwn(labels, entry.type) ? labels[entry.type] : this._formatTypeName(entry.type);
+  }
+
+  /**
+   * Humanize a device identifier: 'living_room_ac' → 'Living Room AC'.
+   * Free-form device strings (containing spaces/commas) pass through as-is.
+   * @param {string} device
+   * @returns {string}
+   */
+  _formatDeviceName(device) {
+    if (!device) return '';
+    if (!/^[a-z0-9_]+$/.test(device)) return device;
+    return device
+      .split('_')
+      .map((w) => (w === 'ac' || w === 'tv' || w === 'ups' ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)))
+      .join(' ');
   }
 
   /**
@@ -277,20 +287,26 @@ export class EventLog {
   }
 
   /**
-   * Returns an emoji for the given action type.
+   * Returns inline SVG icon markup for the given action type.
+   * Line icons drawn with currentColor so CSS can tint them per category.
    * @param {string} type
    * @returns {string}
    */
-  getEmoji(type) {
-    const emojiMap = {
-      ac_precool: '❄️',
-      geyser_preheat: '🔥',
-      security_arm: '🔒',
-      energy_optimization: '⚡',
-      comfort_lighting: '💡',
-      power_cut: '⚠️',
+  getIcon(type) {
+    const paths = {
+      ac_precool: '<path d="M12 3v18M4.2 7.5l15.6 9M19.8 7.5l-15.6 9"/>',
+      geyser_preheat:
+        '<path d="M12 3.5c1.6 3 5 5.2 5 8.9a5 5 0 1 1-10 0c0-1.9.8-3.4 2-5 .4 1.2 1 2 2 2.6.3-2.4.4-4.5 1-6.5z"/>',
+      security_arm: '<rect x="5.5" y="11" width="13" height="8.5" rx="2"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/>',
+      energy_optimization: '<path d="M13 2.5 5 13.5h6L9.8 21.5 18 10.5h-6z"/>',
+      comfort_lighting:
+        '<path d="M12 3a6 6 0 0 0-3.9 10.6c.7.6.9 1.4.9 2.4h6c0-1 .2-1.8.9-2.4A6 6 0 0 0 12 3zM9.5 19h5M10.5 21.5h3"/>',
+      power_cut: '<path d="M12 3.5 2.8 19.5h18.4zM12 9.8v4.4M12 17.2h.01"/>',
     };
-    return emojiMap[type] || '🔔';
+    const d = Object.hasOwn(paths, type)
+      ? paths[type]
+      : '<path d="M18 9.5a6 6 0 1 0-12 0c0 5.5-2.2 6.7-2.2 6.7h16.4S18 15 18 9.5M10.4 19.5a1.8 1.8 0 0 0 3.2 0"/>';
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
   }
 
   /**
@@ -307,17 +323,17 @@ export class EventLog {
       comfort_lighting: '#FFB347',
       power_cut: '#FF4757',
     };
-    return colorMap[type] || '#00CAFF';
+    return Object.hasOwn(colorMap, type) ? colorMap[type] : '#00CAFF';
   }
 
   /**
-   * Format minutes (0–1439) as [HH:MM].
+   * Format minutes (0–1439) as HH:MM.
    * Uses formatTime from helpers.js.
    * @param {number} minutes
    * @returns {string}
    */
   formatTime(minutes) {
-    if (typeof minutes !== 'number' || isNaN(minutes)) return '[--:--]';
-    return `[${formatTime(minutes)}]`;
+    if (typeof minutes !== 'number' || isNaN(minutes)) return '--:--';
+    return formatTime(minutes);
   }
 }

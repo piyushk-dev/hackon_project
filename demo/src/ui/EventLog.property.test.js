@@ -97,7 +97,7 @@ describe('EventLog Property Tests - Event Log Entries', () => {
       );
     });
 
-    it('for any valid time (0-1439), the rendered timestamp is in [HH:MM] format', () => {
+    it('for any valid time (0-1439), the rendered timestamp is in HH:MM format', () => {
       fc.assert(
         fc.property(
           arbTime,
@@ -114,13 +114,13 @@ describe('EventLog Property Tests - Event Log Entries', () => {
 
             const entryEl = log.entriesContainer.querySelector('.event-log-entry');
             const timeEl = entryEl.querySelector('.event-log-time');
-            // Verify HH:MM format inside brackets
-            expect(timeEl.textContent).toMatch(/^\[\d{2}:\d{2}\]$/);
+            // Verify HH:MM format
+            expect(timeEl.textContent).toMatch(/^\d{2}:\d{2}$/);
 
             // Verify the actual time value is correct
             const h = Math.floor(time / 60).toString().padStart(2, '0');
             const m = Math.floor(time % 60).toString().padStart(2, '0');
-            expect(timeEl.textContent).toBe(`[${h}:${m}]`);
+            expect(timeEl.textContent).toBe(`${h}:${m}`);
           }
         ),
         { numRuns: 200 }
@@ -143,12 +143,12 @@ describe('EventLog Property Tests - Event Log Entries', () => {
             // Action name appears in the rendered entry
             const actionEl = entryEl.querySelector('.event-log-action-name');
             expect(actionEl.textContent).toBe(entry.action);
-            // Device name appears in the rendered entry (with → prefix)
+            // Device name appears in the rendered entry (humanized for raw ids)
             const deviceEl = entryEl.querySelector('.event-log-device');
-            expect(deviceEl.textContent).toBe(`→ ${entry.device}`);
-            // Reasoning text appears in the rendered entry (with → Reason: prefix)
+            expect(deviceEl.textContent).toBe(log._formatDeviceName(entry.device));
+            // Reasoning text appears in the rendered entry, verbatim
             const reasoningEl = entryEl.querySelector('.event-log-reasoning');
-            expect(reasoningEl.textContent).toBe(`→ Reason: ${entry.reasoning}`);
+            expect(reasoningEl.textContent).toBe(entry.reasoning);
           }
         ),
         { numRuns: 200 }
@@ -199,7 +199,7 @@ describe('EventLog Property Tests - Event Log Entries', () => {
               expect(actionEl.textContent).toBe(entries[i].action);
 
               const deviceEl = renderedEntries[i].querySelector('.event-log-device');
-              expect(deviceEl.textContent).toBe(`→ ${entries[i].device}`);
+              expect(deviceEl.textContent).toBe(log._formatDeviceName(entries[i].device));
             }
           }
         ),

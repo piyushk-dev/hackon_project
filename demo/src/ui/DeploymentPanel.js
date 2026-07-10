@@ -60,7 +60,7 @@ export class DeploymentPanel {
           <button class="speed-btn active" data-speed="60">60x</button>
           <button class="speed-btn" data-speed="120">120x</button>
         </div>
-        <button id="power-cut-btn" class="btn-power-cut" aria-label="Trigger power cut scenario">⚡ Power Cut</button>
+        <button id="power-cut-btn" class="btn-power-cut" aria-label="Trigger power cut scenario">Power Cut</button>
       </div>
       <div class="timeline-scrubber-wrapper">
         <input type="range" id="timeline-scrubber" min="0" max="1439" step="1" value="0" class="timeline-scrubber" aria-label="Timeline scrubber" />

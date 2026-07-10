@@ -270,9 +270,9 @@ describe('DeploymentPanel', () => {
       expect(btn).not.toBeNull();
     });
 
-    it('renders with "⚡ Power Cut" text', () => {
+    it('renders with "Power Cut" text', () => {
       const btn = document.getElementById('power-cut-btn');
-      expect(btn.textContent).toBe('⚡ Power Cut');
+      expect(btn.textContent).toBe('Power Cut');
     });
 
     it('lives inside the timeline panel', () => {

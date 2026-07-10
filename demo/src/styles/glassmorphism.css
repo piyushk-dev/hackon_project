@@ -16,7 +16,7 @@
 
 /* Secondary action — crisp white pill (used by "Analyze with Bedrock") */
 .btn-accent {
-  background: #ffffff;
+  background: var(--surface, #ffffff);
   color: var(--text, #1a1c1e);
   border: 1.5px solid var(--ink, #17181a);
   border-radius: 999px;
@@ -50,7 +50,7 @@
   letter-spacing: 0.01em;
   padding: 0.95rem 1.5rem;
   background: var(--ink, #17181a);
-  color: #ffffff;
+  color: var(--on-ink, #ffffff);
   border: none;
   border-radius: 999px;
   cursor: pointer;
@@ -73,7 +73,7 @@
 
 /* Ghost button — quiet secondary */
 .btn-ghost {
-  background: #ffffff;
+  background: var(--surface, #ffffff);
   color: var(--text, #1a1c1e);
   border: 1px solid var(--border-strong, #d8d5cc);
   border-radius: 999px;
@@ -98,7 +98,7 @@
   justify-content: center;
   width: 2rem;
   height: 2rem;
-  background: #ffffff;
+  background: var(--surface, #ffffff);
   border: 1px solid var(--border, #e8e6e0);
   border-radius: 10px;
   color: var(--text-dim, #5d6165);

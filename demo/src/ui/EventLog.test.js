@@ -53,24 +53,24 @@ describe('EventLog', () => {
     expect(entries.length).toBe(1);
 
     const entry = entries[0];
-    expect(entry.querySelector('.event-log-time').textContent).toBe('[06:15]');
+    expect(entry.querySelector('.event-log-time').textContent).toBe('06:15');
     expect(entry.querySelector('.event-log-action-name').textContent).toBe('Geyser Pre-heat');
-    expect(entry.querySelector('.event-log-emoji').textContent).toBe('🔥');
-    expect(entry.querySelector('.event-log-device').textContent).toBe('→ Smart Geyser');
-    expect(entry.querySelector('.event-log-reasoning').textContent).toBe('→ Reason: Pre-heating water 45 minutes ahead.');
+    expect(entry.querySelector('.event-log-icon svg')).not.toBeNull();
+    expect(entry.querySelector('.event-log-device').textContent).toBe('Smart Geyser');
+    expect(entry.querySelector('.event-log-reasoning').textContent).toBe('Pre-heating water 45 minutes ahead.');
   });
 
-  it('should display correct emojis for each action type', () => {
+  it('should display a distinct SVG icon for each action type', () => {
     const types = [
-      { type: 'ac_precool', emoji: '❄️' },
-      { type: 'geyser_preheat', emoji: '🔥' },
-      { type: 'security_arm', emoji: '🔒' },
-      { type: 'energy_optimization', emoji: '⚡' },
-      { type: 'comfort_lighting', emoji: '💡' },
-      { type: 'power_cut', emoji: '⚠️' },
+      'ac_precool',
+      'geyser_preheat',
+      'security_arm',
+      'energy_optimization',
+      'comfort_lighting',
+      'power_cut',
     ];
 
-    types.forEach(({ type, emoji }) => {
+    types.forEach((type) => {
       stateStore.emit('eventlog', {
         time: 100,
         action: 'Test',
@@ -80,10 +80,12 @@ describe('EventLog', () => {
       });
     });
 
-    const emojiEls = document.querySelectorAll('.event-log-emoji');
-    types.forEach(({ emoji }, i) => {
-      expect(emojiEls[i].textContent).toBe(emoji);
-    });
+    const iconEls = document.querySelectorAll('.event-log-icon');
+    expect(iconEls.length).toBe(types.length);
+    const markups = [...iconEls].map((el) => el.innerHTML);
+    // Every entry gets an icon, and each type's icon is unique
+    markups.forEach((m) => expect(m).toContain('<svg'));
+    expect(new Set(markups).size).toBe(types.length);
   });
 
   it('should apply border-left accent color per action type', () => {
@@ -111,7 +113,7 @@ describe('EventLog', () => {
 
     const stage = document.querySelector('.event-log-stage');
     expect(stage).not.toBeNull();
-    expect(stage.textContent).toBe('[SENSE]');
+    expect(stage.textContent).toBe('SENSE');
   });
 
   it('should display confidence/tier info when provided', () => {
@@ -173,14 +175,14 @@ describe('EventLog', () => {
   });
 
   it('should format time correctly', () => {
-    expect(eventLog.formatTime(0)).toBe('[00:00]');
-    expect(eventLog.formatTime(60)).toBe('[01:00]');
-    expect(eventLog.formatTime(750)).toBe('[12:30]');
-    expect(eventLog.formatTime(1439)).toBe('[23:59]');
-    expect(eventLog.formatTime(NaN)).toBe('[--:--]');
+    expect(eventLog.formatTime(0)).toBe('00:00');
+    expect(eventLog.formatTime(60)).toBe('01:00');
+    expect(eventLog.formatTime(750)).toBe('12:30');
+    expect(eventLog.formatTime(1439)).toBe('23:59');
+    expect(eventLog.formatTime(NaN)).toBe('--:--');
   });
 
-  it('should use default emoji for unknown type', () => {
+  it('should use a fallback icon for unknown type', () => {
     stateStore.emit('eventlog', {
       time: 100,
       action: 'Unknown',
@@ -189,11 +191,11 @@ describe('EventLog', () => {
       type: 'some_unknown_type',
     });
 
-    const emoji = document.querySelector('.event-log-emoji');
-    expect(emoji.textContent).toBe('🔔');
+    const icon = document.querySelector('.event-log-icon');
+    expect(icon.querySelector('svg')).not.toBeNull();
   });
 
-  it('should render type/tier badge with Alexa blue styling', () => {
+  it('should render a semantic category badge', () => {
     stateStore.emit('eventlog', {
       time: 600,
       action: 'Pre-cooling',
@@ -205,8 +207,7 @@ describe('EventLog', () => {
 
     const badge = document.querySelector('.event-log-type-badge');
     expect(badge).not.toBeNull();
-    expect(badge.textContent).toContain('Ac Precool');
-    expect(badge.textContent).toContain('Tier 3');
+    expect(badge.textContent).toBe('Comfort');
   });
 
   it('should render Override button on each entry', () => {
@@ -269,7 +270,7 @@ describe('EventLog', () => {
     });
 
     const device = document.querySelector('.event-log-device');
-    expect(device.textContent).toBe('→ Living Room AC set to 24°C');
+    expect(device.textContent).toBe('Living Room AC set to 24°C');
   });
 
   it('should render reasoning with Reason prefix', () => {
@@ -282,6 +283,6 @@ describe('EventLog', () => {
     });
 
     const reasoning = document.querySelector('.event-log-reasoning');
-    expect(reasoning.textContent).toBe('→ Reason: Hot afternoon predicted');
+    expect(reasoning.textContent).toBe('Hot afternoon predicted');
   });
 });

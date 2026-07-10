@@ -139,7 +139,7 @@ export class LearningPanel {
           <span class="csv-dropzone-hint" id="csv-file-name">CSV — click to browse or drop here</span>
         </label>
         <div class="csv-controls">
-          <button type="button" id="csv-analyze-btn" class="btn-accent">✦ Analyze with Bedrock</button>
+          <button type="button" id="csv-analyze-btn" class="btn-accent">Analyze with Bedrock</button>
           <button type="button" id="csv-download-btn" class="csv-sample-link">Sample CSV</button>
         </div>
         <details class="csv-format">
@@ -338,7 +338,7 @@ export class LearningPanel {
       ? 'Amazon Bedrock (Claude)'
       : (usedBackend ? 'the statistical model' : 'on-device analysis');
     this._setStatus(
-      `✅ Learned <strong>${predictions.length}</strong> routines from ` +
+      `Learned <strong>${predictions.length}</strong> routines from ` +
       `<strong>${result.days_analyzed || '?'}</strong> days of history — powered by ${engine}. ` +
       `Press <strong>Deploy</strong> to watch Alexa think ahead.`,
       'success'

@@ -190,25 +190,18 @@ eventBus.on(EVENTS.PHASE_CHANGE, (payload) => {
   }
 });
 
-// 3. Data mode toggle (segmented switch in the top bar)
-const dataToggleContainer = document.getElementById('data-toggle');
-if (dataToggleContainer) {
-  dataToggleContainer.innerHTML = `
-    <div class="data-toggle-inner">
-      <span class="data-toggle-label">Data</span>
-      <button id="data-mode-btn" class="data-mode-btn" type="button" role="switch" aria-checked="false" aria-label="Toggle data mode">
-        <span class="data-mode-opt" data-v="mock">Mock</span>
-        <span class="data-mode-opt" data-v="real">Live</span>
-      </button>
-    </div>
-  `;
-
-  const dataModeBtn = document.getElementById('data-mode-btn');
-  dataModeBtn.addEventListener('click', () => {
-    const newMode = dataLayer.mode === 'mock' ? 'real' : 'mock';
-    dataLayer.setMode(newMode);
-    dataModeBtn.classList.toggle('data-mode-real', newMode === 'real');
-    dataModeBtn.setAttribute('aria-checked', String(newMode === 'real'));
+// 3. Theme toggle — light/dark, persisted across visits
+const themeToggleBtn = document.getElementById('theme-toggle');
+const applyTheme = (theme) => {
+  document.documentElement.dataset.theme = theme;
+  if (themeToggleBtn) themeToggleBtn.setAttribute('aria-checked', String(theme === 'dark'));
+};
+applyTheme(localStorage.getItem('ath-theme') === 'dark' ? 'dark' : 'light');
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('ath-theme', next);
+    applyTheme(next);
   });
 }
 
@@ -274,10 +267,10 @@ if (powerCutBtn) {
         setTimeout(() => {
           // Render the explanation and reasoning chain in the ReasoningPanel
           const reasoningContent = `
-            <h3>⚡ Power Cut — Alexa's Reasoning (Live)</h3>
+            <h3>Power Cut — Alexa's Reasoning (Live)</h3>
             <div class="reasoning-steps">
-              <p>💬 <strong>Explanation:</strong> ${response.explanation || 'Analyzing situation...'}</p>
-              ${response.reasoning_chain ? `<p>🧠 <strong>Reasoning:</strong> ${response.reasoning_chain}</p>` : ''}
+              <p><strong>Explanation:</strong> ${response.explanation || 'Analyzing situation...'}</p>
+              ${response.reasoning_chain ? `<p><strong>Reasoning:</strong> ${response.reasoning_chain}</p>` : ''}
             </div>
           `;
           reasoningPanel.show(reasoningContent);

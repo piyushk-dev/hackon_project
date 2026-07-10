@@ -108,6 +108,7 @@ export class TrustGauges {
 
     // Background circle
     const bgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    bgCircle.classList.add('gauge-bg');
     bgCircle.setAttribute('cx', String(center));
     bgCircle.setAttribute('cy', String(center));
     bgCircle.setAttribute('r', String(RING_RADIUS));
