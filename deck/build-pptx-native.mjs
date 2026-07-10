@@ -390,14 +390,6 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     hline(s, 140, y + 118, 1320);
     y += 122;
   }
-  s.addText([
-    { text: 'And quietly, a fifth: ' },
-    { text: 'privacy', options: { bold: true, color: '4C4639' } },
-    { text: " — the routines are learned from the home's own history, and they stay the home's." },
-  ], {
-    x: X(140), y: X(y + 18), w: X(1320), h: X(30), margin: 0,
-    fontFace: TEXT, fontSize: F(16.5), color: MUTED,
-  });
   pageno(s, 5);
 }
 
@@ -566,35 +558,43 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     fontFace: DISPLAY, fontSize: F(64), color: INK,
   });
 
-  // Outcomes a family (or an exec) actually cares about
-  const stats = [
-    ['~0', TEAL, 'voice commands left in the daily routine — down from dozens. Hot water, cooling, locks: simply ready.'],
-    ['20', AMBER, "routines learned from one week of the family's own activity log — six members, zero setup, zero rules written."],
-    ['~30%', PURPLE, 'of flexible load shifted off the peak-tariff window just by acting early — a lower bill with no lifestyle change (simulated estimate).'],
-  ];
-  stats.forEach(([v, c, p], i) => {
-    const px = 140 + i * 456;
-    card(s, px, 250, 408, 200);
-    s.addText(v, {
-      x: X(px + 32), y: X(276), w: X(340), h: X(52), margin: 0,
-      fontFace: DISPLAY, fontSize: F(42), color: c,
-    });
-    s.addText(p, {
-      x: X(px + 32), y: X(336), w: X(346), h: X(104), margin: 0,
-      fontFace: TEXT, fontSize: F(16), color: '4C4639', lineSpacingMultiple: 1.25,
-    });
+  // No invented metrics — what concretely changes, and why it scales
+  const colHead = (cx, t) => s.addText(t, {
+    x: X(cx), y: X(244), w: X(620), h: X(24), margin: 0,
+    fontFace: TEXT, fontSize: F(14), bold: true, color: MUTED, charSpacing: 2.4,
   });
+  colHead(140, 'FOR THE SHARMA FAMILY');
+  colHead(830, 'WHY IT SCALES');
 
-  s.addText([
-    { text: 'And for Amazon: ', options: { bold: true, color: INK } },
-    { text: 'anticipation is what turns Alexa from convenient into indispensable — deeper retention, a stronger pull into the Echo ecosystem, and trust no assistant has earned yet.' },
-  ], {
-    x: X(140), y: X(478), w: X(1320), h: X(30), margin: 0,
-    fontFace: TEXT, fontSize: F(16.5), color: BODY,
-  });
+  const impact = [
+    [140, [
+      ['The morning runs itself.', ' Hot water at bath time, the motor off before the tank overflows, doors locked behind the last person out — nobody says a word.'],
+      ["A power cut isn't an emergency.", " The inverter carries what matters — the online class, the grandparents' room — and quietly sheds the rest."],
+      ['The family stays the boss.', ' Every action arrives with its reason; one override, and Alexa asks first next time.'],
+    ]],
+    [830, [
+      ['Anticipation is the feature India needs.', ' Power cuts, water-supply windows and tariff slots are the daily rhythm here — a purely reactive assistant cannot keep up with them.'],
+      ['Time-of-use tariffs are arriving nationwide.', ' A home that moves its load before the peak window turns anticipation into money.'],
+      ['For Amazon, it makes Alexa indispensable.', " The Echo already in the living room becomes the household's brain — not just another speaker."],
+    ]],
+  ];
+  for (const [cx, rows] of impact) {
+    let iy = 284;
+    for (const [lead, rest] of rows) {
+      s.addText([
+        { text: lead, options: { bold: true, color: INK } },
+        { text: rest, options: { color: BODY } },
+      ], {
+        x: X(cx), y: X(iy), w: X(630), h: X(96), margin: 0,
+        fontFace: TEXT, fontSize: F(17), lineSpacingMultiple: 1.3,
+      });
+      iy += 106;
+    }
+  }
+  hline(s, 140, 616, 1320);
 
   s.addText('WHERE THIS GOES NEXT', {
-    x: X(140), y: X(534), w: X(500), h: X(24), margin: 0,
+    x: X(140), y: X(640), w: X(500), h: X(24), margin: 0,
     fontFace: TEXT, fontSize: F(14), bold: true, color: MUTED, charSpacing: 2.4,
   });
   const vision = [
@@ -605,14 +605,14 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
   ];
   vision.forEach(([b, p], i) => {
     const px = 140 + i * 336;
-    hline(s, px, 578, 310, TEAL, 2.25);
+    hline(s, px, 684, 310, TEAL, 2.25);
     s.addText(b, {
-      x: X(px), y: X(594), w: X(310), h: X(28), margin: 0,
-      fontFace: TEXT, fontSize: F(19), bold: true, color: INK,
+      x: X(px), y: X(700), w: X(310), h: X(28), margin: 0,
+      fontFace: TEXT, fontSize: F(18), bold: true, color: INK,
     });
     s.addText(p, {
-      x: X(px), y: X(628), w: X(310), h: X(140), margin: 0,
-      fontFace: TEXT, fontSize: F(15), color: BODY, lineSpacingMultiple: 1.25,
+      x: X(px), y: X(732), w: X(310), h: X(130), margin: 0,
+      fontFace: TEXT, fontSize: F(14.5), color: BODY, lineSpacingMultiple: 1.22,
     });
   });
   pageno(s, 8);
