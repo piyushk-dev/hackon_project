@@ -563,7 +563,7 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     { text: 'given back to the family every day', options: { bold: true, color: INK } },
     { text: ' — the small chores of remembering (geyser, motor, locks, cooling) simply stop existing.' },
   ], {
-    x: X(140), y: X(334), w: X(430), h: X(150), margin: 0,
+    x: X(140), y: X(318), w: X(430), h: X(150), margin: 0,
     fontFace: TEXT, fontSize: F(18), color: BODY, lineSpacingMultiple: 1.35,
   });
 
@@ -572,7 +572,7 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
     ["A power cut isn't an emergency.", " The inverter carries what matters — the online class, the grandparents' room — and quietly sheds the rest."],
     ['More than a speaker.', " For homes like these, the Echo in the living room stops being a music box and becomes the household's brain — that is what makes Alexa indispensable."],
   ];
-  let iy = 262;
+  let iy = 260;
   for (const [lead, rest] of points) {
     s.addText([
       { text: lead, options: { bold: true, color: INK } },
@@ -581,10 +581,10 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
       x: X(680), y: X(iy), w: X(780), h: X(100), margin: 0,
       fontFace: TEXT, fontSize: F(18), lineSpacingMultiple: 1.3,
     });
-    iy += 118;
+    iy += 94;
   }
   s.addShape(pptx.shapes.LINE, {
-    x: X(632), y: X(266), w: 0, h: X(330), line: { color: HAIR, width: 1 },
+    x: X(632), y: X(262), w: 0, h: X(276), line: { color: HAIR, width: 1 },
   });
 
   hline(s, 140, 616, 1320);
