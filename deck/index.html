@@ -57,13 +57,12 @@
   .f2 .right { padding: 96px 140px 0 40px; }
   .agenda { list-style: none; }
   .agenda li {
-    display: grid; grid-template-columns: 64px 1fr auto; align-items: baseline;
-    gap: 20px; padding: 21px 4px; border-bottom: 1px solid var(--line);
+    display: grid; grid-template-columns: 64px 1fr; align-items: baseline;
+    gap: 20px; padding: 20px 4px; border-bottom: 1px solid var(--line);
   }
   .agenda .no { font: 600 26px/1 Fraunces, serif; color: var(--amber); }
   .agenda .what { font: 600 25px/1.2 Inter; }
   .agenda .what small { display: block; font: 400 15px/1.5 Inter; color: var(--muted); margin-top: 4px; }
-  .agenda .t { font: 600 17px/1 Inter; color: var(--teal); font-variant-numeric: tabular-nums; }
 
   /* ── 3 · problem ───────────────────────────────────────────── */
   .f3 { padding: 96px 140px 0; }
@@ -125,41 +124,22 @@
   }
   .replay:hover { color: var(--teal); border-color: var(--teal); }
 
-  /* ── 5 · solution ──────────────────────────────────────────── */
-  .f5 { padding: 92px 140px 0; }
-  .f5 h2 { font-size: 68px; line-height: 1.08; margin: 22px 0 10px; }
+  /* ── 5 · customer needs ────────────────────────────────────── */
+  .f5 { padding: 84px 140px 0; }
+  .f5 h2 { font-size: 66px; line-height: 1.08; margin: 22px 0 6px; }
   .f5 h2 em { font-style: italic; color: var(--teal); }
-  .f5 .sub { font: 400 21px/1.5 Inter; color: #5c554a; }
-  .loop { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin: 46px 0 44px; }
-  .stage {
-    background: var(--card); border-radius: 18px; padding: 26px 28px 24px;
-    box-shadow: 0 18px 44px rgba(60, 48, 26, 0.10); position: relative;
+  .needs { margin-top: 34px; }
+  .need {
+    display: grid; grid-template-columns: 1fr 1.35fr; gap: 70px; align-items: start;
+    padding: 27px 4px; border-bottom: 1px solid var(--line);
   }
-  .stage .tag { font: 700 13px/1 Inter; letter-spacing: 0.2em; margin-bottom: 12px; }
-  .stage:nth-child(1) { border-top: 5px solid #3a6ea8; }  .stage:nth-child(1) .tag { color: #3a6ea8; }
-  .stage:nth-child(2) { border-top: 5px solid #7a4fb3; }  .stage:nth-child(2) .tag { color: #7a4fb3; }
-  .stage:nth-child(3) { border-top: 5px solid var(--teal); } .stage:nth-child(3) .tag { color: var(--teal); }
-  .stage:nth-child(4) { border-top: 5px solid var(--amber); } .stage:nth-child(4) .tag { color: var(--amber); }
-  .stage p { font: 400 16.5px/1.55 Inter; color: #5c554a; }
-  .stage p b { color: var(--ink); }
-  .stage:not(:last-child)::after {
-    content: '→'; position: absolute; right: -21px; top: 42%;
-    font: 600 26px/1 Fraunces, serif; color: var(--muted); z-index: 2;
-  }
-  .stage .bedrock {
-    display: inline-block; margin-top: 12px; font: 700 12.5px/1 Inter; letter-spacing: 0.06em;
-    color: #7a4fb3; background: rgba(122, 79, 179, 0.1); border-radius: 6px; padding: 6px 10px;
-  }
-  .f5 .bottom { display: grid; grid-template-columns: 1.2fr 1fr; gap: 44px; align-items: center; }
-  .receipt {
-    background: var(--card); border-radius: 18px; padding: 30px 36px;
-    box-shadow: 0 24px 60px rgba(60, 48, 26, 0.14); border-top: 6px solid var(--teal);
-  }
-  .receipt .rk { font: 700 13px/1 Inter; letter-spacing: 0.18em; color: var(--muted); margin-bottom: 14px; }
-  .receipt .rq { font: 600 26px/1.35 Fraunces, serif; }
-  .receipt .rq em { color: var(--teal); font-style: italic; }
-  .trustnote { font: 400 18.5px/1.6 Inter; color: #5c554a; }
-  .trustnote b { color: var(--ink); }
+  .need .q { font: 600 29px/1.25 Fraunces, serif; }
+  .need .q::before { content: '“'; color: var(--amber); }
+  .need .q::after { content: '”'; color: var(--amber); }
+  .need .a { font: 400 17.5px/1.6 Inter; color: #5c554a; padding-top: 5px; }
+  .need .a b { color: var(--ink); }
+  .f5 .quiet { margin-top: 24px; font: 400 16.5px/1.5 Inter; color: var(--muted); }
+  .f5 .quiet b { color: #4c4639; }
 
   /* ── 6 · demo video ────────────────────────────────────────── */
   .f6 { display: flex; flex-direction: column; align-items: center; padding-top: 74px; }
@@ -238,7 +218,7 @@
 <!-- ═══ 1 · COVER ═══ -->
 <section class="frame f1">
   <img class="cover" src="assets/cover.png" alt="Alexa Thinks Ahead — built for the next billion" />
-  <div class="team">Team <b>Bar Raisers</b> · HackOn with Amazon — Season 6.0</div>
+  <div class="team">Team <b>Bar Raisers</b> · HackOn with Amazon</div>
 </section>
 
 <!-- ═══ 2 · AGENDA ═══ -->
@@ -250,12 +230,13 @@
   </div>
   <div class="right">
     <ol class="agenda">
-      <li><span class="no">01</span><span class="what">The problem<small>Smart homes still wait for orders</small></span><span class="t">1.5 min</span></li>
-      <li><span class="no">02</span><span class="what">Our solution<small>Learn the rhythm, act ahead, explain everything</small></span><span class="t">1.5 min</span></li>
-      <li><span class="no">03</span><span class="what">Live demo<small>One day in an Indian home</small></span><span class="t">3 min</span></li>
-      <li><span class="no">04</span><span class="what">Tech architecture<small>A routine model + an LLM that knows today</small></span><span class="t">2 min</span></li>
-      <li><span class="no">05</span><span class="what">Impact &amp; future vision<small>What this unlocks for the next billion</small></span><span class="t">1.5 min</span></li>
-      <li><span class="no">06</span><span class="what">Questions<small>We kept a buffer on purpose</small></span><span class="t">0.5 min</span></li>
+      <li><span class="no">01</span><span class="what">The problem<small>What today's Alexa can't do</small></span></li>
+      <li><span class="no">02</span><span class="what">The scenario<small>Dadaji's 6:45 bath — thirty mornings of it</small></span></li>
+      <li><span class="no">03</span><span class="what">What I need as a customer<small>And what we built for each need</small></span></li>
+      <li><span class="no">04</span><span class="what">Live demo<small>One day in an Indian home</small></span></li>
+      <li><span class="no">05</span><span class="what">Tech architecture<small>A routine model + an LLM that knows today</small></span></li>
+      <li><span class="no">06</span><span class="what">Impact &amp; future vision<small>What this unlocks for the next billion</small></span></li>
+      <li><span class="no">07</span><span class="what">Questions</span></li>
     </ol>
   </div>
   <div class="pageno">2 / 9</div>
@@ -265,7 +246,7 @@
 <section class="frame f3">
   <div class="kicker">The problem</div>
   <h2>Indian homes run on rhythm.<br/>Smart homes still <span>wait for orders</span>.</h2>
-  <p class="sub">A multi-generational household — working parents, two kids, grandparents — issues dozens of commands a day to devices that never learn what happens next.</p>
+  <p class="sub"><em style="font-family:Fraunces,serif;font-size:1.15em">“Alexa, you should already know this.”</em> — a multi-generational household issues dozens of commands a day to devices that never learn what happens next.</p>
 
   <div class="rhythm">
     <div class="beat"><div class="bt">05:30</div><div class="bl">Morning pooja</div></div>
@@ -296,7 +277,7 @@
 
 <!-- ═══ 4 · LEARNING GRID ═══ -->
 <section class="frame f4">
-  <div class="kicker">How she learns</div>
+  <div class="kicker">The scenario — Dadaji's bath</div>
   <h2>30 mornings. <em>One pattern.</em></h2>
 
   <div class="stagegrid">
@@ -315,26 +296,30 @@
   <div class="pageno">4 / 9</div>
 </section>
 
-<!-- ═══ 5 · SOLUTION ═══ -->
+<!-- ═══ 5 · CUSTOMER NEEDS ═══ -->
 <section class="frame f5">
-  <div class="kicker">Our solution</div>
-  <h2>Alexa Thinks Ahead — it <em>anticipates the need</em> behind the routine.</h2>
-  <p class="sub">It learns each member's routines from the home's own history and plans today ahead of time — one cognitive loop, running all day.</p>
+  <div class="kicker">What I need as a customer</div>
+  <h2>Four things a family would <em>actually ask for</em>.</h2>
 
-  <div class="loop">
-    <div class="stage"><div class="tag">SENSE</div><p>Fuses <b>devices, presence and time</b> — plus what kind of day today is.</p></div>
-    <div class="stage"><div class="tag">THINK</div><p>Reasons about what the home needs <b>next</b> — not what was just said.</p><span class="bedrock">Amazon Bedrock · Claude</span></div>
-    <div class="stage"><div class="tag">ACT</div><p>Fires the action <b>ahead of the routine</b> — gated by how much trust it has earned.</p></div>
-    <div class="stage"><div class="tag">EXPLAIN</div><p>Every action ships with a <b>plain-language reason</b> — and an Override button.</p></div>
-  </div>
-
-  <div class="bottom">
-    <div class="receipt">
-      <div class="rk">WHAT IT SOUNDS LIKE</div>
-      <div class="rq">"Pre-heating the geyser at <em>05:15</em> — the family usually wakes around 06:00."</div>
+  <div class="needs">
+    <div class="need">
+      <div class="q">It should already be ready.</div>
+      <p class="a"><b>It acts ahead of the routine</b> — the geyser is hot before the 6:45 bath, the living room is cool before Rajesh walks in. Zero commands for the daily rhythm.</p>
     </div>
-    <p class="trustnote"><b>Trust is earned, not assumed.</b> Every accepted action raises Alexa's autonomy for that category; every override lowers it — so the family always decides how much she may do alone.</p>
+    <div class="need">
+      <div class="q">It should understand my home.</div>
+      <p class="a"><b>India-first context, not hardcoded rules</b> — pooja mornings, tariff windows, power cuts, tuition hours all ride into the reasoning as context it actually weighs.</p>
+    </div>
+    <div class="need">
+      <div class="q">It should never overreach.</div>
+      <p class="a"><b>Autonomy is graduated and earned</b> — five trust tiers per device category; one override immediately lowers what it may do on its own.</p>
+    </div>
+    <div class="need">
+      <div class="q">It should explain itself.</div>
+      <p class="a"><b>Every action ships with a plain-language reason</b> — "pre-heating the geyser at 05:15, the family wakes around 06:00" — and a one-tap Override.</p>
+    </div>
   </div>
+  <p class="quiet">And quietly, a fifth: <b>privacy</b> — the routines are learned from the home's own history, and they stay the home's.</p>
   <div class="pageno">5 / 9</div>
 </section>
 
@@ -391,12 +376,13 @@
 <section class="frame f9">
   <div class="grain"></div>
   <div class="kicker">Thank you</div>
-  <h2>An Alexa that earns trust,<br/>one morning <em>chai</em> at a time.</h2>
+  <h2>Questions?</h2>
+  <p style="font: 400 26px/1.5 Fraunces, serif; font-style: italic; color: #5c554a; margin: -6px 0 34px;">An Alexa that earns trust, one morning chai at a time.</p>
   <div class="links">
     <a class="pillL solid" href="http://54.252.207.144/">Live demo — 54.252.207.144</a>
-    <a class="pillL" href="#">github.com/your-repo</a>
+    <a class="pillL" href="https://github.com/piyushk-dev/hackon_project">github.com/piyushk-dev/hackon_project</a>
   </div>
-  <div class="byline">Team <b>Bar Raisers</b> · HackOn with Amazon — Season 6.0</div>
+  <div class="byline">Team <b>Bar Raisers</b> · HackOn with Amazon</div>
   <div class="pageno">9 / 9</div>
 </section>
 
