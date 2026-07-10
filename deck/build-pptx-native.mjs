@@ -29,8 +29,11 @@ pptx.layout = 'WIDE';
 pptx.author = 'Team Bar Raisers';
 pptx.title = 'Alexa Thinks Ahead — HackOn with Amazon';
 
-const DISPLAY = 'Fraunces';
-const TEXT = 'Inter';
+// Override via env for the portable build (fonts preinstalled on every
+// Windows machine): DISPLAY_FONT=Georgia TEXT_FONT="Segoe UI"
+const DISPLAY = process.env.DISPLAY_FONT || 'Fraunces';
+const TEXT = process.env.TEXT_FONT || 'Inter';
+const OUT = process.env.OUT || 'Alexa-Thinks-Ahead-Bar-Raisers.pptx';
 
 // ── helpers ─────────────────────────────────────────────────────
 function slideBg() {
@@ -638,5 +641,5 @@ function card(s, xPx, yPx, wPx, hPx, accent) {
   pageno(s, 9);
 }
 
-await pptx.writeFile({ fileName: join(HERE, 'Alexa-Thinks-Ahead-Bar-Raisers.pptx') });
-console.log('native pptx written — 9 slides, vector text & shapes');
+await pptx.writeFile({ fileName: join(HERE, OUT) });
+console.log(`native pptx written — 9 slides, vector text & shapes → ${OUT} (${DISPLAY} / ${TEXT})`);
